@@ -7,6 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Critical: ensure hidden screens don't flash before CSS loads */
+    .hidden { display: none !important; }
+    #quiz-area, #loading-screen, #result-screen { display: none; }
+  </style>
+
 </head>
 <body>
 
@@ -53,7 +59,7 @@
   </div>
 
   <!-- QUIZ AREA -->
-  <div id="quiz-area" class="hidden">
+  <div id="quiz-area" class="hidden" style="display:none">
     <div id="progress-area">
       <div class="prog-label">
         <span id="q-counter">Question 1 of 35</span>
@@ -66,12 +72,12 @@
       <span class="q-emoji" id="q-emoji">🌟</span>
       <p class="q-text" id="q-text">Loading...</p>
       <div id="options-container"></div>
-      <button class="btn-next hidden" id="btn-next" onclick="nextQuestion()">Continue My Journey ✨</button>
+      <button class="btn-next hidden" id="btn-next" style="display:none" onclick="nextQuestion()">Continue My Journey ✨</button>
     </div>
   </div>
 
   <!-- MAGIC MIRROR LOADING -->
-  <div id="loading-screen" class="hidden">
+  <div id="loading-screen" class="hidden" style="display:none">
     <div class="mirror-container">
       <div class="mirror-frame">
         <div class="mirror-glass">
@@ -88,7 +94,7 @@
   </div>
 
   <!-- RESULT SCREEN -->
-  <div id="result-screen" class="hidden">
+  <div id="result-screen" class="hidden" style="display:none">
     <div class="result-header">
       <span class="result-crown">👑</span>
       <div class="result-eyebrow">The Magic Mirror Has Spoken...</div>
