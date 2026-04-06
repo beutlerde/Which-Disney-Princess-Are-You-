@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✨ Which Disney Princess Are You? ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Critical: ensure hidden screens don't flash before CSS loads */
+    .hidden { display: none !important; }
+    #quiz-area, #loading-screen, #result-screen { display: none; }
+  </style>
+
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="sparkle-wrap" id="sparkles"></div>
+<div class="scene-bg" id="scene-bg"></div>
+<div class="bg-particles" id="bg-particles"></div>
+
+<div id="app">
+
+  <!-- TITLE SCREEN -->
+  <div id="title-screen">
+    <span class="crown-anim">👑</span>
+    <h1>Which Disney Princess Are You?</h1>
+    <p class="subtitle">✨ A Magical Royal Discovery ✨</p>
+    <div class="princess-icons">
+      <span class="pi" style="--d:2.1s;--dl:0s">🌹</span>
+      <span class="pi" style="--d:2.4s;--dl:.2s">🐠</span>
+      <span class="pi" style="--d:2.0s;--dl:.4s">🐸</span>
+      <span class="pi" style="--d:2.6s;--dl:.1s">🍎</span>
+      <span class="pi" style="--d:1.9s;--dl:.3s">🌺</span>
+      <span class="pi" style="--d:2.3s;--dl:.5s">❄️</span>
+      <span class="pi" style="--d:2.1s;--dl:.2s">🌙</span>
+      <span class="pi" style="--d:2.5s;--dl:.4s">⚔️</span>
+      <span class="pi" style="--d:2.2s;--dl:.3s">🏮</span>
+      <span class="pi" style="--d:2.0s;--dl:.1s">📚</span>
+      <span class="pi" style="--d:2.7s;--dl:.5s">🌊</span>
+      <span class="pi" style="--d:1.8s;--dl:.4s">💎</span>
+    </div>
+    <div class="intro-box">
+      Welcome, dear royal! 🌟 This enchanted quiz draws from a pool of
+      <strong>250 magical questions</strong> — and every time you play, the mirror
+      chooses a fresh set of <strong>35 unique questions</strong> just for you.
+      No two playthroughs are ever the same! Discover which of
+      <strong>12 beloved Disney Princesses</strong> lives in your heart.
+    </div>
+    <div class="stats-bar">
+      <span class="stat-pill">👑 12 Princesses</span>
+      <span class="stat-pill">✨ 250 Questions</span>
+      <span class="stat-pill">🔮 35 Per Play</span>
+      <span class="stat-pill">♾️ Infinite Replays</span>
+    </div>
+    <button class="btn-start" onclick="startQuiz()">✨ Begin My Royal Journey ✨</button>
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div id="quiz-area" class="hidden" style="display:none">
+    <div id="progress-area">
+      <div class="prog-label">
+        <span id="q-counter">Question 1 of 35</span>
+        <span id="q-cat-label">✨ Personality</span>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:2%"></div></div>
+    </div>
+    <div class="question-card" id="question-card">
+      <span class="cat-badge" id="cat-badge">Personality</span>
+      <span class="q-emoji" id="q-emoji">🌟</span>
+      <p class="q-text" id="q-text">Loading...</p>
+      <div id="options-container"></div>
+      <button class="btn-next hidden" id="btn-next" style="display:none" onclick="nextQuestion()">Continue My Journey ✨</button>
+    </div>
+  </div>
+
+  <!-- MAGIC MIRROR LOADING -->
+  <div id="loading-screen" class="hidden" style="display:none">
+    <div class="mirror-container">
+      <div class="mirror-frame">
+        <div class="mirror-glass">
+          <div class="mirror-fog"></div>
+          <div class="mirror-swirl"></div>
+          <span class="mirror-icon" id="mirror-icon">🔮</span>
+        </div>
+      </div>
+      <div class="mirror-stand"></div>
+    </div>
+    <div class="load-text">The Magic Mirror is working its spell...</div>
+    <div class="load-sub">Consulting with fairy godmothers across all the kingdoms ✨</div>
+    <div class="load-dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="hidden" style="display:none">
+    <div class="result-header">
+      <span class="result-crown">👑</span>
+      <div class="result-eyebrow">The Magic Mirror Has Spoken...</div>
+      <div class="result-name" id="result-name">Princess</div>
+    </div>
+
+    <div class="result-card" id="result-card">
+      <div class="result-particles" id="result-particles"></div>
+
+      <span class="princess-emoji-big" id="result-emoji">👸</span>
+      <p class="result-desc" id="result-desc"></p>
+
+      <div class="royal-title-box">
+        <div class="royal-title-label">✨ Your Royal Title ✨</div>
+        <div class="royal-title-text" id="royal-title"></div>
+      </div>
+
+      <div class="traits-grid" id="traits-grid"></div>
+
+      <div class="story-section">
+        <div class="story-title">📜 YOUR ROYAL STORY</div>
+        <div class="story-text" id="story-text"></div>
+      </div>
+
+      <!-- ROYAL CREST (assembled from her answers) -->
+      <div class="crest-section">
+        <div class="crest-title">🛡️ YOUR ROYAL CREST</div>
+        <div class="crest-grid" id="crest-grid"></div>
+      </div>
+
+      <!-- CONSTELLATION (SVG radar chart of all 12 princesses) -->
+      <div class="constellation-section">
+        <div class="constellation-title">✨ YOUR PRINCESS CONSTELLATION ✨</div>
+        <div id="match-section-inner"></div>
+      </div>
+
+      <!-- TOP 6 match bars -->
+      <div class="match-section">
+        <div class="match-title">💫 YOUR TOP MATCHES</div>
+        <div id="match-bars"></div>
+      </div>
+
+      <!-- STYLE PICKS -->
+      <div class="picks-section">
+        <div class="picks-title">💖 YOUR ROYAL STYLE PICKS</div>
+        <div class="picks-grid" id="picks-grid"></div>
+      </div>
+
+      <!-- SHARE -->
+      <div class="share-section">
+        <button class="btn-share" id="btn-share">📸 Share My Royal Profile</button>
+        <div class="share-hint">Save your unique Royal Profile Card and share with friends!</div>
+      </div>
+    </div>
+
+    <button class="btn-retry" onclick="resetQuiz()">🔮 Play Again — New Questions Every Time!</button>
+  </div>
+
+</div><!-- end #app -->
+
+<!-- QUESTION FILES -->
+<script src="js/questions-personality.js"></script>
+<script src="js/questions-style.js"></script>
+<script src="js/questions-kingdom.js"></script>
+<script src="js/questions-romance.js"></script>
+<script src="js/questions-animals.js"></script>
+<script src="js/questions-values.js"></script>
+<script src="js/questions-food.js"></script>
+<script src="js/questions-magic.js"></script>
+<script src="js/questions-friendship.js"></script>
+<script src="js/questions-fun.js"></script>
+<script src="js/questions-loader.js"></script>
+<!-- CORE -->
+<script src="js/princesses.js"></script>
+<script src="js/results.js"></script>
+<script src="js/engine.js"></script>
+</body>
+</html>
