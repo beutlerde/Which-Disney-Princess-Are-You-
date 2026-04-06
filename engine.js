@@ -409,6 +409,13 @@ function resetQuiz() {
 
 // ── STARS + SPARKLES ─────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
+  // Explicitly enforce correct screen visibility on load
+  document.getElementById("title-screen").classList.remove("hidden");
+  document.getElementById("quiz-area").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("btn-next").classList.add("hidden");
+
   initStars();
   initSparkles();
 });
