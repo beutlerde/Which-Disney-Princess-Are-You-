@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Scribe</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Cinzel:wght@400;500;600;700&family=Cormorant+Unicase:wght@500;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0614;
+    --ink-2: #140a28;
+    --ink-3: #1f1239;
+    --gold: #d4af37;
+    --gold-bright: #f3d96b;
+    --gold-edge: #fff4d3;
+    --gold-dim: #8a6f1c;
+    --cream: #f5e6d3;
+    --accent: #c9a3e8;
+    --error: #e8a0a0;
+    --success: #9fd4a0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100vh;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--cream);
+    background:
+      radial-gradient(ellipse at top, #2a1a4a 0%, #0a0614 55%, #000 100%);
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+
+  .header {
+    text-align: center;
+    padding: 20px 0 36px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    margin-bottom: 36px;
+  }
+  .header-pre {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.4em;
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.7;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-family: 'Cormorant Unicase', serif;
+    font-weight: 700;
+    font-size: 40px;
+    letter-spacing: 0.03em;
+    background: linear-gradient(180deg, var(--gold-edge) 0%, var(--gold-bright) 35%, var(--gold) 60%, #a68122 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px rgba(212, 175, 55, 0.3));
+  }
+  .header-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent);
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  /* Gate screen */
+  .gate {
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 40px 32px;
+    background: linear-gradient(180deg, rgba(20,10,40,0.6), rgba(10,6,20,0.9));
+    border: 1px solid rgba(212,175,55,0.25);
+    text-align: center;
+  }
+  .gate h2 {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 22px;
+    color: var(--gold-edge);
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+  .gate p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: rgba(245, 230, 211, 0.7);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  /* Form elements */
+  label {
+    display: block;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    margin-top: 22px;
+    opacity: 0.85;
+  }
+  label:first-child { margin-top: 0; }
+  .hint {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: rgba(201, 163, 232, 0.7);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--cream);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus,
+  input[type="password"]:focus,
+  input[type="date"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--gold);
+  }
+  textarea {
+    min-height: 260px;
+    resize: vertical;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    line-height: 1.7;
+  }
+  select {
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path fill='%23d4af37' d='M6 8L0 0h12z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    min-height: 48px;
+    background: transparent;
+    color: var(--gold-bright);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn:hover:not(:disabled) {
+    background: rgba(212, 175, 55, 0.08);
+    border-color: var(--gold);
+  }
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+    color: var(--ink);
+    border-color: var(--gold-bright);
+    font-weight: 600;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(180deg, var(--gold-bright), var(--gold));
+  }
+  .btn-danger {
+    color: var(--error);
+    border-color: rgba(232, 160, 160, 0.4);
+  }
+  .btn-danger:hover:not(:disabled) {
+    background: rgba(232, 160, 160, 0.1);
+    border-color: var(--error);
+  }
+  .actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+
+  /* Settings section */
+  .settings-card {
+    background: linear-gradient(180deg, rgba(168, 216, 234, 0.04), rgba(20, 10, 40, 0.4));
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 24px;
+    margin-bottom: 32px;
+    border-radius: 2px;
+  }
+  .settings-title {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .settings-row {
+    display: flex; gap: 10px; align-items: center; margin-bottom: 10px;
+  }
+  .settings-status {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: rgba(245, 230, 211, 0.8);
+  }
+  .settings-status.ok { color: var(--success); }
+  .settings-status.err { color: var(--error); }
+
+  /* Letter list */
+  .letters-list {
+    margin-top: 40px;
+  }
+  .letters-list-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px;
+  }
+  .letters-list h3 {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 22px;
+    color: var(--gold-bright);
+    letter-spacing: 0.05em;
+  }
+  .letter-item {
+    background: rgba(20, 10, 40, 0.5);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: border-color 0.2s;
+  }
+  .letter-item:hover { border-color: rgba(212, 175, 55, 0.5); }
+  .letter-meta {
+    flex: 1;
+  }
+  .letter-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .letter-info {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: rgba(212, 175, 55, 0.8);
+    text-transform: uppercase;
+  }
+  .letter-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  .letter-badge.locked { background: rgba(201, 163, 232, 0.15); color: var(--accent); }
+  .letter-badge.unlocked { background: rgba(159, 212, 160, 0.15); color: var(--success); }
+  .letter-actions { display: flex; gap: 6px; }
+  .icon-btn {
+    background: none;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    color: var(--gold);
+    width: 36px; height: 36px;
+    cursor: pointer;
+    font-size: 14px;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: rgba(212, 175, 55, 0.1); border-color: var(--gold); }
+  .icon-btn.danger { color: var(--error); border-color: rgba(232, 160, 160, 0.3); }
+  .icon-btn.danger:hover { background: rgba(232, 160, 160, 0.1); border-color: var(--error); }
+
+  .empty {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(245, 230, 211, 0.4);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: linear-gradient(180deg, var(--gold), var(--gold-dim));
+    color: var(--ink);
+    padding: 12px 24px;
+    border-radius: 2px;
+    z-index: 100;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
+    opacity: 0;
+    max-width: 92vw;
+    text-align: center;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+  .toast.error { background: linear-gradient(180deg, var(--error), #a35050); color: white; }
+
+  /* Hidden sections */
+  .hidden { display: none; }
+
+  /* Signature preview */
+  .sig-preview {
+    margin-top: 18px;
+    padding: 20px 24px;
+    border: 1px dashed rgba(212, 175, 55, 0.3);
+    background: rgba(168, 216, 234, 0.03);
+    text-align: right;
+    border-radius: 2px;
+  }
+  .sig-preview-from {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(245, 230, 211, 0.6);
+    margin-bottom: 8px;
+  }
+  .sig-preview-name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 28px;
+    color: var(--gold-bright);
+    line-height: 1;
+  }
+  .sig-preview.king .sig-preview-name {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 22px;
+  }
+  .sig-preview.princess .sig-preview-name {
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- GATE: Password entry -->
+  <div id="gateScreen" class="gate">
+    <h2>✦ The Royal Scribe ✦</h2>
+    <p>Only the King may enter these chambers.<br>Speak thy secret word.</p>
+    <input type="password" id="passwordInput" placeholder="Enter thy passcode" autofocus>
+    <div class="hint" id="passwordHint"></div>
+    <div class="actions" style="justify-content: center;">
+      <button class="btn btn-primary" id="btnUnlock">✦ Enter ✦</button>
+    </div>
+    <div class="hint" id="firstTimeHint" style="margin-top: 24px; display: none;">
+      This is thy first visit. The passcode thou enterest will be thy seal forevermore.
+    </div>
+  </div>
+
+  <!-- MAIN: Writing interface -->
+  <div id="mainScreen" class="hidden">
+
+    <div class="header">
+      <div class="header-pre">✦ The Royal Scribe ✦</div>
+      <h1 class="header-title">Letters Across Time</h1>
+      <div class="header-sub">For Princess Guapa, to be opened in seasons yet to come</div>
+    </div>
+
+    <!-- GitHub connection status -->
+    <div class="settings-card">
+      <div class="settings-title">⚙ GitHub Connection</div>
+      <div id="githubStatus" class="settings-status">Not configured</div>
+
+      <div id="githubSetupForm" style="margin-top: 18px;">
+        <label>GitHub Username</label>
+        <input type="text" id="ghUser" placeholder="your-github-username">
+
+        <label>Repository Name</label>
+        <input type="text" id="ghRepo" placeholder="royal-kingdom">
+        <div class="hint">The repo where thy kingdom is already hosted.</div>
+
+        <label>Personal Access Token</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+        <div class="hint">
+          A token with "repo" permissions. Generate one at<br>
+          <span style="color: var(--gold);">github.com → Settings → Developer settings → Personal access tokens → Tokens (classic)</span>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSaveGh">✦ Save Connection</button>
+          <button class="btn" id="btnTestGh">Test Connection</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Writing form -->
+    <div id="writingForm">
+
+      <label>Letter Title</label>
+      <input type="text" id="letterTitle" placeholder="To My Princess on Her Tenth Birthday">
+
+      <label>From Whom?</label>
+      <select id="letterFrom">
+        <option value="dad">From Dad — personal, intimate ("Love, Dad")</option>
+        <option value="king">From the King — ceremonial ("Thy King and Father")</option>
+        <option value="princess">From Her Princess — written in her match's voice</option>
+      </select>
+      <div class="hint" id="fromHint">Choose the voice that best fits this letter's purpose.</div>
+
+      <div id="princessSelectWrap" class="hidden">
+        <label>Which Princess?</label>
+        <select id="princessSelect">
+          <option value="cinderella">Cinderella</option>
+          <option value="ariel">Ariel</option>
+          <option value="belle">Belle</option>
+          <option value="jasmine">Jasmine</option>
+          <option value="mulan">Mulan</option>
+          <option value="rapunzel">Rapunzel</option>
+          <option value="moana">Moana</option>
+          <option value="tiana">Tiana</option>
+          <option value="aurora">Aurora</option>
+          <option value="snowwhite">Snow White</option>
+          <option value="elsa">Elsa</option>
+          <option value="raya">Raya</option>
+        </select>
+      </div>
+
+      <label>The Letter</label>
+      <textarea id="letterBody" placeholder="My dearest Guapa,&#10;&#10;There is something I want thee to know on this day..."></textarea>
+      <div class="hint">Line breaks and paragraph breaks are preserved. Write as you would with ink and parchment.</div>
+
+      <label>Unlock Date</label>
+      <input type="date" id="letterDate">
+      <div class="hint">The letter remains sealed until this date. Choose wisely.</div>
+
+      <div class="sig-preview" id="sigPreview">
+        <div class="sig-preview-from">With all my love,</div>
+        <div class="sig-preview-name">Dad</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="btnSaveLetter">✦ Seal the Letter</button>
+        <button class="btn" id="btnClearForm">Clear</button>
+        <button class="btn" id="btnCancelEdit" style="display:none;">Cancel Edit</button>
+      </div>
+    </div>
+
+    <!-- Letters list -->
+    <div class="letters-list">
+      <div class="letters-list-header">
+        <h3>✦ Sealed Letters</h3>
+        <button class="btn" id="btnRefreshList">Refresh</button>
+      </div>
+      <div id="lettersList"></div>
+    </div>
+
+    <div class="actions" style="margin-top: 60px; justify-content: center;">
+      <button class="btn btn-danger" id="btnLogout">Lock Chambers</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============ STATE ============
+const STORAGE_KEYS = {
+  passwordHash: 'royal_scribe_pw',
+  ghConfig: 'royal_scribe_gh',
+  sessionUnlocked: 'royal_scribe_session',
+};
+
+let ghConfig = null;
+let lettersCache = [];
+let editingId = null;
+
+// ============ UTIL ============
+async function sha256(str) {
+  const buf = new TextEncoder().encode(str);
+  const hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(hashBuf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function showToast(msg, isError=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function todayISO() {
+  const d = new Date();
+  return d.toISOString().slice(0, 10);
+}
+
+function prettyDate(iso) {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+}
+
+function isUnlocked(iso) {
+  return iso <= todayISO();
+}
+
+function uuid() {
+  return 'letter_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+}
+
+// ============ GATE ============
+async function initGate() {
+  const existingHash = localStorage.getItem(STORAGE_KEYS.passwordHash);
+  const sessionUnlocked = sessionStorage.getItem(STORAGE_KEYS.sessionUnlocked);
+  const firstTimeHint = document.getElementById('firstTimeHint');
+
+  if (!existingHash) {
+    firstTimeHint.style.display = 'block';
+  }
+
+  if (sessionUnlocked === 'true' && existingHash) {
+    enterMain();
+    return;
+  }
+
+  document.getElementById('btnUnlock').addEventListener('click', tryUnlock);
+  document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') tryUnlock();
+  });
+}
+
+async function tryUnlock() {
+  const pw = document.getElementById('passwordInput').value;
+  if (!pw) {
+    showToast('Enter a passcode', true);
+    return;
+  }
+  const hint = document.getElementById('passwordHint');
+  const existingHash = localStorage.getItem(STORAGE_KEYS.passwordHash);
+  const inputHash = await sha256(pw);
+
+  if (!existingHash) {
+    if (pw.length < 4) {
+      hint.textContent = 'Choose at least 4 characters.';
+      return;
+    }
+    localStorage.setItem(STORAGE_KEYS.passwordHash, inputHash);
+    sessionStorage.setItem(STORAGE_KEYS.sessionUnlocked, 'true');
+    enterMain();
+  } else {
+    if (inputHash === existingHash) {
+      sessionStorage.setItem(STORAGE_KEYS.sessionUnlocked, 'true');
+      enterMain();
+    } else {
+      hint.textContent = 'That is not the correct passcode.';
+      hint.style.color = 'var(--error)';
+      document.getElementById('passwordInput').value = '';
+    }
+  }
+}
+
+function enterMain() {
+  document.getElementById('gateScreen').classList.add('hidden');
+  document.getElementById('mainScreen').classList.remove('hidden');
+  loadGhConfig();
+  setupFormHandlers();
+  refreshLetters();
+}
+
+// ============ GITHUB CONFIG ============
+function loadGhConfig() {
+  const saved = localStorage.getItem(STORAGE_KEYS.ghConfig);
+  if (saved) {
+    try {
+      ghConfig = JSON.parse(saved);
+      document.getElementById('ghUser').value = ghConfig.user || '';
+      document.getElementById('ghRepo').value = ghConfig.repo || '';
+      document.getElementById('ghToken').value = ghConfig.token || '';
+      updateGhStatus('Saved. Click "Test" to verify.', null);
+    } catch(e) {}
+  }
+}
+
+function updateGhStatus(msg, kind) {
+  const el = document.getElementById('githubStatus');
+  el.textContent = msg;
+  el.className = 'settings-status' + (kind === 'ok' ? ' ok' : kind === 'err' ? ' err' : '');
+}
+
+document.getElementById('btnSaveGh').addEventListener('click', () => {
+  const cfg = {
+    user: document.getElementById('ghUser').value.trim(),
+    repo: document.getElementById('ghRepo').value.trim(),
+    token: document.getElementById('ghToken').value.trim(),
+  };
+  if (!cfg.user || !cfg.repo || !cfg.token) {
+    showToast('Fill in all fields', true);
+    return;
+  }
+  ghConfig = cfg;
+  localStorage.setItem(STORAGE_KEYS.ghConfig, JSON.stringify(cfg));
+  showToast('✦ Connection saved');
+  updateGhStatus('Saved. Click "Test" to verify.', null);
+});
+
+document.getElementById('btnTestGh').addEventListener('click', async () => {
+  if (!ghConfig) {
+    showToast('Save the connection first', true);
+    return;
+  }
+  updateGhStatus('Testing...', null);
+  try {
+    const r = await fetch(`https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}`, {
+      headers: { Authorization: `token ${ghConfig.token}` }
+    });
+    if (r.ok) {
+      updateGhStatus('✦ Connected. The royal archive is ready.', 'ok');
+      showToast('✦ Connection verified');
+      refreshLetters();
+    } else {
+      updateGhStatus(`Error ${r.status}: ${r.statusText}. Check username, repo name, and token.`, 'err');
+    }
+  } catch(e) {
+    updateGhStatus('Connection failed: ' + e.message, 'err');
+  }
+});
+
+// ============ GITHUB API HELPERS ============
+async function ghApi(path, opts={}) {
+  if (!ghConfig) throw new Error('No GitHub connection');
+  const headers = {
+    'Authorization': `token ${ghConfig.token}`,
+    'Accept': 'application/vnd.github.v3+json',
+    ...(opts.headers || {})
+  };
+  const url = `https://api.github.com/repos/${ghConfig.user}/${ghConfig.repo}${path}`;
+  const r = await fetch(url, { ...opts, headers });
+  if (!r.ok && r.status !== 404) {
+    const text = await r.text();
+    throw new Error(`GitHub API ${r.status}: ${text}`);
+  }
+  return r;
+}
+
+async function listLetters() {
+  try {
+    const r = await ghApi('/contents/letters');
+    if (r.status === 404) return []; // folder doesn't exist yet
+    const files = await r.json();
+    const letters = [];
+    for (const f of files) {
+      if (!f.name.endsWith('.json')) continue;
+      const contentR = await ghApi(`/contents/${f.path}`);
+      const data = await contentR.json();
+      const decoded = atob(data.content.replace(/\n/g, ''));
+      const letter = JSON.parse(decoded);
+      letter._sha = data.sha;
+      letter._path = f.path;
+      letters.push(letter);
+    }
+    // Sort by unlock date ascending
+    letters.sort((a, b) => (a.unlockDate || '').localeCompare(b.unlockDate || ''));
+    return letters;
+  } catch(e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+async function saveLetter(letter) {
+  const id = letter.id || uuid();
+  letter.id = id;
+  letter.updatedAt = new Date().toISOString();
+  if (!letter.createdAt) letter.createdAt = letter.updatedAt;
+
+  const path = `letters/${id}.json`;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(letter, null, 2))));
+
+  // Check if file exists to get sha (required for update)
+  let sha = null;
+  try {
+    const r = await ghApi(`/contents/${path}`);
+    if (r.ok) {
+      const existing = await r.json();
+      sha = existing.sha;
+    }
+  } catch(e) {}
+
+  const body = {
+    message: sha ? `Update letter: ${letter.title}` : `Add letter: ${letter.title}`,
+    content,
+    ...(sha ? { sha } : {})
+  };
+
+  const r = await ghApi(`/contents/${path}`, {
+    method: 'PUT',
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const text = await r.text();
+    throw new Error(`Save failed: ${text}`);
+  }
+  return letter;
+}
+
+async function deleteLetter(letter) {
+  const r = await ghApi(`/contents/${letter._path}`, {
+    method: 'DELETE',
+    body: JSON.stringify({
+      message: `Delete letter: ${letter.title}`,
+      sha: letter._sha
+    })
+  });
+  if (!r.ok) {
+    const text = await r.text();
+    throw new Error(`Delete failed: ${text}`);
+  }
+}
+
+// ============ FORM HANDLERS ============
+function setupFormHandlers() {
+  // Pre-fill unlock date to today
+  const dateInput = document.getElementById('letterDate');
+  if (!dateInput.value) dateInput.value = todayISO();
+
+  // Signature preview updates
+  const fromSelect = document.getElementById('letterFrom');
+  const princessWrap = document.getElementById('princessSelectWrap');
+  const princessSelect = document.getElementById('princessSelect');
+  const sigPreview = document.getElementById('sigPreview');
+
+  function updatePreview() {
+    const from = fromSelect.value;
+    const princess = princessSelect.value;
+    sigPreview.className = 'sig-preview ' + from;
+
+    princessWrap.classList.toggle('hidden', from !== 'princess');
+
+    if (from === 'dad') {
+      sigPreview.innerHTML = '<div class="sig-preview-from">With all my love,</div><div class="sig-preview-name">Dad</div>';
+    } else if (from === 'king') {
+      sigPreview.innerHTML = '<div class="sig-preview-from">Signed, with royal affection,</div><div class="sig-preview-name">Thy King and Father</div>';
+    } else {
+      const princessName = princessSelect.options[princessSelect.selectedIndex].text;
+      sigPreview.innerHTML = `<div class="sig-preview-from">Ever thine,</div><div class="sig-preview-name">${princessName}</div>`;
+    }
+  }
+
+  fromSelect.addEventListener('change', updatePreview);
+  princessSelect.addEventListener('change', updatePreview);
+  updatePreview();
+
+  document.getElementById('btnSaveLetter').addEventListener('click', handleSaveLetter);
+  document.getElementById('btnClearForm').addEventListener('click', clearForm);
+  document.getElementById('btnCancelEdit').addEventListener('click', () => {
+    editingId = null;
+    clearForm();
+  });
+  document.getElementById('btnRefreshList').addEventListener('click', refreshLetters);
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    sessionStorage.removeItem(STORAGE_KEYS.sessionUnlocked);
+    location.reload();
+  });
+}
+
+function clearForm() {
+  document.getElementById('letterTitle').value = '';
+  document.getElementById('letterBody').value = '';
+  document.getElementById('letterDate').value = todayISO();
+  document.getElementById('letterFrom').value = 'dad';
+  document.getElementById('princessSelect').value = 'cinderella';
+  document.getElementById('letterFrom').dispatchEvent(new Event('change'));
+  editingId = null;
+  document.getElementById('btnCancelEdit').style.display = 'none';
+  document.getElementById('btnSaveLetter').textContent = '✦ Seal the Letter';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function handleSaveLetter() {
+  if (!ghConfig) {
+    showToast('Configure GitHub first', true);
+    return;
+  }
+  const title = document.getElementById('letterTitle').value.trim();
+  const body = document.getElementById('letterBody').value.trim();
+  const unlockDate = document.getElementById('letterDate').value;
+  const from = document.getElementById('letterFrom').value;
+  const princess = document.getElementById('princessSelect').value;
+
+  if (!title || !body || !unlockDate) {
+    showToast('Fill in title, letter body, and date', true);
+    return;
+  }
+
+  const letter = {
+    id: editingId || uuid(),
+    title, body, unlockDate, from,
+    princess: from === 'princess' ? princess : null,
+  };
+
+  const btn = document.getElementById('btnSaveLetter');
+  btn.disabled = true;
+  btn.textContent = 'Sealing...';
+  try {
+    await saveLetter(letter);
+    showToast('✦ Letter sealed and saved');
+    clearForm();
+    await refreshLetters();
+  } catch(e) {
+    showToast('Error: ' + e.message, true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✦ Seal the Letter';
+  }
+}
+
+async function refreshLetters() {
+  if (!ghConfig) return;
+  const list = document.getElementById('lettersList');
+  list.innerHTML = '<div class="empty">Fetching sealed letters...</div>';
+  try {
+    lettersCache = await listLetters();
+    renderLettersList();
+  } catch(e) {
+    list.innerHTML = `<div class="empty">Could not fetch: ${e.message}</div>`;
+  }
+}
+
+function renderLettersList() {
+  const list = document.getElementById('lettersList');
+  if (lettersCache.length === 0) {
+    list.innerHTML = '<div class="empty">No letters yet. Write the first one above.</div>';
+    return;
+  }
+  list.innerHTML = lettersCache.map(letter => {
+    const unlocked = isUnlocked(letter.unlockDate);
+    const fromLabel = letter.from === 'dad' ? 'From Dad'
+                    : letter.from === 'king' ? 'From the King'
+                    : 'From ' + (letter.princess || 'the Princess');
+    return `
+      <div class="letter-item">
+        <div class="letter-meta">
+          <div class="letter-title">${escapeHtml(letter.title)}</div>
+          <div class="letter-info">${fromLabel} ✦ Opens ${prettyDate(letter.unlockDate)}</div>
+        </div>
+        <span class="letter-badge ${unlocked ? 'unlocked' : 'locked'}">${unlocked ? 'Unlocked' : 'Sealed'}</span>
+        <div class="letter-actions">
+          <button class="icon-btn" data-act="edit" data-id="${letter.id}" title="Edit">✎</button>
+          <button class="icon-btn danger" data-act="del" data-id="${letter.id}" title="Delete">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('.icon-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const letter = lettersCache.find(l => l.id === btn.dataset.id);
+      if (!letter) return;
+      if (btn.dataset.act === 'edit') editLetter(letter);
+      else if (btn.dataset.act === 'del') confirmDeleteLetter(letter);
+    });
+  });
+}
+
+function editLetter(letter) {
+  editingId = letter.id;
+  document.getElementById('letterTitle').value = letter.title;
+  document.getElementById('letterBody').value = letter.body;
+  document.getElementById('letterDate').value = letter.unlockDate;
+  document.getElementById('letterFrom').value = letter.from;
+  if (letter.from === 'princess' && letter.princess) {
+    document.getElementById('princessSelect').value = letter.princess;
+  }
+  document.getElementById('letterFrom').dispatchEvent(new Event('change'));
+  document.getElementById('btnSaveLetter').textContent = '✦ Save Changes';
+  document.getElementById('btnCancelEdit').style.display = 'inline-block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function confirmDeleteLetter(letter) {
+  if (!confirm(`Delete "${letter.title}"? This cannot be undone.`)) return;
+  try {
+    await deleteLetter(letter);
+    showToast('Letter removed');
+    await refreshLetters();
+  } catch(e) {
+    showToast('Error: ' + e.message, true);
+  }
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ INIT ============
+initGate();
+</script>
+</body>
+</html>

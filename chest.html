@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Royal Chest</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/icon_180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Royal Chest">
+<meta name="theme-color" content="#0a0614">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Cinzel:wght@400;500;600;700&family=Cormorant+Unicase:wght@500;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<script src="chest_config.js"></script>
+<style>
+  :root {
+    --ink: #0a0614;
+    --ink-2: #140a28;
+    --ink-3: #1f1239;
+    --gold: #d4af37;
+    --gold-bright: #f3d96b;
+    --gold-edge: #fff4d3;
+    --gold-dim: #8a6f1c;
+    --cream: #f5e6d3;
+    --accent: #c9a3e8;
+    --parchment: #f4ead6;
+    --parchment-edge: #c9b995;
+    --parchment-ink: #3a2817;
+    --wax: #a52e3b;
+    --wax-shadow: #6a1a25;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    min-height: 100vh;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--cream);
+    background: var(--ink);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Base atmosphere */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at top, #2a1a4a 0%, #0a0614 55%, #000 100%);
+  }
+  .stars {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,.6), transparent),
+      radial-gradient(1px 1px at 60px 120px, rgba(255,230,180,.5), transparent),
+      radial-gradient(2px 2px at 180px 90px, rgba(212,175,55,.4), transparent),
+      radial-gradient(1px 1px at 280px 200px, rgba(255,255,255,.5), transparent),
+      radial-gradient(1px 1px at 400px 50px, rgba(255,255,255,.4), transparent),
+      radial-gradient(1.5px 1.5px at 500px 180px, rgba(212,175,55,.5), transparent);
+    background-size: 700px 350px;
+    animation: twinkle 6s ease-in-out infinite alternate;
+    opacity: .5;
+  }
+  @keyframes twinkle { 0% { opacity: .25; } 100% { opacity: .7; } }
+
+  /* Header */
+  .topbar {
+    position: relative; z-index: 10;
+    padding: 24px 20px 12px;
+    text-align: center;
+  }
+  .back-link {
+    position: absolute; left: 16px; top: 20px;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-decoration: none;
+    padding: 8px 14px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 2px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .back-link:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold);
+  }
+  .header-pre {
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.4em;
+    font-size: 10px;
+    color: var(--gold);
+    opacity: 0.75;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-family: 'Cormorant Unicase', serif;
+    font-weight: 700;
+    font-size: clamp(32px, 6vw, 44px);
+    letter-spacing: 0.04em;
+    background: linear-gradient(180deg, var(--gold-edge), var(--gold-bright), var(--gold), #a68122);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 12px rgba(212, 175, 55, 0.3));
+  }
+  .header-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--accent);
+    opacity: 0.75;
+    margin-top: 4px;
+  }
+
+  .flourish {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px; margin: 12px auto 20px; width: 100%; max-width: 340px;
+  }
+  .flourish-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .flourish-star { color: var(--gold); font-size: 12px; }
+
+  /* Chest area */
+  .chest-area {
+    position: relative; z-index: 10;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 20px 80px;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin: 36px 0 18px;
+    opacity: 0.8;
+  }
+
+  .scroll-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+
+  /* Scroll card (sealed letter) */
+  .scroll-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    background: linear-gradient(180deg, rgba(244, 234, 214, 0.08), rgba(20, 10, 40, 0.4));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    transition: all 0.3s ease;
+  }
+  .scroll-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 24px rgba(212, 175, 55, 0.2);
+  }
+  .scroll-card.unread {
+    border-color: var(--gold);
+    animation: shimmerCard 3s ease-in-out infinite;
+  }
+  @keyframes shimmerCard {
+    0%, 100% { box-shadow: 0 0 16px rgba(212, 175, 55, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(243, 217, 107, 0.6), 0 0 60px rgba(212, 175, 55, 0.3); }
+  }
+
+  /* Scroll visual */
+  .scroll-visual {
+    width: 70%;
+    aspect-ratio: 3/4;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+  }
+  .scroll-parchment {
+    width: 100%;
+    height: 100%;
+    background:
+      linear-gradient(180deg, #f4ead6 0%, #e5d8b5 100%);
+    border-radius: 6px;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.4),
+      inset 0 0 20px rgba(201, 185, 149, 0.5);
+    position: relative;
+  }
+  .scroll-parchment::before,
+  .scroll-parchment::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 12px;
+    background: linear-gradient(180deg, #8a6a42, #5a4228);
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .scroll-parchment::before { top: -6px; }
+  .scroll-parchment::after { bottom: -6px; }
+  .wax-seal {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40%;
+    aspect-ratio: 1;
+    background: radial-gradient(circle at 35% 35%, #c94052 0%, #a52e3b 40%, #6a1a25 100%);
+    border-radius: 50%;
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.5),
+      inset -2px -4px 8px rgba(106, 26, 37, 0.8),
+      inset 2px 2px 4px rgba(212, 97, 118, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 240, 210, 0.8);
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+
+  .scroll-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold-edge);
+    text-align: center;
+    line-height: 1.3;
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+  .scroll-meta {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(212, 175, 55, 0.75);
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: rgba(245, 230, 211, 0.5);
+    line-height: 1.6;
+  }
+  .empty .empty-title {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 22px;
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+    font-style: normal;
+  }
+
+  /* ============ LETTER READING OVERLAY ============ */
+  .reader {
+    position: fixed; inset: 0; z-index: 100;
+    background: #000;
+    display: none;
+    align-items: center; justify-content: center;
+    overflow-y: auto;
+  }
+  .reader.open { display: flex; }
+
+  .reader-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(212, 175, 55, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at top, #1a0f2e 0%, #0a0614 60%, #000 100%);
+    z-index: 0;
+  }
+
+  .reader-close {
+    position: absolute;
+    top: env(safe-area-inset-top, 20px);
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 20;
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 12px;
+  }
+  .reader-close:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--gold);
+  }
+
+  /* Opening ceremony states */
+  .ceremony {
+    position: relative; z-index: 5;
+    width: 100%;
+    max-width: 640px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Stage 1: Sealed scroll */
+  .ceremony-scroll {
+    width: 280px;
+    max-width: 80vw;
+    aspect-ratio: 3/4;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .ceremony-scroll:hover { transform: scale(1.02); }
+  .ceremony-scroll .scroll-parchment {
+    box-shadow:
+      0 10px 40px rgba(0, 0, 0, 0.8),
+      0 0 40px rgba(212, 175, 55, 0.2),
+      inset 0 0 30px rgba(201, 185, 149, 0.5);
+  }
+  .ceremony-scroll .wax-seal {
+    width: 45%;
+    font-size: 28px;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.6),
+      inset -3px -6px 12px rgba(106, 26, 37, 0.8),
+      inset 3px 3px 6px rgba(212, 97, 118, 0.3);
+  }
+  .tap-hint {
+    margin-top: 24px;
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    opacity: 0.7;
+    animation: breathe 2s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+  }
+
+  /* Seal cracking animation */
+  .ceremony-scroll.cracking .wax-seal {
+    animation: crackSeal 0.8s ease-in forwards;
+  }
+  @keyframes crackSeal {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    30% { transform: translate(-50%, -50%) scale(1.1) rotate(3deg); }
+    60% { transform: translate(-50%, -52%) scale(1.05) rotate(-5deg); opacity: 0.9; }
+    100% { transform: translate(-50%, -80%) scale(0.8) rotate(15deg); opacity: 0; }
+  }
+  .seal-crumbs {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px; height: 2px;
+    pointer-events: none;
+  }
+  .seal-crumb {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: radial-gradient(circle, #c94052, #6a1a25);
+    border-radius: 50%;
+    opacity: 0;
+  }
+  .seal-crumb.active {
+    animation: crumbFly 0.8s ease-out forwards;
+  }
+  @keyframes crumbFly {
+    0% { opacity: 1; transform: translate(0, 0); }
+    100% { opacity: 0; transform: var(--end-transform); }
+  }
+
+  .ceremony-scroll.opening .scroll-parchment {
+    animation: unroll 0.6s ease-out 0.4s forwards;
+  }
+  @keyframes unroll {
+    0% { transform: scaleY(1); }
+    100% { transform: scaleY(1.05); opacity: 0; }
+  }
+
+  /* Stage 2: Letter content */
+  .letter-paper {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 50px 40px 40px;
+    background:
+      linear-gradient(180deg, #f4ead6 0%, #ebdcb8 100%);
+    color: var(--parchment-ink);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.8),
+      0 0 40px rgba(212, 175, 55, 0.15);
+    border-radius: 2px;
+    font-family: 'Cormorant Garamond', serif;
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  .letter-paper.show {
+    animation: paperIn 0.8s ease-out forwards;
+  }
+  @keyframes paperIn {
+    0% { opacity: 0; transform: scale(0.95) translateY(20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* Parchment edge flourishes */
+  .letter-paper::before {
+    content: '';
+    position: absolute;
+    top: 12px; left: 12px; right: 12px; bottom: 12px;
+    border: 1px solid rgba(138, 106, 66, 0.2);
+    pointer-events: none;
+  }
+
+  .letter-corner {
+    position: absolute;
+    width: 24px; height: 24px;
+    color: rgba(138, 106, 66, 0.5);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .letter-corner.tl { top: 6px; left: 6px; }
+  .letter-corner.tr { top: 6px; right: 6px; }
+  .letter-corner.bl { bottom: 6px; left: 6px; }
+  .letter-corner.br { bottom: 6px; right: 6px; }
+
+  .letter-date-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: rgba(58, 40, 23, 0.6);
+    text-align: right;
+    margin-bottom: 24px;
+  }
+
+  .letter-title {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 24px;
+    color: #5a3d1f;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    letter-spacing: 0.02em;
+  }
+
+  .letter-from-badge {
+    font-family: 'Cinzel', serif;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: #8a6a42;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .letter-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    line-height: 1.75;
+    color: var(--parchment-ink);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 32px;
+  }
+  .letter-body .dropcap {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 56px;
+    line-height: 0.85;
+    float: left;
+    padding: 6px 10px 0 0;
+    color: #8a3d1f;
+  }
+
+  .letter-sig-block {
+    margin-top: 40px;
+    text-align: right;
+  }
+  .letter-sig-from {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: rgba(58, 40, 23, 0.75);
+    margin-bottom: 6px;
+  }
+  .letter-sig-name {
+    font-family: 'Dancing Script', cursive;
+    font-size: 34px;
+    color: #5a3d1f;
+    line-height: 1;
+  }
+  .letter-sig-block.king .letter-sig-name {
+    font-family: 'Cormorant Unicase', serif;
+    font-size: 24px;
+  }
+  .letter-sig-block.princess .letter-sig-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .letter-actions {
+    margin-top: 40px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .letter-action-btn {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    min-height: 44px;
+    background: transparent;
+    color: var(--gold-bright);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .letter-action-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: var(--gold);
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: rgba(245, 230, 211, 0.6);
+  }
+
+  @media (max-width: 500px) {
+    .letter-paper { padding: 36px 24px 32px; }
+    .letter-body { font-size: 17px; }
+    .letter-title { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<div class="topbar">
+  <a class="back-link" href="index.html">← Kingdom</a>
+  <div class="header-pre">✦ A Gift from Dad ✦</div>
+  <h1 class="header-title">The Royal Chest</h1>
+  <div class="header-sub">Letters from Dad, across seasons and years</div>
+  <div class="flourish">
+    <div class="flourish-line"></div>
+    <span class="flourish-star">✦</span>
+    <div class="flourish-line"></div>
+  </div>
+</div>
+
+<div class="chest-area">
+
+  <div id="unreadSection" style="display:none;">
+    <div class="section-label">✦ New Letters Await ✦</div>
+    <div class="scroll-list" id="unreadList"></div>
+  </div>
+
+  <div id="readSection" style="display:none;">
+    <div class="section-label">✦ Royal Library ✦</div>
+    <div class="scroll-list" id="readList"></div>
+  </div>
+
+  <div id="emptyState" class="empty">
+    <div class="empty-title">The chest rests quietly...</div>
+    <p>When Dad writes thee a new letter, a glowing scroll shall appear here.<br>Return when the seasons turn.</p>
+  </div>
+
+  <div id="loadingState" class="loading">
+    Fetching sealed letters from the royal archive...
+  </div>
+
+</div>
+
+<!-- ============ READING OVERLAY ============ -->
+<div class="reader" id="reader">
+  <div class="reader-bg"></div>
+  <button class="reader-close" id="readerClose">✕</button>
+
+  <div class="ceremony" id="ceremony">
+    <!-- Stage 1: Sealed scroll, tap to open -->
+    <div class="ceremony-scroll" id="ceremonyScroll">
+      <div class="scroll-parchment">
+        <div class="wax-seal" id="waxSeal">✦</div>
+        <div class="seal-crumbs" id="sealCrumbs"></div>
+      </div>
+    </div>
+    <div class="tap-hint" id="tapHint">✦ Tap to break the seal ✦</div>
+  </div>
+</div>
+
+<script>
+// ============ CONFIG - set these to match your GitHub repo ============
+// These are PUBLIC config - not secrets. Anyone can see these in the source.
+// The admin page writes letters; this page only reads them.
+const GH_USER = window.ROYAL_CHEST_CONFIG?.user || 'REPLACE_WITH_YOUR_USERNAME';
+const GH_REPO = window.ROYAL_CHEST_CONFIG?.repo || 'REPLACE_WITH_YOUR_REPO';
+
+// ============ STATE ============
+const STORAGE_KEY_READ = 'royal_chest_read_letters_v1';
+
+let allLetters = [];
+
+// ============ UTIL ============
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+function prettyDate(iso) {
+  return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+function isUnlocked(iso) {
+  return iso <= todayISO();
+}
+function getReadIds() {
+  try {
+    return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_READ) || '[]'));
+  } catch(e) { return new Set(); }
+}
+function markRead(id) {
+  const ids = getReadIds();
+  ids.add(id);
+  localStorage.setItem(STORAGE_KEY_READ, JSON.stringify([...ids]));
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ============ FETCH LETTERS ============
+async function fetchLetters() {
+  // List files in letters/ directory via public API (no auth needed for public repos)
+  const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/letters`;
+  try {
+    const r = await fetch(url);
+    if (r.status === 404) return []; // no letters folder yet
+    if (!r.ok) throw new Error('Archive unreachable');
+    const files = await r.json();
+    const letters = [];
+    for (const f of files) {
+      if (!f.name.endsWith('.json')) continue;
+      try {
+        const contentR = await fetch(f.download_url);
+        if (!contentR.ok) continue;
+        const letter = await contentR.json();
+        letters.push(letter);
+      } catch(e) { console.warn('Skip letter:', e); }
+    }
+    return letters;
+  } catch(e) {
+    console.error(e);
+    return null; // signals error vs empty
+  }
+}
+
+// ============ RENDER ============
+function render() {
+  const readIds = getReadIds();
+  const unlocked = allLetters.filter(l => isUnlocked(l.unlockDate));
+  const unread = unlocked.filter(l => !readIds.has(l.id));
+  const read = unlocked.filter(l => readIds.has(l.id));
+
+  // Sort: unread by date descending (newest first), read by date descending
+  unread.sort((a, b) => b.unlockDate.localeCompare(a.unlockDate));
+  read.sort((a, b) => b.unlockDate.localeCompare(a.unlockDate));
+
+  document.getElementById('loadingState').style.display = 'none';
+
+  if (unlocked.length === 0) {
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('unreadSection').style.display = 'none';
+    document.getElementById('readSection').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('emptyState').style.display = 'none';
+
+  // Unread section
+  const unreadSec = document.getElementById('unreadSection');
+  const unreadList = document.getElementById('unreadList');
+  if (unread.length > 0) {
+    unreadSec.style.display = 'block';
+    unreadList.innerHTML = unread.map(renderScrollCard).join('');
+    unreadList.querySelectorAll('.scroll-card').forEach(card => {
+      card.addEventListener('click', () => openLetter(card.dataset.id));
+    });
+  } else {
+    unreadSec.style.display = 'none';
+  }
+
+  // Read section (Royal Library)
+  const readSec = document.getElementById('readSection');
+  const readList = document.getElementById('readList');
+  if (read.length > 0) {
+    readSec.style.display = 'block';
+    readList.innerHTML = read.map(l => renderScrollCard(l, true)).join('');
+    readList.querySelectorAll('.scroll-card').forEach(card => {
+      card.addEventListener('click', () => openLetter(card.dataset.id, true));
+    });
+  } else {
+    readSec.style.display = 'none';
+  }
+}
+
+function renderScrollCard(letter, opened=false) {
+  const unreadClass = opened ? '' : ' unread';
+  const fromLabel = letter.from === 'dad' ? 'From Dad'
+                  : letter.from === 'king' ? 'From the King'
+                  : 'From ' + (letter.princess ? letter.princess.charAt(0).toUpperCase() + letter.princess.slice(1).replace('white', ' White') : 'the Princess');
+  return `
+    <div class="scroll-card${unreadClass}" data-id="${letter.id}">
+      <div class="scroll-visual">
+        <div class="scroll-parchment">
+          <div class="wax-seal">✦</div>
+        </div>
+      </div>
+      <div class="scroll-title">${escapeHtml(letter.title)}</div>
+      <div class="scroll-meta">${fromLabel}</div>
+    </div>
+  `;
+}
+
+// ============ LETTER OPENING CEREMONY ============
+function openLetter(id, alreadyRead=false) {
+  const letter = allLetters.find(l => l.id === id);
+  if (!letter) return;
+
+  const reader = document.getElementById('reader');
+  const ceremony = document.getElementById('ceremony');
+  const scroll = document.getElementById('ceremonyScroll');
+  const tapHint = document.getElementById('tapHint');
+
+  reader.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Reset ceremony state
+  ceremony.innerHTML = `
+    <div class="ceremony-scroll" id="ceremonyScroll">
+      <div class="scroll-parchment">
+        <div class="wax-seal" id="waxSeal">✦</div>
+        <div class="seal-crumbs" id="sealCrumbs"></div>
+      </div>
+    </div>
+    <div class="tap-hint">${alreadyRead ? '✦ Tap to read again ✦' : '✦ Tap to break the seal ✦'}</div>
+  `;
+
+  const newScroll = document.getElementById('ceremonyScroll');
+  newScroll.addEventListener('click', () => revealLetter(letter, alreadyRead), { once: true });
+}
+
+function revealLetter(letter, alreadyRead) {
+  const scroll = document.getElementById('ceremonyScroll');
+  const crumbs = document.getElementById('sealCrumbs');
+  const ceremony = document.getElementById('ceremony');
+
+  // Crack the seal: spawn crumbs flying outward
+  for (let i = 0; i < 10; i++) {
+    const crumb = document.createElement('div');
+    crumb.className = 'seal-crumb active';
+    const angle = (i / 10) * Math.PI * 2;
+    const dist = 60 + Math.random() * 40;
+    const endX = Math.cos(angle) * dist;
+    const endY = Math.sin(angle) * dist + 40;
+    crumb.style.setProperty('--end-transform', `translate(${endX}px, ${endY}px) scale(0.3)`);
+    crumb.style.animationDelay = (i * 30) + 'ms';
+    crumbs.appendChild(crumb);
+  }
+
+  scroll.classList.add('cracking');
+
+  setTimeout(() => {
+    scroll.classList.add('opening');
+  }, 600);
+
+  setTimeout(() => {
+    // Replace ceremony contents with the letter
+    ceremony.innerHTML = renderLetterPaper(letter);
+    if (!alreadyRead) {
+      markRead(letter.id);
+      // Re-render the chest after closing so counts update
+    }
+    // Bind close-this-letter action
+    document.getElementById('btnCloseLetter')?.addEventListener('click', closeReader);
+  }, 1200);
+}
+
+function renderLetterPaper(letter) {
+  const body = escapeHtml(letter.body).replace(/\n/g, '<br>');
+  const firstChar = letter.body.trim().charAt(0);
+  const restOfBody = escapeHtml(letter.body.trim().slice(1)).replace(/\n/g, '<br>');
+
+  let sigFrom, sigName, sigClass;
+  if (letter.from === 'dad') {
+    sigFrom = 'With all my love,';
+    sigName = 'Dad';
+    sigClass = 'dad';
+  } else if (letter.from === 'king') {
+    sigFrom = 'Signed, with royal affection,';
+    sigName = 'Thy King and Father';
+    sigClass = 'king';
+  } else {
+    const p = letter.princess || 'princess';
+    const pName = p.charAt(0).toUpperCase() + p.slice(1).replace('white', ' White');
+    sigFrom = 'Ever thine,';
+    sigName = pName;
+    sigClass = 'princess';
+  }
+
+  const fromLabel = letter.from === 'dad' ? 'A Letter from Dad'
+                  : letter.from === 'king' ? 'A Royal Decree'
+                  : 'A Letter from ' + sigName;
+
+  return `
+    <div class="letter-paper show">
+      <div class="letter-corner tl">✦</div>
+      <div class="letter-corner tr">✦</div>
+      <div class="letter-corner bl">✦</div>
+      <div class="letter-corner br">✦</div>
+
+      <div class="letter-date-line">${prettyDate(letter.unlockDate)}</div>
+
+      <div class="letter-title">${escapeHtml(letter.title)}</div>
+      <div class="letter-from-badge">✦ ${fromLabel} ✦</div>
+
+      <div class="letter-body"><span class="dropcap">${escapeHtml(firstChar)}</span>${restOfBody}</div>
+
+      <div class="letter-sig-block ${sigClass}">
+        <div class="letter-sig-from">${sigFrom}</div>
+        <div class="letter-sig-name">${sigName}</div>
+      </div>
+
+      <div class="letter-actions">
+        <button class="letter-action-btn" id="btnCloseLetter">✦ Close the Letter ✦</button>
+      </div>
+    </div>
+  `;
+}
+
+function closeReader() {
+  document.getElementById('reader').classList.remove('open');
+  document.body.style.overflow = '';
+  // Re-render to move newly-read letter to library
+  render();
+}
+
+document.getElementById('readerClose').addEventListener('click', closeReader);
+
+// ============ INIT ============
+async function init() {
+  if (GH_USER === 'REPLACE_WITH_YOUR_USERNAME') {
+    document.getElementById('loadingState').innerHTML =
+      'This chest is not yet linked to the royal archive.<br>(Configure the repo path in this file.)';
+    return;
+  }
+  const letters = await fetchLetters();
+  if (letters === null) {
+    document.getElementById('loadingState').innerHTML =
+      'Could not reach the royal archive. Try again soon.';
+    return;
+  }
+  allLetters = letters;
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
