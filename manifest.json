@@ -1,0 +1,27 @@
+{
+  "name": "Which Disney Princess Art Thou?",
+  "short_name": "Royal Reveal",
+  "description": "A magical quiz to discover which Disney princess lives in thy heart",
+  "start_url": "./reveal.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0614",
+  "theme_color": "#d4af37",
+  "lang": "en",
+  "categories": ["entertainment", "lifestyle"],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
