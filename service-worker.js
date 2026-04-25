@@ -1,16 +1,15 @@
-// ✦ Royal Cache — The Librarian
-// Caches the reveal screen and all 12 princess portraits for offline use.
-// First visit: caches everything in the background.
-// Every visit after: serves instantly from cache, even with no internet.
+// ✦ Royal Cache — The Librarian (v2: ceremony added)
+// Caches all reveal + ceremony assets for offline use.
 
-const CACHE_NAME = 'royal-reveal-v1';
+const CACHE_NAME = 'royal-reveal-v2';
 
-// Files to cache on install
 const CORE_ASSETS = [
   './',
   './reveal.html',
+  './ceremony.html',
   './manifest.json',
-  // Princess portraits — full quality from GitHub
+
+  // Princess portraits
   './assets/princesses/elsa.png',
   './assets/princesses/rapunzel.png',
   './assets/princesses/belle.png',
@@ -23,14 +22,80 @@ const CORE_ASSETS = [
   './assets/princesses/mulan.png',
   './assets/princesses/jasmine.png',
   './assets/princesses/cinderella.png',
+
+  // Chambers
+  './assets/chambers/lavender-garden.jpg',
+  './assets/chambers/scholars-library.jpg',
+  './assets/chambers/rose-gold-palace.jpg',
+  './assets/chambers/ice-palace.jpg',
+  './assets/chambers/twilight-chamber.jpg',
+  './assets/chambers/coastal-chamber.jpg',
+  './assets/chambers/ocean-palace.jpg',
+  './assets/chambers/stargazer-chamber.jpg',
+
+  // Emblems
+  './assets/emblems/swan.png',
+  './assets/emblems/dove.png',
+  './assets/emblems/moon.png',
+  './assets/emblems/key.png',
+  './assets/emblems/harp.png',
+  './assets/emblems/star.png',
+  './assets/emblems/flame.png',
+  './assets/emblems/leaf.png',
+  './assets/emblems/crown.png',
+  './assets/emblems/wave.png',
+  './assets/emblems/rose.png',
+
+  // Banner
+  './assets/banner/banner-skeleton.png',
+  './assets/banner/banner-grayscale.png',
+
+  // Dresses (9)
+  './assets/dresses/dress-01.png',
+  './assets/dresses/dress-02.png',
+  './assets/dresses/dress-03.png',
+  './assets/dresses/dress-04.png',
+  './assets/dresses/dress-05.png',
+  './assets/dresses/dress-06.png',
+  './assets/dresses/dress-07.png',
+  './assets/dresses/dress-08.png',
+  './assets/dresses/dress-09.png',
+
+  // Tiaras (14)
+  './assets/tiaras/tiara-01.png',
+  './assets/tiaras/tiara-02.png',
+  './assets/tiaras/tiara-03.png',
+  './assets/tiaras/tiara-04.png',
+  './assets/tiaras/tiara-05.png',
+  './assets/tiaras/tiara-06.png',
+  './assets/tiaras/tiara-07.png',
+  './assets/tiaras/tiara-08.png',
+  './assets/tiaras/tiara-09.png',
+  './assets/tiaras/tiara-10.png',
+  './assets/tiaras/tiara-11.png',
+  './assets/tiaras/tiara-12.png',
+  './assets/tiaras/tiara-13.png',
+  './assets/tiaras/tiara-14.png',
+
+  // Shoes (12)
+  './assets/shoes/shoes-01.png',
+  './assets/shoes/shoes-02.png',
+  './assets/shoes/shoes-03.png',
+  './assets/shoes/shoes-04.png',
+  './assets/shoes/shoes-05.png',
+  './assets/shoes/shoes-06.png',
+  './assets/shoes/shoes-07.png',
+  './assets/shoes/shoes-08.png',
+  './assets/shoes/shoes-09.png',
+  './assets/shoes/shoes-10.png',
+  './assets/shoes/shoes-11.png',
+  './assets/shoes/shoes-12.png',
 ];
 
-// On install: cache everything
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('✦ Royal Cache: Storing the portraits...');
-      // Add all but don't fail the entire install if one missing
+      console.log('✦ Royal Cache: Storing the realm...');
       return Promise.all(
         CORE_ASSETS.map(asset =>
           cache.add(asset).catch(err => console.warn('Could not cache', asset, err))
@@ -40,7 +105,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// On activate: clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -51,25 +115,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// On fetch: cache-first for portraits and core files, network-first for everything else
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
-
-  // Only handle same-origin and our asset folder
   if (url.origin !== self.location.origin) return;
-
-  // Cache-first strategy: serve from cache, update cache in background
   event.respondWith(
     caches.match(req).then((cached) => {
       const fetched = fetch(req).then((response) => {
-        // Only cache successful responses
         if (response && response.status === 200 && response.type === 'basic') {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
         }
         return response;
-      }).catch(() => cached); // If network fails, return whatever we had
+      }).catch(() => cached);
       return cached || fetched;
     })
   );
