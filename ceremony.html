@@ -10,32 +10,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Unicase:wght@300;400;600&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--gold:#C9A84C;--gold-light:#F0D080;--gold-dim:#8B6914;--purple-deep:#0D0818;--cream:#F5EDD8;--cream-dim:#C8B99A;}
+:root{--gold:#C9A84C;--gold-light:#F0D080;--gold-dim:#8B6914;--purple-deep:#0D0818;--cream:#F5EDD8;--cream-dim:#C8B99A}
 html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);font-family:'Cormorant Garamond',serif;color:var(--cream)}
 #starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
 #app{position:relative;width:100%;height:100%;z-index:1;overflow:hidden}
-
-/* INTRO TYPEWRITER */
 #intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;z-index:5}
-.intro-line{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(20px,4.5vw,32px);color:var(--gold);
-  text-align:center;line-height:1.5;max-width:600px;
-  opacity:0;letter-spacing:0.02em;
-  text-shadow:0 0 30px rgba(201,168,76,0.4);
-  margin:8px 0;
-}
+.intro-line{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(20px,4.5vw,32px);color:var(--gold);text-align:center;line-height:1.5;max-width:600px;opacity:0;letter-spacing:0.02em;text-shadow:0 0 30px rgba(201,168,76,0.4);margin:8px 0}
 .intro-line.visible{animation:lineFade 1.4s ease forwards}
 @keyframes lineFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .intro-line.large{font-family:'Dancing Script',cursive;font-size:clamp(28px,6vw,44px);color:var(--gold-light);font-style:normal;margin-top:30px}
-#intro-tap-hint{
-  position:absolute;bottom:40px;left:50%;transform:translateX(-50%);
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;
-  color:var(--gold-dim);text-transform:uppercase;opacity:0;
-}
+#intro-tap-hint{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;color:var(--gold-dim);text-transform:uppercase;opacity:0}
 #intro-tap-hint.show{animation:tapPulse 2.5s ease-in-out infinite}
 @keyframes tapPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
-
 .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.7s ease}
 .scene.active{opacity:1;pointer-events:all}
 .scene-title{font-family:'Cinzel',serif;font-size:clamp(10px,2vw,14px);color:var(--gold);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:6px;text-align:center;opacity:0.7}
@@ -70,13 +56,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 .motto-btn:hover,.motto-btn.selected{background:rgba(201,168,76,0.12);border-color:var(--gold);color:var(--gold-light)}
 #motto-custom{font-family:'Dancing Script',cursive;font-size:18px;color:var(--gold-light);background:rgba(255,255,255,0.04);border:1px solid var(--gold-dim);padding:10px 14px;width:100%;max-width:520px;outline:none;border-radius:2px;margin-top:4px;display:none}
 .banner-pole-wrap{display:flex;align-items:flex-start}
-.flag-pole{width:5px;height:420px;background:linear-gradient(180deg,var(--gold),var(--gold-dim));box-shadow:2px 0 6px rgba(0,0,0,0.4);flex-shrink:0}
-.banner-wrap{position:relative;width:240px;height:357px;flex-shrink:0}
+.flag-pole{width:5px;height:480px;background:linear-gradient(180deg,var(--gold),var(--gold-dim));box-shadow:2px 0 6px rgba(0,0,0,0.4);flex-shrink:0}
+.banner-wrap{position:relative;width:280px;height:417px;flex-shrink:0}
 .banner-color-bg{position:absolute;inset:0;border-radius:2px}
 .banner-gray-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply;pointer-events:none}
 .banner-top-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
-.banner-emblem-img{position:absolute;top:47%;left:50%;transform:translate(-50%,-50%);width:27%;height:27%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));z-index:10}
-.banner-motto-txt{position:absolute;bottom:9%;left:50%;transform:translateX(-50%);width:64%;text-align:center;font-family:'Dancing Script',cursive;font-weight:700;font-size:12px;color:#F0D080;text-shadow:1px 1px 3px rgba(0,0,0,0.95);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;z-index:10}
+.banner-emblem-img{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);width:30%;height:30%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));z-index:10}
+.banner-motto-txt{position:absolute;bottom:18%;left:50%;transform:translateX(-50%);width:78%;text-align:center;font-family:'Cinzel',serif;font-weight:600;font-size:clamp(12px,1.4vw,15px);letter-spacing:0.08em;color:#FFFFFF;text-shadow:0 1px 0 rgba(0,0,0,0.95),0 0 8px rgba(0,0,0,0.85),0 0 14px rgba(0,0,0,0.6);line-height:1.3;pointer-events:none;z-index:10}
 #s6{padding:0;overflow:hidden}
 .chamber-outer{position:relative;width:100%;height:100%;display:flex;flex-direction:column}
 .chamber-header{display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:rgba(13,8,24,0.88);backdrop-filter:blur(6px);border-bottom:1px solid var(--gold-dim);z-index:20;flex-shrink:0;gap:8px}
@@ -94,10 +80,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 .adorn-thumb{width:100%;cursor:pointer;border:2px solid transparent;border-radius:3px;transition:all 0.2s;object-fit:contain;background:rgba(0,0,0,0.2);display:block}
 .adorn-thumb:hover{border-color:rgba(201,168,76,0.4)}
 .adorn-thumb.chosen{border-color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,0.4);background:rgba(201,168,76,0.08)}
-.scene-stage{flex:1;position:relative;overflow:hidden;min-width:0}
-.chamber-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;background:#060310}
+.scene-stage{flex:1;position:relative;overflow:hidden;min-width:0;background:#060310;display:flex;align-items:center;justify-content:center}
+.chamber-frame{position:relative;aspect-ratio:1.792 / 1;width:100%;max-height:100%;max-width:100%}
+.chamber-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .placed-items{position:absolute;inset:0;pointer-events:none}
-.placed-item{position:absolute;object-fit:contain;cursor:grab;filter:drop-shadow(2px 6px 14px rgba(0,0,0,0.7));pointer-events:all}
+.placed-item{position:absolute;object-fit:contain;cursor:grab;filter:drop-shadow(2px 6px 14px rgba(0,0,0,0.7));pointer-events:all;transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.placed-item.placing{animation:itemDrop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards}
+@keyframes itemDrop{0%{transform:scale(0) rotate(-15deg);opacity:0}60%{transform:scale(1.15) rotate(5deg)}100%{transform:scale(1) rotate(0);opacity:1}}
 .placed-item:active{cursor:grabbing}
 .mirror-frame{width:min(340px,85vw);border:3px solid var(--gold);background:rgba(13,8,24,0.75);padding:26px;text-align:center;box-shadow:0 0 60px rgba(201,168,76,0.4);position:relative}
 .mirror-frame::before{content:'✦ ✦ ✦';position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--purple-deep);padding:0 12px;font-size:12px;color:var(--gold);letter-spacing:8px}
@@ -117,16 +106,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 <canvas id="starfield"></canvas>
 <div id="app">
 <div class="progress-dots" id="pdots"></div>
-
-<!-- INTRO: SLOW TYPEWRITER REVEAL -->
 <div id="intro">
   <div class="intro-line" id="intro-line-1">A mirror stirs in a distant castle...</div>
   <div class="intro-line" id="intro-line-2">It has been waiting for someone.</div>
   <div class="intro-line large" id="intro-line-3">Tell it thy name.</div>
   <div id="intro-tap-hint">✦ Tap to begin ✦</div>
 </div>
-
-<!-- S1 SUMMONS -->
 <div class="scene" id="s1">
   <div class="orn-frame" style="text-align:center;max-width:500px">
     <div class="scene-title">Scene the First</div>
@@ -138,8 +123,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <div style="margin-top:22px"><button class="btn-royal" onclick="goTo(2)">I Answer the Summons</button></div>
   </div>
 </div>
-
-<!-- S2 COLORS -->
 <div class="scene" id="s2">
   <div class="orn-frame" style="max-width:540px">
     <div class="scene-title" style="text-align:center">Scene the Second</div>
@@ -160,8 +143,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <div style="text-align:center"><button class="btn-royal" id="color-btn" onclick="goTo(3)" disabled>These Are My Colors</button></div>
   </div>
 </div>
-
-<!-- S3 EMBLEM -->
 <div class="scene" id="s3">
   <div style="max-width:660px;width:100%;text-align:center">
     <div class="scene-title">Scene the Third</div>
@@ -173,8 +154,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <button class="btn-royal" id="emblem-btn" onclick="goTo(4)" disabled>This Is My Symbol</button>
   </div>
 </div>
-
-<!-- S4 MOTTO -->
 <div class="scene" id="s4">
   <div class="orn-frame" style="max-width:580px">
     <div class="scene-title" style="text-align:center">Scene the Fourth</div>
@@ -193,8 +172,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <div style="text-align:center;margin-top:14px"><button class="btn-royal" id="motto-btn" onclick="goTo(5)" disabled>This Is My Motto</button></div>
   </div>
 </div>
-
-<!-- S5 BANNER -->
 <div class="scene" id="s5">
   <div style="text-align:center">
     <div class="scene-title">Scene the Fifth</div>
@@ -214,8 +191,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <div style="margin-top:20px"><button class="btn-royal" onclick="goTo(6)">Proceed to My Royal Chamber</button></div>
   </div>
 </div>
-
-<!-- S6 CHAMBER -->
 <div class="scene" id="s6">
   <div class="chamber-outer">
     <div class="chamber-header">
@@ -234,14 +209,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
         <div class="picker-scroll" id="picker-scroll"></div>
       </div>
       <div class="scene-stage">
-        <img class="chamber-bg" id="chamber-bg" src="" alt="">
-        <div class="placed-items" id="placed-items"></div>
+        <div class="chamber-frame" id="chamber-frame">
+          <img class="chamber-bg" id="chamber-bg" src="" alt="">
+          <div class="placed-items" id="placed-items"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- S7 CORONATION -->
 <div class="scene" id="s7">
   <div style="text-align:center">
     <div class="scene-title">Scene the Seventh</div>
@@ -257,8 +232,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     <div style="margin-top:22px"><button class="btn-royal" onclick="goTo(8)">I Accept My Crown</button></div>
   </div>
 </div>
-
-<!-- S8 TRANSITION TO QUIZ -->
 <div class="scene" id="s8">
   <div style="text-align:center;max-width:560px">
     <div class="scene-title">Scene the Eighth</div>
@@ -271,178 +244,70 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
   </div>
 </div>
 </div>
-
 <script>
-// ─── ASSET REGISTRY ───
-const EMBLEMS = [
-  {name:'The Swan', meaning:'Grace & Nobility',    src:'assets/emblems/swan.png'},
-  {name:'The Dove', meaning:'Peace & Kindness',    src:'assets/emblems/dove.png'},
-  {name:'The Moon', meaning:'Mystery & Dreams',    src:'assets/emblems/moon.png'},
-  {name:'The Key',  meaning:'Wisdom & Secrets',    src:'assets/emblems/key.png'},
-  {name:'The Harp', meaning:'Music & Joy',         src:'assets/emblems/harp.png'},
-  {name:'The Star', meaning:'Light & Guidance',    src:'assets/emblems/star.png'},
-  {name:'The Flame',meaning:'Courage & Passion',   src:'assets/emblems/flame.png'},
-  {name:'The Leaf', meaning:'Nature & Growth',     src:'assets/emblems/leaf.png'},
-  {name:'The Crown',meaning:'Power & Honor',       src:'assets/emblems/crown.png'},
-  {name:'The Wave', meaning:'Adventure & Flow',    src:'assets/emblems/wave.png'},
-  {name:'The Rose', meaning:'Beauty & Love',       src:'assets/emblems/rose.png'},
-];
-const CHAMBERS = [
-  {name:'The Lavender Garden',   src:'assets/chambers/lavender-garden.jpg'},
-  {name:"The Scholar's Library", src:'assets/chambers/scholars-library.jpg'},
-  {name:'The Rose Gold Palace',  src:'assets/chambers/rose-gold-palace.jpg'},
-  {name:'The Ice Palace',        src:'assets/chambers/ice-palace.jpg'},
-  {name:'The Twilight Chamber',  src:'assets/chambers/twilight-chamber.jpg'},
-  {name:'The Coastal Chamber',   src:'assets/chambers/coastal-chamber.jpg'},
-  {name:'The Ocean Palace',      src:'assets/chambers/ocean-palace.jpg'},
-  {name:'The Stargazer Chamber', src:'assets/chambers/stargazer-chamber.jpg'},
-];
-const DRESSES = Array.from({length:9}, (_,i)=>({src:`assets/dresses/dress-${String(i+1).padStart(2,'0')}.png`}));
-const TIARAS  = Array.from({length:14},(_,i)=>({src:`assets/tiaras/tiara-${String(i+1).padStart(2,'0')}.png`}));
-const SHOES   = Array.from({length:12},(_,i)=>({src:`assets/shoes/shoes-${String(i+1).padStart(2,'0')}.png`}));
+const EMBLEMS=[{name:'The Swan',meaning:'Grace & Nobility',src:'assets/emblems/swan.png'},{name:'The Dove',meaning:'Peace & Kindness',src:'assets/emblems/dove.png'},{name:'The Moon',meaning:'Mystery & Dreams',src:'assets/emblems/moon.png'},{name:'The Key',meaning:'Wisdom & Secrets',src:'assets/emblems/key.png'},{name:'The Harp',meaning:'Music & Joy',src:'assets/emblems/harp.png'},{name:'The Star',meaning:'Light & Guidance',src:'assets/emblems/star.png'},{name:'The Flame',meaning:'Courage & Passion',src:'assets/emblems/flame.png'},{name:'The Leaf',meaning:'Nature & Growth',src:'assets/emblems/leaf.png'},{name:'The Crown',meaning:'Power & Honor',src:'assets/emblems/crown.png'},{name:'The Wave',meaning:'Adventure & Flow',src:'assets/emblems/wave.png'},{name:'The Rose',meaning:'Beauty & Love',src:'assets/emblems/rose.png'}];
+const CHAMBERS=[{name:'The Lavender Garden',src:'assets/chambers/lavender-garden.jpg'},{name:"The Scholar's Library",src:'assets/chambers/scholars-library.jpg'},{name:'The Rose Gold Palace',src:'assets/chambers/rose-gold-palace.jpg'},{name:'The Ice Palace',src:'assets/chambers/ice-palace.jpg'},{name:'The Twilight Chamber',src:'assets/chambers/twilight-chamber.jpg'},{name:'The Coastal Chamber',src:'assets/chambers/coastal-chamber.jpg'},{name:'The Ocean Palace',src:'assets/chambers/ocean-palace.jpg'},{name:'The Stargazer Chamber',src:'assets/chambers/stargazer-chamber.jpg'}];
+const DRESSES=Array.from({length:9},(_,i)=>({src:`assets/dresses/dress-${String(i+1).padStart(2,'0')}.png`}));
+const TIARAS=Array.from({length:14},(_,i)=>({src:`assets/tiaras/tiara-${String(i+1).padStart(2,'0')}.png`}));
+const SHOES=Array.from({length:12},(_,i)=>({src:`assets/shoes/shoes-${String(i+1).padStart(2,'0')}.png`}));
 
-const state = {name:'Guapa',colors:[],colorNames:[],emblem:null,emblemName:'',motto:'',chamberIdx:0,currentTab:'dress',placed:{dress:null,tiara:null,shoes:null}};
+// Placement zones — % of the chamber painting (locked 1.792:1 aspect)
+// All 8 chambers have the same composition, so one zone set works for all
+const ZONES={
+  dress:{left:'62%',top:'34%',width:'18%'},
+  tiara:{left:'82%',top:'56%',width:'7%'},
+  shoes:{left:'48%',bottom:'8%',width:'13%'}
+};
 
-// STARFIELD
-(function(){
-  const c=document.getElementById('starfield'),ctx=c.getContext('2d');let stars=[];
-  function resize(){c.width=innerWidth;c.height=innerHeight;stars=[];for(let i=0;i<180;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2});}
-  function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;stars.forEach(s=>{const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();});requestAnimationFrame(draw);}
-  window.addEventListener('resize',resize);resize();draw();
-})();
+const state={name:'Guapa',colors:[],colorNames:[],emblem:null,emblemName:'',motto:'',chamberIdx:0,currentTab:'dress',placed:{dress:null,tiara:null,shoes:null}};
 
-// SPARKLES
+(function(){const c=document.getElementById('starfield'),ctx=c.getContext('2d');let stars=[];function resize(){c.width=innerWidth;c.height=innerHeight;stars=[];for(let i=0;i<180;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2});}function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;stars.forEach(s=>{const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();});requestAnimationFrame(draw);}window.addEventListener('resize',resize);resize();draw();})();
+
 function sparkleAt(x,y){for(let i=0;i<5;i++){const s=document.createElement('div');s.className='sparkle';s.textContent=['✦','✧','⋆','★','✴'][Math.floor(Math.random()*5)];s.style.left=(x+Math.random()*60-30)+'px';s.style.top=(y+Math.random()*60-30)+'px';s.style.color=['#C9A84C','#F0D080','#fff','#E8D5A3'][Math.floor(Math.random()*4)];s.style.animationDelay=(Math.random()*0.3)+'s';document.body.appendChild(s);setTimeout(()=>s.remove(),1500);}}
 
-// INTRO TYPEWRITER
-let introDone = false;
-function runIntro(){
-  setTimeout(()=>document.getElementById('intro-line-1').classList.add('visible'), 800);
-  setTimeout(()=>document.getElementById('intro-line-2').classList.add('visible'), 3400);
-  setTimeout(()=>document.getElementById('intro-line-3').classList.add('visible'), 6200);
-  setTimeout(()=>document.getElementById('intro-tap-hint').classList.add('show'), 8400);
-}
-function dismissIntro(){
-  if(introDone) return;
-  introDone = true;
-  const intro=document.getElementById('intro');
-  intro.style.transition='opacity 0.8s ease';
-  intro.style.opacity='0';
-  setTimeout(()=>{intro.style.display='none';document.getElementById('s1').classList.add('active');renderDots(1);},800);
-}
-document.getElementById('intro').addEventListener('click', dismissIntro);
+let introDone=false;
+function runIntro(){setTimeout(()=>document.getElementById('intro-line-1').classList.add('visible'),800);setTimeout(()=>document.getElementById('intro-line-2').classList.add('visible'),3400);setTimeout(()=>document.getElementById('intro-line-3').classList.add('visible'),6200);setTimeout(()=>document.getElementById('intro-tap-hint').classList.add('show'),8400);}
+function dismissIntro(){if(introDone)return;introDone=true;const intro=document.getElementById('intro');intro.style.transition='opacity 0.8s ease';intro.style.opacity='0';setTimeout(()=>{intro.style.display='none';document.getElementById('s1').classList.add('active');renderDots(1);},800);}
+document.getElementById('intro').addEventListener('click',dismissIntro);
 runIntro();
 
-// PROGRESS
 function renderDots(n){const el=document.getElementById('pdots');el.innerHTML='';for(let i=1;i<=8;i++){const d=document.createElement('div');d.className='pdot'+(i<n?' done':i===n?' active':'');el.appendChild(d);}}
 
-// NAVIGATION
 let cur=1;
 function goTo(n){document.getElementById('s'+cur).classList.remove('active');cur=n;document.getElementById('s'+n).classList.add('active');renderDots(n);if(n===5)buildBanner();if(n===6)initChamber();if(n===7)buildCoronation();if(n===8)buildTransition();sparkleAt(innerWidth/2,innerHeight/2);}
 
-// S1
 document.getElementById('name-input').addEventListener('input',function(){state.name=this.value||'Princess';});
 
-// S2 COLORS
-function pickColor(el){
-  const color=el.dataset.color,name=el.dataset.name;
-  if(el.classList.contains('selected')){el.classList.remove('selected');state.colors=state.colors.filter(c=>c!==color);state.colorNames=state.colorNames.filter(n=>n!==name);}
-  else{if(state.colors.length>=2)return;el.classList.add('selected');state.colors.push(color);state.colorNames.push(name);}
-  const btn=document.getElementById('color-btn'),status=document.getElementById('color-status');
-  if(state.colors.length===2){btn.disabled=false;status.textContent='✦ '+state.colorNames[0]+' & '+state.colorNames[1]+' ✦';}
-  else if(state.colors.length===1){btn.disabled=true;status.textContent='Choose one more color';}
-  else{btn.disabled=true;status.textContent='';}
-}
+function pickColor(el){const color=el.dataset.color,name=el.dataset.name;if(el.classList.contains('selected')){el.classList.remove('selected');state.colors=state.colors.filter(c=>c!==color);state.colorNames=state.colorNames.filter(n=>n!==name);}else{if(state.colors.length>=2)return;el.classList.add('selected');state.colors.push(color);state.colorNames.push(name);}const btn=document.getElementById('color-btn'),status=document.getElementById('color-status');if(state.colors.length===2){btn.disabled=false;status.textContent='✦ '+state.colorNames[0]+' & '+state.colorNames[1]+' ✦';}else if(state.colors.length===1){btn.disabled=true;status.textContent='Choose one more color';}else{btn.disabled=true;status.textContent='';}}
 
-// S3 EMBLEMS
-(function(){
-  const grid=document.getElementById('emblem-grid');
-  EMBLEMS.forEach((e,i)=>{
-    const card=document.createElement('div');card.className='emblem-card';
-    card.innerHTML='<img src="'+e.src+'" alt="'+e.name+'" loading="lazy"><div class="e-name">'+e.name+'</div><div class="e-meaning">'+e.meaning+'</div>';
-    card.addEventListener('click',()=>{document.querySelectorAll('.emblem-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');state.emblem=EMBLEMS[i];state.emblemName=EMBLEMS[i].name;document.getElementById('emblem-chosen').textContent='✦ '+EMBLEMS[i].name+' — '+EMBLEMS[i].meaning+' ✦';document.getElementById('emblem-btn').disabled=false;});
-    grid.appendChild(card);
-  });
-})();
+(function(){const grid=document.getElementById('emblem-grid');EMBLEMS.forEach((e,i)=>{const card=document.createElement('div');card.className='emblem-card';card.innerHTML='<img src="'+e.src+'" alt="'+e.name+'" loading="lazy"><div class="e-name">'+e.name+'</div><div class="e-meaning">'+e.meaning+'</div>';card.addEventListener('click',()=>{document.querySelectorAll('.emblem-card').forEach(c=>c.classList.remove('selected'));card.classList.add('selected');state.emblem=EMBLEMS[i];state.emblemName=EMBLEMS[i].name;document.getElementById('emblem-chosen').textContent='✦ '+EMBLEMS[i].name+' — '+EMBLEMS[i].meaning+' ✦';document.getElementById('emblem-btn').disabled=false;});grid.appendChild(card);});})();
 
-// S4 MOTTO
 function pickMotto(el,val){document.querySelectorAll('.motto-btn').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');const custom=document.getElementById('motto-custom');if(val==='custom'){custom.style.display='block';state.motto=custom.value||'';custom.focus();}else{custom.style.display='none';state.motto=val;document.getElementById('motto-btn').disabled=false;}}
 function customMottoTyped(el){state.motto=el.value;document.getElementById('motto-btn').disabled=el.value.trim().length<3;}
 
-// S5 BANNER
-function buildBanner(){
-  const c1=state.colors[0]||'#9B59B6', c2=state.colors[1]||'#2980B9';
-  document.getElementById('banner-color-bg').style.background=`linear-gradient(180deg,${c1} 0%,${c1} 52%,${c2} 52%,${c2} 100%)`;
-  if(state.emblem) document.getElementById('banner-emblem-img').src=state.emblem.src;
-  document.getElementById('banner-motto-txt').textContent=state.motto.replace(/['"]/g,'').substring(0,40);
-  document.getElementById('flag-herald').textContent='Behold the banner of the House of '+state.name+'! The colors of '+(state.colorNames.join(' and '))+', bearing '+state.emblemName+'.';
-}
+function buildBanner(){const c1=state.colors[0]||'#9B59B6',c2=state.colors[1]||'#2980B9';document.getElementById('banner-color-bg').style.background=`linear-gradient(180deg,${c1} 0%,${c1} 52%,${c2} 52%,${c2} 100%)`;if(state.emblem)document.getElementById('banner-emblem-img').src=state.emblem.src;document.getElementById('banner-motto-txt').textContent=state.motto.replace(/['"]/g,'').substring(0,60);document.getElementById('flag-herald').textContent='Behold the banner of the House of '+state.name+'! The colors of '+(state.colorNames.join(' and '))+', bearing '+state.emblemName+'.';}
 
-// S6 CHAMBER
-function initChamber(){loadChamber(state.chamberIdx);switchTab('dress');}
+function initChamber(){loadChamber(state.chamberIdx);switchTab('dress');renderPlacedItems();}
 function loadChamber(idx){state.chamberIdx=(idx+CHAMBERS.length)%CHAMBERS.length;document.getElementById('chamber-bg').src=CHAMBERS[state.chamberIdx].src;document.getElementById('chamber-name-disp').textContent=CHAMBERS[state.chamberIdx].name;}
-function prevChamber(){loadChamber(state.chamberIdx-1);}
-function nextChamber(){loadChamber(state.chamberIdx+1);}
-function switchTab(tab){
-  state.currentTab=tab;
-  document.querySelectorAll('.picker-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+tab).classList.add('active');
-  const scroll=document.getElementById('picker-scroll');scroll.innerHTML='';
-  const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;
-  items.forEach((item,i)=>{const img=document.createElement('img');img.src=item.src;img.loading='lazy';img.className='adorn-thumb'+(state.placed[tab]===i?' chosen':'');img.addEventListener('click',()=>placeItem(tab,i,img));scroll.appendChild(img);});
-}
-function placeItem(tab,idx,thumbEl){
-  document.querySelectorAll('.adorn-thumb').forEach(t=>t.classList.remove('chosen'));
-  thumbEl.classList.add('chosen');state.placed[tab]=idx;
-  const existing=document.getElementById('placed-'+tab);if(existing)existing.remove();
-  const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;
-  const img=document.createElement('img');img.id='placed-'+tab;img.className='placed-item';img.src=items[idx].src;
-  const zones={dress:{right:'16%',top:'8%',width:'32%'},tiara:{right:'1%',top:'50%',width:'10%'},shoes:{left:'44%',bottom:'6%',width:'20%'}};
-  Object.assign(img.style,{position:'absolute',objectFit:'contain',...zones[tab]});
-  img.style.zIndex=tab==='dress'?10:tab==='tiara'?15:8;
-  makeDraggable(img);
-  document.getElementById('placed-items').appendChild(img);
-  sparkleAt(window.innerWidth*0.75,window.innerHeight*0.45);
-}
-function makeDraggable(el){
-  let drag=false,ox=0,oy=0;
-  function start(cx,cy){drag=true;const r=el.getBoundingClientRect(),pr=el.offsetParent.getBoundingClientRect();const L=r.left-pr.left,T=r.top-pr.top;el.style.left=L+'px';el.style.top=T+'px';el.style.right='auto';el.style.bottom='auto';ox=cx-L;oy=cy-T;}
-  el.addEventListener('mousedown',e=>{start(e.clientX,e.clientY);e.preventDefault();});
-  el.addEventListener('touchstart',e=>{start(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();},{passive:false});
-  document.addEventListener('mousemove',e=>{if(drag){el.style.left=(e.clientX-ox)+'px';el.style.top=(e.clientY-oy)+'px';}});
-  document.addEventListener('touchmove',e=>{if(drag){el.style.left=(e.touches[0].clientX-ox)+'px';el.style.top=(e.touches[0].clientY-oy)+'px';}},{passive:false});
-  document.addEventListener('mouseup',()=>drag=false);
-  document.addEventListener('touchend',()=>drag=false);
-}
+function prevChamber(){loadChamber(state.chamberIdx-1);renderPlacedItems();}
+function nextChamber(){loadChamber(state.chamberIdx+1);renderPlacedItems();}
 
-// S7
-function buildCoronation(){
-  const n=state.name||'Guapa',c=state.colorNames.length?state.colorNames.join(' and '):'Royal';
-  document.getElementById('full-title-display').innerHTML='Her Royal Highness<br>'+n+'<br>Princess of the '+c+' Realm<br>Bearer of '+(state.emblemName||'the Royal Seal');
-  document.getElementById('coronation-voice').innerHTML='"Thou hast chosen thy colors, thy symbol, and thy words. Thy chamber awaiteth. The realm is thine, Princess '+n+'. Go forth — let the mirror reveal thy true nature."';
-}
+function switchTab(tab){state.currentTab=tab;document.querySelectorAll('.picker-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');const scroll=document.getElementById('picker-scroll');scroll.innerHTML='';const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;items.forEach((item,i)=>{const img=document.createElement('img');img.src=item.src;img.loading='lazy';img.className='adorn-thumb'+(state.placed[tab]===i?' chosen':'');img.addEventListener('click',()=>placeItem(tab,i,img));scroll.appendChild(img);});}
+
+function placeItem(tab,idx,thumbEl){document.querySelectorAll('#picker-scroll .adorn-thumb').forEach(t=>t.classList.remove('chosen'));thumbEl.classList.add('chosen');state.placed[tab]=idx;renderPlacedItem(tab,true);}
+
+function renderPlacedItems(){['dress','tiara','shoes'].forEach(tab=>{if(state.placed[tab]!==null)renderPlacedItem(tab,false);});}
+
+function renderPlacedItem(tab,animate){const idx=state.placed[tab];if(idx===null)return;const existing=document.getElementById('placed-'+tab);if(existing)existing.remove();const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;const img=document.createElement('img');img.id='placed-'+tab;img.className='placed-item'+(animate?' placing':'');img.src=items[idx].src;const zone=ZONES[tab];Object.assign(img.style,{position:'absolute',objectFit:'contain',width:zone.width,left:zone.left||'auto',top:zone.top||'auto',bottom:zone.bottom||'auto',right:zone.right||'auto'});img.style.zIndex=tab==='tiara'?15:tab==='dress'?10:8;makeDraggable(img);document.getElementById('placed-items').appendChild(img);if(animate){setTimeout(()=>{const r=img.getBoundingClientRect();sparkleAt(r.left+r.width/2,r.top+r.height/2);},100);}}
+
+function makeDraggable(el){let drag=false,ox=0,oy=0;function start(cx,cy){drag=true;el.classList.remove('placing');const r=el.getBoundingClientRect(),pr=el.offsetParent.getBoundingClientRect();const L=r.left-pr.left,T=r.top-pr.top;el.style.left=L+'px';el.style.top=T+'px';el.style.right='auto';el.style.bottom='auto';ox=cx-L;oy=cy-T;}el.addEventListener('mousedown',e=>{start(e.clientX,e.clientY);e.preventDefault();});el.addEventListener('touchstart',e=>{start(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();},{passive:false});document.addEventListener('mousemove',e=>{if(drag){el.style.left=(e.clientX-ox)+'px';el.style.top=(e.clientY-oy)+'px';}});document.addEventListener('touchmove',e=>{if(drag){el.style.left=(e.touches[0].clientX-ox)+'px';el.style.top=(e.touches[0].clientY-oy)+'px';}},{passive:false});document.addEventListener('mouseup',()=>drag=false);document.addEventListener('touchend',()=>drag=false);}
+
+function buildCoronation(){const n=state.name||'Guapa',c=state.colorNames.length?state.colorNames.join(' and '):'Royal';document.getElementById('full-title-display').innerHTML='Her Royal Highness<br>'+n+'<br>Princess of the '+c+' Realm<br>Bearer of '+(state.emblemName||'the Royal Seal');document.getElementById('coronation-voice').innerHTML='"Thou hast chosen thy colors, thy symbol, and thy words. Thy chamber awaiteth. The realm is thine, Princess '+n+'. Go forth — let the mirror reveal thy true nature."';}
 function buildTransition(){document.getElementById('s8-name').textContent='Princess '+(state.name||'Guapa')+' of the Royal Realm';}
 
-// HANDOFF TO QUIZ — save state and navigate
-function finishCeremony(){
-  const ceremony = {
-    name: state.name,
-    colors: state.colors,
-    colorNames: state.colorNames,
-    emblem: state.emblem ? {name:state.emblem.name, meaning:state.emblem.meaning, src:state.emblem.src} : null,
-    emblemName: state.emblemName,
-    motto: state.motto,
-    chamberIdx: state.chamberIdx,
-    placed: state.placed,
-  };
-  localStorage.setItem('royalCeremony', JSON.stringify(ceremony));
-  window.location.href = 'quiz.html';
-}
+function finishCeremony(){const ceremony={name:state.name,colors:state.colors,colorNames:state.colorNames,emblem:state.emblem?{name:state.emblem.name,meaning:state.emblem.meaning,src:state.emblem.src}:null,emblemName:state.emblemName,motto:state.motto,chamberIdx:state.chamberIdx,placed:state.placed};localStorage.setItem('royalCeremony',JSON.stringify(ceremony));window.location.href='quiz.html';}
 
-// SERVICE WORKER
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});}
 </script>
 </body>
 </html>
