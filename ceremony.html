@@ -66,7 +66,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 /* Emblem: dropped DOWN to land in medallion ring (which sits at ~46% of banner height) */
 .banner-emblem-img{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:30%;height:30%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));z-index:10}
 /* MOTTO: deep burgundy (heraldic ink), bold Cinzel, centered on cream cloth */
-.banner-motto-txt{position:absolute;top:8%;left:11%;right:11%;text-align:center;font-family:'Cinzel',serif;font-weight:700;font-size:clamp(12px,1.5vw,16px);letter-spacing:0.06em;color:#3a0a0a;text-shadow:0 1px 0 rgba(255,255,255,0.4);line-height:1.25;pointer-events:none;z-index:10}
+.banner-motto-txt{position:absolute;top:8%;left:13%;right:13%;text-align:center;font-family:'Cinzel',serif;font-weight:700;font-size:clamp(9px,1.1vw,13px);letter-spacing:0.04em;color:#3a0a0a;text-shadow:0 1px 0 rgba(255,255,255,0.4);line-height:1.3;pointer-events:none;z-index:10;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 
 #s6{padding:0;overflow:hidden}
 .chamber-outer{position:relative;width:100%;height:100%;display:flex;flex-direction:column}
@@ -264,8 +264,8 @@ const SHOES=Array.from({length:12},(_,i)=>({src:`assets/shoes/shoes-${String(i+1
 
 // CALIBRATED ZONES: dress bigger and on form, tiara nudged to pillow
 const ZONES={
-  dress:{left:'66%',top:'38%',width:'24%'},
-  tiara:{left:'88%',top:'61%',width:'8%'},
+  dress:{left:'72%',top:'36%',width:'28%'},
+  tiara:{left:'87%',top:'62%',width:'8%'},
   shoes:{left:'48%',bottom:'8%',width:'13%'}
 };
 
