@@ -320,8 +320,9 @@
   }
   .btn-primary:hover { background: linear-gradient(180deg, var(--gold-bright), var(--gold)); }
 
-  /* Princess switcher */
+  /* Princess switcher — HIDDEN in production */
   .switcher {
+    display: none !important;
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
     background: rgba(10,6,20,0.95);
     backdrop-filter: blur(12px);
@@ -415,8 +416,8 @@
 
   <div class="cta-group">
     <button class="btn btn-primary" id="speak-btn">✦ Speak with <span id="speak-name"></span> ✦</button>
-    <button class="btn" onclick="nextPrincess()">✧ See Another Princess ✧</button>
-    <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Return to the Mirror</button>
+    <button class="btn" onclick="window.location.href='quiz.html'">✦ Look Into the Mirror Again ✦</button>
+    <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Return to the Top</button>
   </div>
 </div>
 
@@ -491,6 +492,31 @@ const portraitUrl = (id) => `assets/princesses/${id}.png`;
 
 // Mock match scores — replace with real quiz logic later
 function mockScores(primaryIdx) {
+  // If we have real quiz scores, use them
+  if(window._realScores){
+    const real = PRINCESSES.map((p, i) => ({
+      i,
+      s: window._realScores[p.id] || 0
+    }));
+    // Normalize to 0-100 scale based on max
+    const max = Math.max(...real.map(x => x.s), 1);
+    const min = Math.min(...real.map(x => x.s), 0);
+    real.forEach(x => {
+      // Scale so winner is ~92, lowest is ~25
+      const range = max - min || 1;
+      x.s = Math.round(25 + ((x.s - min) / range) * 67);
+    });
+    real.sort((a, b) => b.s - a.s);
+    // Make sure the winner shows first
+    const pIdx = real.findIndex(x => x.i === primaryIdx);
+    if(pIdx > 0){
+      const [primary] = real.splice(pIdx, 1);
+      real.unshift(primary);
+    }
+    return real.slice(0, 6);
+  }
+
+  // Fallback for previewing without quiz result
   const scores = PRINCESSES.map((_, i) =>
     i === primaryIdx
       ? 88 + Math.floor(Math.random() * 10)
@@ -658,8 +684,45 @@ PRINCESSES.forEach((p, i) => {
   sw.appendChild(btn);
 });
 
-// Init
-showPrincess(0, false);
+// ── INIT: read quiz result and show the correct princess ──
+function loadQuizResult(){
+  try{
+    const raw = localStorage.getItem('quizResult');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){return null}
+}
+
+function loadCeremony(){
+  try{
+    const raw = localStorage.getItem('royalCeremony');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){return null}
+}
+
+const quizResult = loadQuizResult();
+const ceremony = loadCeremony();
+
+// Update "thou art" greeting with her actual ceremony name
+if(ceremony && ceremony.name){
+  const youAre = document.querySelector('.you-are');
+  if(youAre) youAre.textContent = ceremony.name + ', thou art...';
+}
+
+// Determine which princess to show
+let initialIdx = 0;
+if(quizResult && quizResult.winner){
+  const winnerIdx = PRINCESSES.findIndex(p => p.id === quizResult.winner);
+  if(winnerIdx >= 0) initialIdx = winnerIdx;
+}
+
+// Override mockScores with real scores from the quiz if available
+if(quizResult && quizResult.scores){
+  window._realScores = quizResult.scores;
+}
+
+showPrincess(initialIdx, false);
 
 // ── REGISTER SERVICE WORKER ──
 if ('serviceWorker' in navigator) {

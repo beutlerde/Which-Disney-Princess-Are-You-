@@ -39,7 +39,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 
 /* === MIRROR VOICE (text the mirror speaks) === */
 .mirror-voice{
-  position:fixed;left:50%;top:60%;transform:translate(-50%,-50%);
+  position:fixed;left:50%;top:58%;transform:translate(-50%,-50%);
   font-family:'Cormorant Garamond',serif;font-style:italic;
   font-size:clamp(20px,4vw,30px);color:var(--gold-light);
   text-align:center;line-height:1.5;max-width:600px;
@@ -49,6 +49,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
   transition:opacity 1s ease;
 }
 .mirror-voice.visible{opacity:1}
+.interlude-continue-btn{
+  position:fixed;left:50%;top:78%;transform:translateX(-50%);
+  z-index:65;opacity:0;transition:opacity 1.2s ease 0.6s;
+  pointer-events:none;
+}
+.interlude-continue-btn.visible{opacity:1;pointer-events:auto}
 
 /* === SCENES === */
 .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;padding-top:200px;padding-bottom:60px;opacity:0;pointer-events:none;transition:opacity 0.8s ease;overflow-y:auto;-webkit-overflow-scrolling:touch}
@@ -267,15 +273,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
     </div>
   </div>
 
-  <!-- MIRROR INTERLUDE (between question groups) -->
-  <div class="scene" id="interlude-scene">
-    <!-- Mirror voice handles all the content, this is just the framework -->
-    <div style="margin-top:40vh;text-align:center">
-      <button class="btn-secondary" onclick="continueFromInterlude()">Continue ✦</button>
-    </div>
-  </div>
+  <!-- MIRROR INTERLUDE (between question groups) — just an empty scene to disable the question scene -->
+  <div class="scene" id="interlude-scene"></div>
 
 </div>
+
+<!-- Interlude continue button (shown only during mirror speech) -->
+<button class="btn-secondary interlude-continue-btn" id="interlude-continue-btn" onclick="continueFromInterlude()">Continue ✦</button>
 
 <!-- REVEAL TRANSITION -->
 <div id="reveal-transition">
@@ -689,11 +693,16 @@ function speakMirror(text, onContinue){
   voice.classList.add('visible');
 
   document.getElementById('interlude-scene').classList.add('active');
+  // Show the continue button (with a slight delay so the text reads first)
+  setTimeout(()=>{
+    document.getElementById('interlude-continue-btn').classList.add('visible');
+  }, 1500);
   interludeContinuation = onContinue;
 }
 
 function continueFromInterlude(){
   document.getElementById('mirror-voice').classList.remove('visible');
+  document.getElementById('interlude-continue-btn').classList.remove('visible');
   document.getElementById('mirror-stage').classList.remove('large');
   if(interludeContinuation){
     const fn = interludeContinuation;
