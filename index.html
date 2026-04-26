@@ -35,16 +35,16 @@ html,body{
   background-position:center;
   opacity:0;
   transition:opacity 2.5s ease;
-  filter:brightness(0.55) saturate(0.9);
+  filter:brightness(0.75) saturate(1.0);
 }
-.castle-hall.visible{opacity:0.8}
+.castle-hall.visible{opacity:1}
 .castle-hall::after{
   content:'';position:absolute;inset:0;
   background:linear-gradient(180deg,
-    rgba(13,8,24,0.7) 0%,
-    rgba(13,8,24,0.3) 30%,
-    rgba(13,8,24,0.5) 70%,
-    rgba(13,8,24,0.95) 100%
+    rgba(13,8,24,0.55) 0%,
+    rgba(13,8,24,0.2) 30%,
+    rgba(13,8,24,0.4) 70%,
+    rgba(13,8,24,0.9) 100%
   );
 }
 
@@ -319,6 +319,45 @@ html,body{
 // ═══════════════════════════════════════════════
 // THE ROYAL REALM — Landing Page
 // ═══════════════════════════════════════════════
+
+// ─── PRELOAD CASTLE HALL (with .jpg → .jpeg fallback) ───
+(function(){
+  const hallEl = document.getElementById('castle-hall');
+  function tryLoad(src, onSuccess, onFail){
+    const testImg = new Image();
+    testImg.onload = ()=>onSuccess(src);
+    testImg.onerror = onFail;
+    testImg.src = src;
+  }
+  tryLoad('assets/landing/castle-hall.jpg',
+    (src)=>{
+      console.log('✦ Castle hall loaded:', src);
+      hallEl.style.backgroundImage = `url('${src}')`;
+    },
+    ()=>{
+      // Fall back to .jpeg
+      tryLoad('assets/landing/castle-hall.jpeg',
+        (src)=>{
+          console.log('✦ Castle hall loaded (jpeg):', src);
+          hallEl.style.backgroundImage = `url('${src}')`;
+        },
+        ()=>console.error('✗ Castle hall image not found at .jpg or .jpeg')
+      );
+    }
+  );
+})();
+
+// ─── DOOR IMAGES (with .jpg → .jpeg fallback) ───
+document.querySelectorAll('.door-image').forEach(img => {
+  img.addEventListener('error', function handleErr(){
+    if(this.src.endsWith('.jpg')){
+      this.src = this.src.replace(/\.jpg$/, '.jpeg');
+    } else {
+      // Both failed — show placeholder
+      this.style.display = 'none';
+    }
+  });
+});
 
 // ─── LOAD CEREMONY + QUIZ STATE ───
 function loadCeremony(){
