@@ -337,6 +337,7 @@ const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : 'Princess';
 //   triggers: optional callback condition {tag: 'sea'} to only show if she chose 'sea' before
 
 const QUESTIONS = [
+  // ─── Q1 — Light food intro (warm-up) ───
   {
     id:'q1_treat',
     category:'food',
@@ -344,12 +345,13 @@ const QUESTIONS = [
     weight:1.0,
     prompt:'Welcome, <span class="name">{name}</span>. Let us begin gently. <em>What treat dost thou crave most?</em>',
     answers:[
-      {text:'A warm pastry, fresh from the oven',scores:{tiana:3,'snow-white':2,cinderella:1}},
-      {text:'Wild berries gathered from the forest',scores:{aurora:3,mulan:2,raya:1}},
-      {text:'Honey-sweetened tea by candlelight',scores:{belle:3,rapunzel:2}},
-      {text:'Something I have never tasted before',scores:{ariel:3,moana:2,jasmine:1}},
+      {text:'A warm pastry, fresh from the oven',scores:{tiana:3,'snow-white':2,cinderella:1,raya:-1}},
+      {text:'Wild berries gathered from the forest',scores:{aurora:3,mulan:2,raya:1,belle:-1}},
+      {text:'Honey-sweetened tea by candlelight',scores:{belle:3,rapunzel:2,moana:-1}},
+      {text:'Something I have never tasted before',scores:{ariel:3,moana:2,jasmine:1,'snow-white':-1,cinderella:-1}},
     ]
   },
+  // ─── Q2 — Morning preference (rebalanced — quiet still scores Elsa but less) ───
   {
     id:'q2_morning',
     category:'personality',
@@ -357,12 +359,13 @@ const QUESTIONS = [
     weight:1.0,
     prompt:'<em>How dost thou prefer to begin a day?</em>',
     answers:[
-      {text:'In quiet, alone, watching the world wake up',scores:{elsa:3,belle:2,'snow-white':1,cinderella:-1,jasmine:-1}},
-      {text:'With a plan and a purpose',scores:{tiana:3,mulan:2,raya:1,aurora:-1}},
-      {text:'Somewhere new, ready for adventure',scores:{moana:3,ariel:2,jasmine:2,rapunzel:1}},
-      {text:'Surrounded by those I love',scores:{cinderella:2,'snow-white':2,aurora:2,belle:1}},
+      {text:'In quiet, alone, watching the world wake up',scores:{elsa:2,belle:2,'snow-white':1,cinderella:-2,jasmine:-2,moana:-1}},
+      {text:'With a plan and a purpose',scores:{tiana:3,mulan:2,raya:1,aurora:-1,ariel:-1}},
+      {text:'Somewhere new, ready for adventure',scores:{moana:3,ariel:2,jasmine:2,rapunzel:1,'snow-white':-2,elsa:-1}},
+      {text:'Surrounded by those I love',scores:{cinderella:2,'snow-white':2,aurora:2,belle:1,elsa:-2}},
     ]
   },
+  // ─── Q3 — Visual doors ───
   {
     id:'q3_door_visual',
     category:'magic',
@@ -371,12 +374,13 @@ const QUESTIONS = [
     prompt:'<em>Four doors stand before thee. Which one calls to thee?</em>',
     context:'Choose with thy heart, not thy mind.',
     answers:[
-      {label:'The Library Door',visualSrc:'assets/quiz/door-library.jpg',scores:{belle:4,'snow-white':1}},
-      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.jpg',scores:{aurora:3,mulan:2,raya:2}},
-      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.jpg',scores:{moana:4,ariel:3},callbackTag:'sea'},
-      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.jpg',scores:{elsa:4,jasmine:1}},
+      {label:'The Library Door',visualSrc:'assets/quiz/door-library.jpg',scores:{belle:4,'snow-white':1,moana:-1,raya:-1}},
+      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.jpg',scores:{aurora:3,mulan:2,raya:2,cinderella:-1}},
+      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.jpg',scores:{moana:4,ariel:3,elsa:-2,'snow-white':-1},callbackTag:'sea'},
+      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.jpg',scores:{elsa:4,jasmine:1,tiana:-1,aurora:-2}},
     ]
   },
+  // ─── Q4 — Wounded bird (rebalanced) ───
   {
     id:'q4_wounded_bird',
     category:'values',
@@ -384,12 +388,13 @@ const QUESTIONS = [
     weight:1.3,
     prompt:'Thou findest a wounded bird in the garden. <em>What dost thou do?</em>',
     answers:[
-      {text:'I gather it gently and care for it until it heals',scores:{'snow-white':4,aurora:3,cinderella:2}},
+      {text:'I gather it gently and care for it until it heals',scores:{'snow-white':4,aurora:3,cinderella:2,jasmine:-1}},
       {text:'I find someone who knows more than I, to help us both',scores:{belle:3,tiana:2,mulan:1}},
-      {text:'I sit with it quietly. It will tell me what it needs',scores:{elsa:3,rapunzel:2,raya:1}},
-      {text:'I help it back to where it belongs — the wild, where it is free',scores:{moana:3,jasmine:3,ariel:2}},
+      {text:'I sit with it quietly. It will tell me what it needs',scores:{elsa:2,rapunzel:2,raya:1,moana:-1,jasmine:-1}},
+      {text:'I help it back to where it belongs — the wild, where it is free',scores:{moana:3,jasmine:3,ariel:2,cinderella:-1}},
     ]
   },
+  // ─── Q5 — Unwatched (rebalanced) ───
   {
     id:'q5_unwatched',
     category:'personality',
@@ -398,12 +403,13 @@ const QUESTIONS = [
     prompt:'<em>What dost thou do when no one is watching, <span class="name">{name}</span>?</em>',
     context:'There is no wrong answer. The mirror does not judge.',
     answers:[
-      {text:'I sing, or dance, or laugh out loud',scores:{ariel:3,rapunzel:3,'snow-white':2}},
-      {text:'I read, or write, or dream up stories',scores:{belle:4,rapunzel:1}},
-      {text:'I practice things I want to be better at',scores:{tiana:3,mulan:3,raya:1}},
-      {text:'I just... breathe. I rest.',scores:{elsa:3,aurora:2,cinderella:1}},
+      {text:'I sing, or dance, or laugh out loud',scores:{ariel:3,rapunzel:3,'snow-white':2,elsa:-2,raya:-1}},
+      {text:'I read, or write, or dream up stories',scores:{belle:4,rapunzel:1,moana:-1}},
+      {text:'I practice things I want to be better at',scores:{tiana:3,mulan:3,raya:1,aurora:-1}},
+      {text:'I just... breathe. I rest.',scores:{elsa:2,aurora:2,cinderella:1,tiana:-2,mulan:-1}},
     ]
   },
+  // ─── Q6 — Dream holding ───
   {
     id:'q6_dream_holding',
     category:'magic',
@@ -412,13 +418,14 @@ const QUESTIONS = [
     prompt:'<em>In the dream, thou art holding something. What is it?</em>',
     context:'Trust the first answer that comes.',
     answers:[
-      {text:'A book that has never been read',scores:{belle:4,rapunzel:1}},
-      {text:'A small flame that does not burn me',scores:{raya:3,mulan:2,elsa:-1}},
-      {text:'A piece of the sky',scores:{jasmine:3,moana:2,ariel:1}},
+      {text:'A book that has never been read',scores:{belle:4,rapunzel:1,raya:-1,mulan:-1}},
+      {text:'A small flame that does not burn me',scores:{raya:3,mulan:2,elsa:-2,cinderella:-1}},
+      {text:'A piece of the sky',scores:{jasmine:3,moana:2,ariel:1,'snow-white':-1}},
       {text:'A key, but I do not know what it opens',scores:{rapunzel:3,belle:1,'snow-white':1}},
-      {text:'Nothing — and yet my hands feel full',scores:{aurora:2,elsa:2,cinderella:1}},
+      {text:'Nothing — and yet my hands feel full',scores:{aurora:2,elsa:2,cinderella:1,jasmine:-1,raya:-1}},
     ]
   },
+  // ─── Q7 — Library vs garden tradeoff ───
   {
     id:'q7_tradeoff_books_garden',
     category:'kingdom',
@@ -427,10 +434,11 @@ const QUESTIONS = [
     prompt:'Thou canst have only one. <em>Choose.</em>',
     context:'A library that never runs out of new books — or a garden that blooms every season of the year.',
     answers:[
-      {text:'The endless library',scores:{belle:4,'snow-white':-1,aurora:-1}},
-      {text:'The eternal garden',scores:{aurora:3,'snow-white':2,rapunzel:2,belle:-1}},
+      {text:'The endless library',scores:{belle:4,jasmine:2,'snow-white':-1,aurora:-2}},
+      {text:'The eternal garden',scores:{aurora:3,'snow-white':2,rapunzel:2,belle:-2,raya:-1}},
     ]
   },
+  // ─── Q8 — Hurt to lose ───
   {
     id:'q8_hurt_lose',
     category:'values',
@@ -439,12 +447,13 @@ const QUESTIONS = [
     prompt:'<em>Which of these would hurt the most to lose?</em>',
     context:'The mirror asks gently. Choose the truest, not the kindest.',
     answers:[
-      {text:'The freedom to choose mine own path',scores:{jasmine:4,moana:3,mulan:2,ariel:2}},
-      {text:'The ones I love',scores:{cinderella:3,'snow-white':3,aurora:2,tiana:1}},
-      {text:'The trust of those who depend on me',scores:{mulan:4,raya:3,tiana:2}},
-      {text:'The wonder I see in the world',scores:{rapunzel:4,belle:3,ariel:2}},
+      {text:'The freedom to choose mine own path',scores:{jasmine:4,moana:3,mulan:2,ariel:2,cinderella:-1,'snow-white':-1}},
+      {text:'The ones I love',scores:{cinderella:3,'snow-white':3,aurora:2,tiana:1,jasmine:-1}},
+      {text:'The trust of those who depend on me',scores:{mulan:4,raya:3,tiana:2,ariel:-1}},
+      {text:'The wonder I see in the world',scores:{rapunzel:4,belle:3,ariel:2,raya:-1}},
     ]
   },
+  // ─── Q9 — Kingdom needs ───
   {
     id:'q9_kingdom_need',
     category:'kingdom',
@@ -452,13 +461,14 @@ const QUESTIONS = [
     weight:1.6,
     prompt:'<em>What does thy kingdom need most, <span class="name">{name}</span>?</em>',
     answers:[
-      {text:'Wisdom — that we may understand each other',scores:{belle:4,elsa:2}},
-      {text:'Courage — that we may stand for what is right',scores:{mulan:4,raya:3}},
-      {text:'Joy — that we may remember why we are here',scores:{rapunzel:3,'snow-white':2,ariel:1}},
-      {text:'Trust — that we may become whole',scores:{raya:4,tiana:1}},
-      {text:'Freedom — that each may follow her own path',scores:{jasmine:4,moana:3}},
+      {text:'Wisdom — that we may understand each other',scores:{belle:4,elsa:2,mulan:-1}},
+      {text:'Courage — that we may stand for what is right',scores:{mulan:4,raya:3,'snow-white':-1}},
+      {text:'Joy — that we may remember why we are here',scores:{rapunzel:3,'snow-white':2,ariel:1,elsa:-1,raya:-1}},
+      {text:'Trust — that we may become whole',scores:{raya:4,tiana:1,jasmine:-1}},
+      {text:'Freedom — that each may follow her own path',scores:{jasmine:4,moana:3,cinderella:-1}},
     ]
   },
+  // ─── Q10 — Free text wish ───
   {
     id:'q10_freetext_wish',
     category:'personality',
@@ -469,6 +479,238 @@ const QUESTIONS = [
     placeholder:'Write thy truth, {name}',
     freetextTag:'wish_known',
   },
+
+  // ═══════════════════════════════════════════════
+  // PHASE 1 PART 2 — 15 NEW QUESTIONS
+  // ═══════════════════════════════════════════════
+
+  // ─── Q11 — Visual: which creature finds you ───
+  {
+    id:'q11_creature_visual',
+    category:'animals',
+    type:'visual',
+    weight:1.3,
+    prompt:'<em>A creature emerges from the wood and chooses to walk beside thee. Which one?</em>',
+    context:'Trust the one that calls to thee, not the one thou thinkest is right.',
+    answers:[
+      {label:'The Stag',visualSrc:'assets/quiz/creature-stag.jpg',scores:{aurora:3,raya:2,mulan:1,ariel:-1}},
+      {label:'The Wolf',visualSrc:'assets/quiz/creature-wolf.jpg',scores:{mulan:3,raya:3,jasmine:1,'snow-white':-2,cinderella:-2}},
+      {label:'The Swan',visualSrc:'assets/quiz/creature-swan.jpg',scores:{cinderella:3,'snow-white':2,aurora:1,raya:-1}},
+      {label:'The Fox',visualSrc:'assets/quiz/creature-fox.jpg',scores:{jasmine:3,ariel:2,rapunzel:2,aurora:-1}},
+    ]
+  },
+  // ─── Q12 — Friendship: knowing a true friend (TIANA primary) ───
+  {
+    id:'q12_true_friend',
+    category:'friendship',
+    type:'multipleChoice',
+    weight:1.4,
+    prompt:'<em>How dost thou know thou hast made a true friend, <span class="name">{name}</span>?</em>',
+    answers:[
+      {text:'They show up when I need them, even unasked',scores:{tiana:4,mulan:3,cinderella:2,jasmine:-1}},
+      {text:'They tell me the truth, even when it is hard',scores:{raya:4,mulan:2,belle:2,'snow-white':-2}},
+      {text:'They make me laugh when I forget how',scores:{rapunzel:3,ariel:3,'snow-white':2,raya:-1}},
+      {text:'They love what is strange in me',scores:{belle:3,jasmine:2,elsa:2,cinderella:-1}},
+    ]
+  },
+  // ─── Q13 — Fun: when joy bubbles up (ARIEL/RAPUNZEL primary) ───
+  {
+    id:'q13_joy_bubbles',
+    category:'fun',
+    type:'multipleChoice',
+    weight:1.2,
+    prompt:'<em>When joy bubbles up inside thee, what dost thou do?</em>',
+    answers:[
+      {text:'I sing — sometimes loudly, sometimes only to myself',scores:{ariel:4,'snow-white':2,rapunzel:1,raya:-2}},
+      {text:'I dance, or move, or twirl',scores:{rapunzel:4,cinderella:2,aurora:1,elsa:-2}},
+      {text:'I run to share it with someone',scores:{moana:3,tiana:2,'snow-white':2,elsa:-2,raya:-1}},
+      {text:'I hold it inside, like something precious',scores:{elsa:3,aurora:2,belle:1,ariel:-2,rapunzel:-1}},
+    ]
+  },
+  // ─── Q14 — Romance: what is love ───
+  {
+    id:'q14_what_is_love',
+    category:'romance',
+    type:'multipleChoice',
+    weight:1.3,
+    prompt:'<em>What is love to thee, <span class="name">{name}</span>?</em>',
+    context:'Not what thou hast been told. What thou knowest.',
+    answers:[
+      {text:'Being seen, truly, by another soul',scores:{belle:4,elsa:2,raya:1,cinderella:-1}},
+      {text:'Building something together that lasts',scores:{tiana:4,mulan:2,aurora:1,ariel:-1}},
+      {text:'An adventure that does not end',scores:{ariel:3,moana:3,jasmine:2,cinderella:-1}},
+      {text:'A quiet promise kept, day after day',scores:{cinderella:3,'snow-white':3,aurora:2,jasmine:-2}},
+    ]
+  },
+  // ─── Q15 — Style: which fabric ───
+  {
+    id:'q15_fabric',
+    category:'style',
+    type:'multipleChoice',
+    weight:1.0,
+    prompt:'<em>What fabric feels most like thee?</em>',
+    answers:[
+      {text:'Silk that catches the light',scores:{cinderella:3,jasmine:2,aurora:2}},
+      {text:'Wool, soft and warm and lived-in',scores:{'snow-white':3,belle:2,tiana:1}},
+      {text:'Velvet, deep and dramatic',scores:{elsa:3,jasmine:1,belle:1}},
+      {text:'Linen, simple and strong',scores:{mulan:3,moana:2,raya:2,tiana:1,cinderella:-1}},
+    ]
+  },
+  // ─── Q16 — Tradeoff: throne or sword (MULAN vs AURORA distinguisher) ───
+  {
+    id:'q16_throne_or_sword',
+    category:'kingdom',
+    type:'tradeoff',
+    weight:1.5,
+    prompt:'<em>Thou canst have one. Choose.</em>',
+    context:'A throne that sits at the heart of a peaceful realm — or a sword that has known war and protected those thou lovest.',
+    answers:[
+      {text:'The throne',scores:{aurora:3,'snow-white':2,cinderella:2,mulan:-2,raya:-2}},
+      {text:'The sword',scores:{mulan:4,raya:3,jasmine:1,aurora:-2,cinderella:-2}},
+    ]
+  },
+  // ─── Q17 — Values: injustice (MULAN/RAYA primary) ───
+  {
+    id:'q17_injustice',
+    category:'values',
+    type:'scenario',
+    weight:1.6,
+    prompt:'<em>Thou seest someone treated unfairly. What is thy first instinct?</em>',
+    answers:[
+      {text:'I step in. Now. The cost will be reckoned later',scores:{mulan:4,raya:3,jasmine:2,'snow-white':-2,aurora:-1}},
+      {text:'I gather others. We are stronger together',scores:{moana:3,tiana:3,belle:1}},
+      {text:'I ask why — there is always a reason',scores:{belle:4,raya:2,jasmine:1,'snow-white':-1}},
+      {text:'I find the one who suffers and stand beside them',scores:{'snow-white':3,cinderella:3,aurora:2,jasmine:-1}},
+    ]
+  },
+  // ─── Q18 — Tradeoff: known and safe vs unknown and free (JASMINE/MOANA) ───
+  {
+    id:'q18_safe_or_free',
+    category:'personality',
+    type:'tradeoff',
+    weight:1.6,
+    prompt:'<em>Choose thy path.</em>',
+    context:'A life that is known and safe and beloved — or a life that is unknown and free and uncertain.',
+    answers:[
+      {text:'Known and safe and beloved',scores:{cinderella:3,'snow-white':3,aurora:3,jasmine:-3,moana:-3,ariel:-2}},
+      {text:'Unknown and free and uncertain',scores:{jasmine:4,moana:4,ariel:3,rapunzel:2,'snow-white':-2,cinderella:-2}},
+    ]
+  },
+  // ─── Q19 — Visual: which throne ───
+  {
+    id:'q19_throne_visual',
+    category:'kingdom',
+    type:'visual',
+    weight:1.4,
+    prompt:'<em>Four thrones await. Which is thine?</em>',
+    answers:[
+      {label:'The Throne of Ivy',visualSrc:'assets/quiz/throne-ivy.jpg',scores:{aurora:3,rapunzel:2,'snow-white':1,elsa:-1}},
+      {label:'The Throne of Stars',visualSrc:'assets/quiz/throne-stars.jpg',scores:{jasmine:4,elsa:2,moana:1,tiana:-1}},
+      {label:'The Throne of Coral',visualSrc:'assets/quiz/throne-coral.jpg',scores:{ariel:4,moana:3,raya:-1}},
+      {label:'The Throne of Iron',visualSrc:'assets/quiz/throne-iron.jpg',scores:{mulan:4,raya:3,cinderella:-2,'snow-white':-2}},
+    ]
+  },
+  // ─── Q20 — Callback OR fallback (uses sea tag if she chose ocean door) ───
+  {
+    id:'q20_sea_callback',
+    category:'magic',
+    type:'multipleChoice',
+    weight:1.3,
+    triggers:{tag:'sea'},  // only show if she chose the sea before
+    prompt:'<em>Thou hast spoken of the sea before, <span class="name">{name}</span>. When thou walkest beside it in thy dreams...</em>',
+    answers:[
+      {text:'I swim toward the horizon',scores:{moana:5,ariel:2,elsa:-2,cinderella:-1}},
+      {text:'I sit upon the shore and listen',scores:{elsa:2,aurora:2,'snow-white':1,moana:-2}},
+      {text:'I gather treasures the waves leave behind',scores:{ariel:5,rapunzel:1,moana:1}},
+      {text:'I follow the path that runs along the cliffs',scores:{belle:2,raya:2,jasmine:1,ariel:-1}},
+    ]
+  },
+  // ─── Q20b — Fallback for those who did NOT choose sea (what she loves to make — TIANA) ───
+  {
+    id:'q20b_make',
+    category:'kingdom',
+    type:'multipleChoice',
+    weight:1.3,
+    triggers:{notTag:'sea'},
+    prompt:'<em>What dost thou love to make with thy hands, <span class="name">{name}</span>?</em>',
+    answers:[
+      {text:'Something that feeds others',scores:{tiana:4,'snow-white':3,cinderella:1}},
+      {text:'Something beautiful — a song, a painting, a poem',scores:{rapunzel:4,ariel:2,belle:1}},
+      {text:'Something useful — a tool, a garment, a thing that lasts',scores:{mulan:3,tiana:2,raya:2}},
+      {text:'Something I have not yet imagined',scores:{belle:3,ariel:2,jasmine:2,rapunzel:1}},
+    ]
+  },
+  // ─── Q21 — Friendship: betrayed once (RAYA primary) ───
+  {
+    id:'q21_betrayed',
+    category:'friendship',
+    type:'scenario',
+    weight:1.5,
+    prompt:'<em>Thou hast been hurt by someone thou trusted. They return, asking for thy trust again. What dost thou do?</em>',
+    answers:[
+      {text:'I give it slowly, with eyes open',scores:{raya:5,mulan:2,belle:1}},
+      {text:'I give it freely. Some things must be risked',scores:{'snow-white':3,cinderella:3,aurora:2,raya:-2,mulan:-1}},
+      {text:'I do not. Once broken, it cannot be the same',scores:{elsa:3,jasmine:2,raya:-2,cinderella:-1}},
+      {text:'I ask them to earn it. Truly earn it',scores:{tiana:3,mulan:2,raya:1}},
+    ]
+  },
+  // ─── Q22 — Fun: laughter alone or shared ───
+  {
+    id:'q22_laughter',
+    category:'fun',
+    type:'multipleChoice',
+    weight:1.2,
+    prompt:'<em>What is the truest laughter to thee?</em>',
+    answers:[
+      {text:'Laughter shared in a crowded room',scores:{tiana:3,'snow-white':2,rapunzel:2,elsa:-2}},
+      {text:'Laughter shared with one beloved soul',scores:{belle:3,cinderella:2,aurora:2,jasmine:-1}},
+      {text:'Laughter alone, at something only I see',scores:{elsa:3,ariel:2,jasmine:1,'snow-white':-1,cinderella:-1}},
+      {text:'Laughter in the wild, with no one watching',scores:{moana:3,mulan:2,raya:1,jasmine:1}},
+    ]
+  },
+  // ─── Q23 — Visual: gardens at midnight ───
+  {
+    id:'q23_garden_visual',
+    category:'magic',
+    type:'visual',
+    weight:1.3,
+    prompt:'<em>Four gardens lie still under moonlight. Which feels like home?</em>',
+    answers:[
+      {label:'The Rose Garden',visualSrc:'assets/quiz/garden-roses.jpg',scores:{aurora:4,'snow-white':2,cinderella:1,raya:-1}},
+      {label:'The Lantern Garden',visualSrc:'assets/quiz/garden-lanterns.jpg',scores:{rapunzel:4,tiana:2,jasmine:1}},
+      {label:'The Wild Garden',visualSrc:'assets/quiz/garden-wild.jpg',scores:{mulan:3,raya:3,moana:2,cinderella:-2}},
+      {label:'The Frozen Garden',visualSrc:'assets/quiz/garden-frozen.jpg',scores:{elsa:4,belle:1,aurora:-1,tiana:-1}},
+    ]
+  },
+  // ─── Q24 — Tradeoff: loved by all vs known by one (CINDERELLA vs BELLE) ───
+  {
+    id:'q24_loved_or_known',
+    category:'romance',
+    type:'tradeoff',
+    weight:1.7,
+    prompt:'<em>One is given thee, not both.</em>',
+    context:'Be loved by all who meet thee — or be known truly by one.',
+    answers:[
+      {text:'Loved by all',scores:{cinderella:3,'snow-white':3,aurora:2,belle:-3,elsa:-2,raya:-2}},
+      {text:'Known truly by one',scores:{belle:5,elsa:3,raya:2,jasmine:1,cinderella:-2,'snow-white':-1}},
+    ]
+  },
+  // ─── Q25 — Closing reflection (high weight, late question) ───
+  {
+    id:'q25_legacy',
+    category:'values',
+    type:'multipleChoice',
+    weight:2.0,
+    prompt:'<em>The mirror asks a final thing of thee, <span class="name">{name}</span>. When thou art remembered, long after thou hast gone — what dost thou hope is said of thee?</em>',
+    context:'There is no wrong answer here. Only thine own.',
+    answers:[
+      {text:'She was kind. She was always kind',scores:{'snow-white':4,cinderella:3,aurora:2,raya:-1}},
+      {text:'She was free. She lived as she chose',scores:{jasmine:4,moana:3,ariel:2,cinderella:-2}},
+      {text:'She was brave. She did not flinch',scores:{mulan:4,raya:3,elsa:1,'snow-white':-1}},
+      {text:'She built things that outlived her',scores:{tiana:5,belle:2,mulan:1,aurora:-1}},
+      {text:'She loved deeply. That was enough',scores:{belle:3,aurora:3,rapunzel:2,cinderella:1,raya:-1}},
+    ]
+  },
 ];
 
 // ═══════════════════════════════════════════════
@@ -476,9 +718,10 @@ const QUESTIONS = [
 // ═══════════════════════════════════════════════
 // These appear between question groups
 const MIRROR_LINES = [
-  {after:3, text:'Interesting... very interesting, <span class="name">{name}</span>.'},
-  {after:6, text:'Thou art beginning to take shape in mine eye.'},
-  {after:9, text:'The mirror sees thee more clearly now.'},
+  {after:5, text:'Interesting... very interesting, <span class="name">{name}</span>.'},
+  {after:10, text:'Thou art beginning to take shape in mine eye.'},
+  {after:15, text:'The mirror sees thee more clearly now.'},
+  {after:20, text:'Almost. Almost, <span class="name">{name}</span>. Hold steady.'},
 ];
 
 // ═══════════════════════════════════════════════
@@ -555,10 +798,39 @@ function showQuestion(idx){
   }
 
   const q = QUESTIONS[idx];
+
+  // Handle conditional triggers — skip questions that don't match her path
+  if(q.triggers){
+    if(q.triggers.tag && !state.callbackTags[q.triggers.tag]){
+      // Question requires a tag she doesn't have — skip
+      showQuestion(idx + 1);
+      return;
+    }
+    if(q.triggers.notTag && state.callbackTags[q.triggers.notTag]){
+      // Question requires NOT having a tag she has — skip
+      showQuestion(idx + 1);
+      return;
+    }
+  }
+
   pendingAnswer = null;
 
-  // Show counter
-  document.getElementById('q-counter').textContent = `Question ${idx+1} of ${QUESTIONS.length}`;
+  // Calculate visible question number (excluding skipped triggered questions)
+  let visibleNum = 0;
+  let visibleTotal = 0;
+  for(let i = 0; i < QUESTIONS.length; i++){
+    const tq = QUESTIONS[i];
+    let willShow = true;
+    if(tq.triggers){
+      if(tq.triggers.tag && !state.callbackTags[tq.triggers.tag]) willShow = false;
+      if(tq.triggers.notTag && state.callbackTags[tq.triggers.notTag]) willShow = false;
+    }
+    if(willShow){
+      visibleTotal++;
+      if(i <= idx) visibleNum++;
+    }
+  }
+  document.getElementById('q-counter').textContent = `Question ${visibleNum} of ${visibleTotal}`;
 
   // Hide intro / interlude / show question
   document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
