@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D0818">
+<link rel="manifest" href="manifest.json">
+<title>Speak with thy Princess ✦ The Royal Realm</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Cormorant+Unicase:wght@400;600;700&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;--gold-light:#F0D080;--gold-dim:#8B6914;
+  --purple-deep:#0D0818;--purple-mid:#1E1438;
+  --cream:#F5EDD8;--cream-dim:#C8B99A;
+  --parchment:#E8D4A6;--parchment-dark:#3a1a0a;--parchment-mid:#5a3018;
+}
+html,body{
+  width:100%;min-height:100vh;
+  background:var(--purple-deep);
+  font-family:'Cormorant Garamond',serif;
+  color:var(--cream);overflow-x:hidden;
+}
+
+/* === STARFIELD === */
+#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* === BACKDROP === */
+.chat-backdrop{
+  position:fixed;inset:0;z-index:1;
+  background-image:url('assets/chat/chat-backdrop.jpg');
+  background-size:cover;background-position:center;
+  opacity:0;transition:opacity 2s ease;
+  filter:brightness(0.5) saturate(0.85);
+}
+.chat-backdrop.visible{opacity:0.55}
+.chat-backdrop::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,
+    rgba(13,8,24,0.3) 0%,
+    rgba(13,8,24,0.85) 80%
+  );
+}
+
+/* === MAIN APP === */
+#app{
+  position:relative;z-index:2;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  padding:20px 16px 60px;
+  max-width:720px;margin:0 auto;
+}
+
+/* === ERROR STATE (no princess to chat with) === */
+#no-result{
+  position:absolute;inset:0;z-index:5;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;text-align:center;
+}
+#no-result.visible{display:flex}
+.no-result-title{
+  font-family:'Cormorant Unicase',serif;font-weight:600;
+  font-size:clamp(28px,5vw,42px);
+  color:var(--gold-light);margin-bottom:18px;
+  text-shadow:0 0 30px rgba(201,168,76,0.5);
+}
+.no-result-text{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(16px,2.5vw,20px);
+  color:var(--cream-dim);max-width:460px;margin-bottom:28px;line-height:1.5;
+}
+
+/* === BACK BUTTON === */
+.back-btn{
+  position:fixed;top:18px;left:18px;z-index:30;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;
+  color:var(--gold);background:rgba(13,8,24,0.7);
+  border:1px solid var(--gold-dim);
+  padding:8px 14px;cursor:pointer;border-radius:2px;
+  text-transform:uppercase;text-decoration:none;
+  backdrop-filter:blur(4px);transition:all 0.25s;
+}
+.back-btn:hover{background:rgba(201,168,76,0.15);border-color:var(--gold)}
+
+/* === PRINCESS HEADER === */
+.princess-header{
+  display:flex;flex-direction:column;align-items:center;
+  margin-top:10px;margin-bottom:16px;
+  opacity:0;transition:opacity 1.5s ease;
+}
+.princess-header.visible{opacity:1}
+
+.princess-portrait-wrap{
+  position:relative;width:min(180px,40vw);
+  margin-bottom:14px;
+}
+.princess-portrait-wrap::before{
+  content:'';position:absolute;inset:-12px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.4) 0%,transparent 70%);
+  z-index:0;animation:portraitPulse 4s ease-in-out infinite;
+}
+@keyframes portraitPulse{0%,100%{opacity:0.6}50%{opacity:1}}
+.princess-portrait{
+  position:relative;z-index:1;
+  width:100%;aspect-ratio:1;
+  border-radius:50%;
+  overflow:hidden;
+  border:3px solid var(--gold);
+  box-shadow:0 0 40px rgba(201,168,76,0.3),
+             inset 0 0 20px rgba(0,0,0,0.4);
+}
+.princess-portrait img{
+  width:100%;height:100%;object-fit:cover;
+  object-position:center top;
+}
+
+.princess-name{
+  font-family:'Cormorant Unicase',serif;font-weight:600;
+  font-size:clamp(22px,4vw,32px);
+  color:var(--gold-light);
+  letter-spacing:0.04em;text-align:center;
+  text-shadow:0 0 20px rgba(201,168,76,0.4);
+}
+.princess-subtitle{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(13px,1.8vw,15px);
+  color:var(--cream-dim);text-align:center;margin-top:4px;
+}
+
+/* === PARCHMENT SCROLL CHAT AREA === */
+.parchment{
+  position:relative;
+  margin-top:6px;
+  padding:30px 26px 26px;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(212,180,90,0.18),transparent 50%),
+    radial-gradient(ellipse at 70% 80%,rgba(212,180,90,0.12),transparent 50%),
+    linear-gradient(180deg,#f4e4c1 0%,#e8d4a6 100%);
+  border-radius:6px;
+  box-shadow:
+    0 0 0 1px rgba(139,105,20,0.4),
+    0 4px 30px rgba(0,0,0,0.6),
+    inset 0 0 80px rgba(180,140,60,0.12);
+  opacity:0;transition:opacity 1.5s ease 0.5s;
+  min-height:300px;
+}
+.parchment.visible{opacity:1}
+/* Decorative parchment corners */
+.parchment::before,
+.parchment::after,
+.parchment .pc-tr,
+.parchment .pc-bl{
+  content:'✦';position:absolute;color:rgba(139,69,19,0.55);font-size:14px;
+}
+.parchment::before{top:10px;left:14px}
+.parchment::after{bottom:10px;right:14px}
+.parchment .pc-tr{top:10px;right:14px}
+.parchment .pc-bl{bottom:10px;left:14px}
+
+/* === MESSAGE STYLING === */
+.message{
+  margin-bottom:22px;
+  animation:messageFadeIn 0.6s ease forwards;
+}
+@keyframes messageFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Princess speaks */
+.message.princess{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(16px,2.4vw,20px);
+  color:var(--parchment-dark);
+  line-height:1.55;
+  letter-spacing:0.005em;
+  padding:0 4px;
+}
+.message.princess .speaker{
+  font-family:'Cormorant Unicase',serif;font-style:normal;
+  font-weight:600;font-size:13px;letter-spacing:0.15em;
+  color:var(--parchment-mid);text-transform:uppercase;
+  display:block;margin-bottom:6px;opacity:0.75;
+}
+.message.princess .body{
+  display:block;
+}
+.message.princess .body em{
+  font-style:italic;color:#5a2a08;font-weight:500;
+}
+.message.princess .body strong{
+  font-style:normal;color:var(--parchment-dark);font-weight:600;
+}
+/* The character-by-character cursor */
+.typing-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:var(--parchment-dark);
+  margin-left:2px;vertical-align:text-bottom;
+  animation:cursorBlink 0.7s steps(2) infinite;
+}
+@keyframes cursorBlink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+/* Her response (chosen prompt shown back) */
+.message.her{
+  display:flex;justify-content:flex-end;
+  margin-bottom:18px;
+}
+.message.her .body{
+  font-family:'Dancing Script',cursive;font-weight:600;
+  font-size:clamp(15px,2.2vw,19px);
+  color:#3a1a0a;
+  background:rgba(180,140,60,0.15);
+  border:1px solid rgba(139,69,19,0.3);
+  border-radius:14px;
+  padding:8px 16px;
+  max-width:80%;
+  text-align:right;
+}
+
+/* === PROMPT CHOICES === */
+.prompts-container{
+  margin-top:16px;
+  display:flex;flex-direction:column;gap:8px;
+  opacity:0;transition:opacity 0.6s ease;
+}
+.prompts-container.visible{opacity:1}
+
+.prompt-btn{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,2.1vw,17px);
+  font-weight:500;
+  color:#3a1a0a;
+  background:linear-gradient(180deg,rgba(255,255,255,0.4),rgba(212,180,90,0.25));
+  border:1px solid rgba(139,69,19,0.4);
+  padding:11px 18px;cursor:pointer;
+  border-radius:4px;text-align:left;
+  transition:all 0.2s;min-height:44px;
+  display:flex;align-items:center;
+}
+.prompt-btn::before{
+  content:'✦';margin-right:10px;color:rgba(139,69,19,0.6);
+  font-size:11px;flex-shrink:0;
+}
+.prompt-btn:hover{
+  background:linear-gradient(180deg,rgba(255,240,200,0.6),rgba(212,180,90,0.4));
+  border-color:rgba(139,69,19,0.7);
+  transform:translateX(2px);
+}
+.prompt-btn:active{transform:translateX(0)}
+
+/* "Ask another" button — different style */
+.prompt-btn.restart{
+  background:transparent;
+  border:1px dashed rgba(139,69,19,0.4);
+  font-style:italic;
+  font-size:13px;
+  margin-top:8px;
+  justify-content:center;
+}
+.prompt-btn.restart::before{content:'~'}
+
+/* === FAREWELL === */
+.farewell-section{
+  margin-top:22px;text-align:center;
+  display:flex;flex-direction:column;gap:10px;
+}
+
+@media(max-width:600px){
+  .princess-portrait-wrap{width:140px}
+  .parchment{padding:24px 20px 20px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="chat-backdrop" id="chat-backdrop"></div>
+
+<a class="back-btn" href="reveal.html">◂ Back</a>
+
+<!-- ERROR STATE if no quiz result yet -->
+<div id="no-result">
+  <div class="no-result-title">The Mirror Hath Not Spoken</div>
+  <div class="no-result-text">Thou must first take the Mirror's Test before any princess may speak with thee.</div>
+  <a class="back-btn" href="quiz.html" style="position:static;display:inline-block">✦ Take the Quiz ✦</a>
+</div>
+
+<div id="app">
+
+  <!-- Princess header -->
+  <div class="princess-header" id="princess-header">
+    <div class="princess-portrait-wrap">
+      <div class="princess-portrait">
+        <img id="princess-img" src="" alt="">
+      </div>
+    </div>
+    <div class="princess-name" id="princess-name"></div>
+    <div class="princess-subtitle" id="princess-subtitle">listens with thee</div>
+  </div>
+
+  <!-- Conversation parchment -->
+  <div class="parchment" id="parchment">
+    <span class="pc-tr"></span><span class="pc-bl"></span>
+    <div id="conversation"></div>
+    <div class="prompts-container" id="prompts"></div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CHAT WITH THY PRINCESS
+// ═══════════════════════════════════════════════
+
+// ─── LOAD STATE ───
+function loadCeremony(){
+  try{return JSON.parse(localStorage.getItem('royalCeremony') || 'null')}catch(e){return null}
+}
+function loadQuizResult(){
+  try{return JSON.parse(localStorage.getItem('quizResult') || 'null')}catch(e){return null}
+}
+
+const ceremony = loadCeremony();
+const quizResult = loadQuizResult();
+
+// If no quiz result, show error state and stop
+if(!quizResult || !quizResult.winner){
+  document.getElementById('no-result').classList.add('visible');
+  document.getElementById('app').style.display = 'none';
+}
+
+const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : 'noble traveler';
+const FREETEXT_WISH = (quizResult && quizResult.freetextAnswers && quizResult.freetextAnswers.wish_known)
+  ? quizResult.freetextAnswers.wish_known.trim() : '';
+const CHOSE_SEA = !!(quizResult && quizResult.callbackTags && quizResult.callbackTags.sea);
+const PRINCESS_ID = quizResult ? quizResult.winner : null;
+
+// Princess display names + their portrait paths
+const PRINCESS_DATA = {
+  'belle':       {name:'Belle',       img:'assets/chat/speaking-belle.jpg'},
+  'elsa':        {name:'Elsa',        img:'assets/chat/speaking-elsa.jpg'},
+  'mulan':       {name:'Mulan',       img:'assets/chat/speaking-mulan.jpg'},
+  'moana':       {name:'Moana',       img:'assets/chat/speaking-moana.jpg'},
+  'tiana':       {name:'Tiana',       img:'assets/chat/speaking-tiana.jpg'},
+  'raya':        {name:'Raya',        img:'assets/chat/speaking-raya.jpg'},
+  'ariel':       {name:'Ariel',       img:'assets/chat/speaking-ariel.jpg'},
+  'rapunzel':    {name:'Rapunzel',    img:'assets/chat/speaking-rapunzel.jpg'},
+  'aurora':      {name:'Aurora',      img:'assets/chat/speaking-aurora.jpg'},
+  'snow-white':  {name:'Snow White',  img:'assets/chat/speaking-snow-white.jpg'},
+  'jasmine':     {name:'Jasmine',     img:'assets/chat/speaking-jasmine.jpg'},
+  'cinderella':  {name:'Cinderella',  img:'assets/chat/speaking-cinderella.jpg'},
+};
+
+// ═══════════════════════════════════════════════
+// CHAT TREES — SESSION 1: BELLE
+// ═══════════════════════════════════════════════
+// Each tree:
+//   greeting: function(name, freetext, choseSea) returns the opening line
+//   starters: array of { id, label, response, followups: [{ label, response }] }
+//
+// Variables available in any text:
+//   {name} — her ceremony name
+//   {wish} — her free-text answer (with safe fallback)
+//   {wishOrFallback} — her free-text or a generic line if she didn't answer
+
+const CHAT_TREES = {
+
+  // ═══ BELLE ═══
+  belle: {
+    greeting: (name, wish) => {
+      if(wish && wish.length > 5){
+        return `Oh — <em>{name}</em>. Come, sit a moment with me. I've been thinking about what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. I want thee to know... I see it in thee. Truly.`;
+      }
+      return `Oh — <em>{name}</em>. Come, sit a moment with me. I've waited for thee. There is something quite remarkable about thee, and I want to know more.`;
+    },
+    starters: [
+      {
+        id: 'tell_about_you',
+        label: 'Tell me about thyself',
+        response: `I will tell thee a secret first, <em>{name}</em>. People look at me and see a strange girl who walks with her nose buried in a book. They are not wrong! But what they miss is — every book is a door. Every page, a place I have never been. The world is so much wider than the eye can see. <strong>And so art thou.</strong> Tell me — what is something thou hast wondered about lately?`,
+        followups: [
+          {
+            label: 'I wonder about other people',
+            response: `Yes — yes! That is the deepest wondering of all. When I look at someone, even someone I think I understand, I remember: there is a whole story inside them I have not read. The shy ones, the loud ones, the ones who seem cruel — every one of them carries something. Curiosity about people, <em>{name}</em>, is the kindest thing thou canst possess.`
+          },
+          {
+            label: 'I wonder about the world',
+            response: `Then thou and I are kindred. There are mountains I have only read about. Foods I have never tasted. Songs in languages I cannot yet speak. The wonder I feel at not-knowing — that wonder is the engine of every adventure. Promise me something, <em>{name}</em>: do not let anyone make thee small for asking too many questions. The world rewards the curious.`
+          },
+          {
+            label: 'I wonder about myself',
+            response: `Oh, <em>{name}</em>. That is the bravest wondering. To turn the question inward and ask <em>"who am I, truly?"</em> — most people will not even try. But I will tell thee what I have learned: thou art not one fixed thing. Thou art a story still being written. And the best part is — thou art the one writing it.`
+          }
+        ]
+      },
+      {
+        id: 'feel_different',
+        label: 'I sometimes feel different from others',
+        response: `<em>{name}</em>... I know that feeling deeper than I can say. The whole village called me odd, peculiar, "a funny girl, that Belle." And do you know what? They were right. I <em>am</em> peculiar. But here is what took me too long to learn: <strong>peculiar is not a wound. It is a gift.</strong> The same things that make thee different are the things that will make thee unforgettable. What is it that makes thee feel different?`,
+        followups: [
+          {
+            label: 'I love things others find boring',
+            response: `That is the most precious sign of all. People who love what others overlook — they see beauty no one else sees. Hold onto that. The day will come when someone meets thee and says <em>"how could anyone find this boring?"</em> — and thou wilt smile, because thou wilt have known all along.`
+          },
+          {
+            label: 'I think differently than my friends',
+            response: `Ah — then thou hast the rare gift of an honest mind. Friendship does not require sameness, <em>{name}</em>. It only requires that we listen well. The friends who matter most are the ones who let thee be different and love thee anyway.`
+          },
+          {
+            label: 'I am quieter than most',
+            response: `Quiet is not less, <em>{name}</em>. Quiet is <em>more</em> — more listening, more thinking, more noticing. The world has too many voices that speak before they think. The quiet ones, the watchful ones — we are the ones who see things clearly. Never apologize for thy quiet.`
+          }
+        ]
+      },
+      {
+        id: 'what_should_i_read',
+        label: 'What books should I read?',
+        response: `Now <em>this</em> is a question I have waited my whole life to be asked! Reading is like — like having a thousand lives in one. Adventure books for when thou wantest to be brave. Mystery books for when thou wantest to think. Stories about animals, about faraway places, about regular girls who do remarkable things. <strong>The best book is the one thou cannot put down.</strong> What kind of feeling dost thou want a book to give thee?`,
+        followups: [
+          {
+            label: 'Adventure! Excitement!',
+            response: `Then thou wantest stories where someone like thee is suddenly thrust into a world they did not know existed. Books with maps in the front. Books where the heroes have to figure things out as they go. Trust thy instinct on this — when a book makes thy heart race in chapter one, that is the right book.`
+          },
+          {
+            label: 'Something cozy and warm',
+            response: `The very best feeling. Look for books about big houses with lots of family in them. Books about small towns where everyone knows each other. Books with food described in detail and friendships that last decades. A cozy book is a hug between covers.`
+          },
+          {
+            label: 'Something that makes me think',
+            response: `Oh, thou art a reader after my own heart. Look for books that ask <em>"what would you do?"</em> and don't give thee an easy answer. Books with characters who are sometimes wrong. Books that make thee close them, look up at the ceiling, and just <em>think</em> for a moment. Those are the books that stay with thee forever.`
+          }
+        ]
+      },
+      {
+        id: 'feel_brave',
+        label: 'How do I feel braver?',
+        response: `<em>{name}</em>, I will tell thee the truth: I do not feel brave most of the time. When I went into that castle to find my father, my hands were shaking. When I stood up to him in the woods, my voice almost cracked. <strong>Bravery is not the absence of fear. It is moving forward with the fear.</strong> The brave thing thou wantest to do — what is it?`,
+        followups: [
+          {
+            label: 'Speak up when something is wrong',
+            response: `That is the hardest bravery of all, and the most important. Here is what helps me: I remind myself that staying silent is also a choice — and it is the choice that protects no one. When something is wrong, even a small voice saying <em>"I do not think this is right"</em> can change everything. Thy voice matters, <em>{name}</em>.`
+          },
+          {
+            label: 'Try something I might fail at',
+            response: `Oh, <em>{name}</em> — failing is how all good things begin. Every book ever written had a first draft someone hated. Every dancer once tripped. Every brave thing was once a clumsy attempt. The shame is not in failing. The shame would be in never trying because thou wert too afraid. Try.`
+          },
+          {
+            label: 'Be myself when others tease me',
+            response: `This — this — is the bravest of all. Listen to me carefully: the people who tease thee are usually frightened of being themselves. They will not see it that way, but it is true. Standing in thy own truth while they laugh — that is the most powerful thing thou canst ever do. And one day, they will wish they had been brave like thee.`
+          }
+        ]
+      }
+    ]
+  },
+
+  // OTHER PRINCESSES — placeholders for now (Session 2 + 3 will fill these in)
+  // For now, give a graceful fallback so the app doesn't break
+  _placeholder: {
+    greeting: (name) => `<em>{name}</em>... I am so glad thou hast come. The mirror saw something rare in thee. I am still gathering my thoughts on what to say to thee — but I would love for thee to come back soon. Thy princess speaks more fully soon.`,
+    starters: [
+      {
+        id: 'understand',
+        label: 'I understand. I will return.',
+        response: `Until then, <em>{name}</em>. Carry what the mirror told thee. It chose thee for a reason.`,
+        followups: []
+      }
+    ]
+  }
+};
+
+// Helper: escape user free-text so it can't break HTML
+function escapeForEm(str){
+  return String(str).replace(/[<>&"']/g, c => ({
+    '<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+// Substitute {name} and {wish} variables in any string
+function substitute(template){
+  return template
+    .replace(/\{name\}/g, escapeForEm(PRINCESS_NAME))
+    .replace(/\{wish\}/g, escapeForEm(FREETEXT_WISH || 'thy heart'));
+}
+
+// ═══════════════════════════════════════════════
+// STARFIELD
+// ═══════════════════════════════════════════════
+(function(){
+  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){
+    c.width=innerWidth;c.height=innerHeight;stars=[];
+    for(let i=0;i<150;i++)stars.push({
+      x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+      r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,
+      opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    const t=Date.now()/1000;
+    stars.forEach(s=>{
+      const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+// ═══════════════════════════════════════════════
+// CHAT INITIALIZATION
+// ═══════════════════════════════════════════════
+
+if(PRINCESS_ID){
+  // Get the tree (or fall back to placeholder)
+  const tree = CHAT_TREES[PRINCESS_ID] || CHAT_TREES._placeholder;
+  const data = PRINCESS_DATA[PRINCESS_ID];
+
+  // Set up header
+  document.getElementById('princess-img').src = data.img;
+  document.getElementById('princess-img').onerror = function(){this.style.display='none'};
+  document.getElementById('princess-name').textContent = data.name;
+
+  // Reveal sequence
+  setTimeout(()=>document.getElementById('chat-backdrop').classList.add('visible'), 200);
+  setTimeout(()=>document.getElementById('princess-header').classList.add('visible'), 600);
+  setTimeout(()=>document.getElementById('parchment').classList.add('visible'), 1400);
+
+  // Start the conversation
+  setTimeout(()=>startConversation(tree), 2400);
+}
+
+function startConversation(tree){
+  const greeting = tree.greeting(PRINCESS_NAME, FREETEXT_WISH, CHOSE_SEA);
+  speakAsPrincess(greeting, () => {
+    showStarters(tree);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// MESSAGE RENDERING
+// ═══════════════════════════════════════════════
+
+function speakAsPrincess(text, onComplete){
+  const conversation = document.getElementById('conversation');
+  const data = PRINCESS_DATA[PRINCESS_ID];
+  const msg = document.createElement('div');
+  msg.className = 'message princess';
+  msg.innerHTML = `<span class="speaker">${data.name}</span><span class="body"></span>`;
+  conversation.appendChild(msg);
+
+  // Type out the text character by character
+  const bodyEl = msg.querySelector('.body');
+  const fullText = substitute(text);
+  typeOut(bodyEl, fullText, onComplete);
+  scrollToBottom();
+}
+
+function showHerChoice(text){
+  const conversation = document.getElementById('conversation');
+  const msg = document.createElement('div');
+  msg.className = 'message her';
+  msg.innerHTML = `<span class="body">${substitute(text)}</span>`;
+  conversation.appendChild(msg);
+  scrollToBottom();
+}
+
+// Character-by-character text reveal
+// We type into a temp string and rebuild innerHTML each tick to preserve <em>/<strong> tags
+function typeOut(el, fullText, onComplete){
+  let visibleCharCount = 0;
+  // Strip HTML to count actual characters, but render with HTML
+  const strippedLength = stripHTML(fullText).length;
+  const charsPerSecond = 65;
+  const intervalMs = 1000 / charsPerSecond;
+
+  function step(){
+    visibleCharCount++;
+    if(visibleCharCount > strippedLength){
+      el.innerHTML = fullText;
+      if(onComplete) setTimeout(onComplete, 400);
+      return;
+    }
+    el.innerHTML = renderPartial(fullText, visibleCharCount) + '<span class="typing-cursor"></span>';
+    scrollToBottom();
+    setTimeout(step, intervalMs + (Math.random() * 12));
+  }
+  step();
+}
+
+// Renders only the first N (visible) characters, but preserves any HTML tags in those characters
+function renderPartial(html, n){
+  let result = '';
+  let visibleCount = 0;
+  let i = 0;
+  while(i < html.length && visibleCount < n){
+    if(html[i] === '<'){
+      // Copy the entire tag without counting it
+      const closeIdx = html.indexOf('>', i);
+      if(closeIdx === -1){ break; }
+      result += html.substring(i, closeIdx + 1);
+      i = closeIdx + 1;
+    } else if(html[i] === '&'){
+      // Copy the entire entity as one character
+      const semiIdx = html.indexOf(';', i);
+      if(semiIdx !== -1 && semiIdx - i < 8){
+        result += html.substring(i, semiIdx + 1);
+        i = semiIdx + 1;
+        visibleCount++;
+      } else {
+        result += html[i];
+        i++;
+        visibleCount++;
+      }
+    } else {
+      result += html[i];
+      i++;
+      visibleCount++;
+    }
+  }
+  // Close any open tags
+  const openTags = [];
+  const tagRegex = /<\/?([a-z]+)[^>]*>/gi;
+  let m;
+  while((m = tagRegex.exec(result)) !== null){
+    if(m[0].startsWith('</')){
+      openTags.pop();
+    } else if(!m[0].endsWith('/>')){
+      openTags.push(m[1]);
+    }
+  }
+  while(openTags.length){
+    result += `</${openTags.pop()}>`;
+  }
+  return result;
+}
+
+function stripHTML(html){
+  return html.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, ' ');
+}
+
+function scrollToBottom(){
+  // Smooth scroll the page so the latest message is visible
+  setTimeout(() => {
+    window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+  }, 50);
+}
+
+// ═══════════════════════════════════════════════
+// PROMPTS / NAVIGATION
+// ═══════════════════════════════════════════════
+
+function showStarters(tree){
+  const promptsEl = document.getElementById('prompts');
+  promptsEl.innerHTML = '';
+  promptsEl.classList.remove('visible');
+
+  tree.starters.forEach(starter => {
+    const btn = document.createElement('button');
+    btn.className = 'prompt-btn';
+    btn.textContent = starter.label;
+    btn.addEventListener('click', () => handleStarter(starter, tree));
+    promptsEl.appendChild(btn);
+  });
+
+  // Fade in prompts
+  setTimeout(() => promptsEl.classList.add('visible'), 100);
+}
+
+function handleStarter(starter, tree){
+  // Hide prompts
+  const promptsEl = document.getElementById('prompts');
+  promptsEl.innerHTML = '';
+  promptsEl.classList.remove('visible');
+
+  // Show what she chose
+  showHerChoice(starter.label);
+
+  // Princess responds
+  setTimeout(() => {
+    speakAsPrincess(starter.response, () => {
+      // Show followup prompts (or restart)
+      showFollowups(starter, tree);
+    });
+  }, 600);
+}
+
+function showFollowups(starter, tree){
+  const promptsEl = document.getElementById('prompts');
+  promptsEl.innerHTML = '';
+  promptsEl.classList.remove('visible');
+
+  if(starter.followups && starter.followups.length){
+    starter.followups.forEach(fu => {
+      const btn = document.createElement('button');
+      btn.className = 'prompt-btn';
+      btn.textContent = fu.label;
+      btn.addEventListener('click', () => handleFollowup(fu, tree));
+      promptsEl.appendChild(btn);
+    });
+  }
+
+  // Always offer "ask another question" to return to starters
+  const restart = document.createElement('button');
+  restart.className = 'prompt-btn restart';
+  restart.textContent = 'Ask thee something else';
+  restart.addEventListener('click', () => {
+    showStarters(tree);
+  });
+  promptsEl.appendChild(restart);
+
+  setTimeout(() => promptsEl.classList.add('visible'), 100);
+}
+
+function handleFollowup(followup, tree){
+  const promptsEl = document.getElementById('prompts');
+  promptsEl.innerHTML = '';
+  promptsEl.classList.remove('visible');
+
+  showHerChoice(followup.label);
+
+  setTimeout(() => {
+    speakAsPrincess(followup.response, () => {
+      showAfterFollowup(tree);
+    });
+  }, 600);
+}
+
+function showAfterFollowup(tree){
+  const promptsEl = document.getElementById('prompts');
+  promptsEl.innerHTML = '';
+  promptsEl.classList.remove('visible');
+
+  const restart = document.createElement('button');
+  restart.className = 'prompt-btn restart';
+  restart.textContent = 'Ask thee something else';
+  restart.addEventListener('click', () => {
+    showStarters(tree);
+  });
+  promptsEl.appendChild(restart);
+
+  setTimeout(() => promptsEl.classList.add('visible'), 100);
+}
+
+// ─── SERVICE WORKER ───
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});
+}
+</script>
+</body>
+</html>
