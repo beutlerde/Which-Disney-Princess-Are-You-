@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0D0818">
+<link rel="manifest" href="manifest.json">
+<title>The Royal Realm ✦ Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Unicase:wght@300;400;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;--gold-light:#F0D080;--gold-edge:#FFF4D3;--gold-dim:#8B6914;
+  --purple-deep:#0D0818;--purple-mid:#1E1438;
+  --cream:#F5EDD8;--cream-dim:#C8B99A;
+}
+html,body{
+  width:100%;min-height:100vh;
+  background:var(--purple-deep);
+  font-family:'Cormorant Garamond',serif;
+  color:var(--cream);
+  overflow-x:hidden;
+}
+
+/* === STARFIELD === */
+#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* === CASTLE HALL BACKGROUND === */
+.castle-hall{
+  position:fixed;inset:0;z-index:1;
+  background-image:url('assets/landing/castle-hall.jpg');
+  background-size:cover;
+  background-position:center;
+  opacity:0;
+  transition:opacity 2.5s ease;
+  filter:brightness(0.55) saturate(0.9);
+}
+.castle-hall.visible{opacity:0.8}
+.castle-hall::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    rgba(13,8,24,0.7) 0%,
+    rgba(13,8,24,0.3) 30%,
+    rgba(13,8,24,0.5) 70%,
+    rgba(13,8,24,0.95) 100%
+  );
+}
+
+/* === MAIN CONTENT === */
+#app{
+  position:relative;z-index:2;
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;
+  padding:40px 20px 60px;
+}
+
+/* === WELCOME PHASE === */
+#welcome-phase{
+  position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:24px;
+  background:radial-gradient(ellipse at center, rgba(13,8,24,0.4), rgba(13,8,24,0.95));
+  transition:opacity 1.5s ease;
+}
+#welcome-phase.fading{opacity:0;pointer-events:none}
+
+.welcome-line{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(22px,4vw,32px);color:var(--gold);
+  text-align:center;line-height:1.5;max-width:700px;
+  opacity:0;letter-spacing:0.02em;
+  text-shadow:0 0 30px rgba(201,168,76,0.5);
+  margin:6px 0;
+}
+.welcome-line.visible{animation:lineFade 1.6s ease forwards}
+@keyframes lineFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.welcome-name{
+  font-family:'Cormorant Unicase',serif;
+  font-weight:700;
+  font-size:clamp(40px,8vw,64px);
+  margin:24px 0;opacity:0;
+  background:linear-gradient(180deg,var(--gold-edge) 0%,var(--gold-light) 35%,var(--gold) 60%,#a68122 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 4px 20px rgba(212,175,55,0.6));
+  letter-spacing:0.02em;
+}
+.welcome-name.visible{animation:nameFade 2s ease forwards}
+@keyframes nameFade{0%{opacity:0;transform:scale(0.92)}60%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+
+#welcome-tap{
+  position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;
+  color:var(--gold-dim);text-transform:uppercase;opacity:0;
+  cursor:pointer;
+}
+#welcome-tap.show{animation:tapPulse 2.5s ease-in-out infinite}
+@keyframes tapPulse{0%,100%{opacity:0.4}50%{opacity:0.95}}
+
+/* === MAIN HEADER === */
+.realm-header{
+  text-align:center;margin-top:40px;margin-bottom:50px;
+  opacity:0;transition:opacity 1.5s ease 0.5s;
+}
+.realm-header.visible{opacity:1}
+.realm-title{
+  font-family:'Cormorant Unicase',serif;font-weight:700;
+  font-size:clamp(36px,6.5vw,56px);
+  background:linear-gradient(180deg,var(--gold-edge) 0%,var(--gold-light) 40%,var(--gold) 70%,#a68122 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 4px 20px rgba(212,175,55,0.5));
+  letter-spacing:0.04em;line-height:1.1;margin-bottom:12px;
+}
+.realm-subtitle{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(15px,2.5vw,20px);color:var(--cream-dim);
+  max-width:600px;margin:0 auto;line-height:1.5;
+}
+.realm-divider{
+  display:flex;align-items:center;justify-content:center;
+  gap:14px;margin:16px auto 0;width:100%;max-width:280px;
+}
+.realm-divider-line{
+  flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.realm-divider-star{color:var(--gold);font-size:14px}
+
+/* === DOORS GRID === */
+.doors-section{
+  width:100%;max-width:1100px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;margin-bottom:50px;
+  opacity:0;transition:opacity 1.5s ease 1s;
+}
+.doors-section.visible{opacity:1}
+
+.door-card{
+  position:relative;
+  display:flex;flex-direction:column;
+  align-items:center;
+  cursor:pointer;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  text-decoration:none;
+}
+.door-card:hover{transform:translateY(-8px)}
+
+.door-image-wrap{
+  position:relative;width:100%;aspect-ratio:2/3;
+  border:2px solid rgba(201,168,76,0.3);
+  border-radius:6px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(30,20,56,0.6),rgba(13,8,24,0.8));
+  transition:all 0.4s ease;
+  margin-bottom:16px;
+  box-shadow:0 4px 30px rgba(0,0,0,0.4);
+}
+.door-card:hover .door-image-wrap{
+  border-color:var(--gold);
+  box-shadow:0 8px 40px rgba(201,168,76,0.4),0 0 60px rgba(201,168,76,0.2);
+}
+.door-image{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.6s ease;
+}
+.door-card:hover .door-image{transform:scale(1.04)}
+
+/* Placeholder shown when door image is not yet uploaded */
+.door-image-placeholder{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--purple-mid),var(--purple-deep));
+  color:var(--gold-dim);
+}
+.door-image-placeholder::before{
+  content:'✦';font-size:64px;opacity:0.4;
+}
+.door-image-placeholder span{
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.2em;
+  color:var(--gold-dim);text-transform:uppercase;margin-top:12px;
+}
+/* Hide placeholder when actual image loads */
+.door-image[src]:not([src=""]){opacity:1}
+.door-image[src]:not([src=""]) ~ .door-image-placeholder{display:none}
+
+/* Door spotlight overlay */
+.door-spotlight{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center 60%,
+    rgba(201,168,76,0.25) 0%,
+    transparent 60%);
+  opacity:0;transition:opacity 0.4s ease;
+  pointer-events:none;
+}
+.door-card:hover .door-spotlight{opacity:1}
+
+.door-label{
+  font-family:'Cormorant Unicase',serif;font-weight:600;
+  font-size:clamp(18px,2.5vw,24px);
+  color:var(--gold-light);
+  text-align:center;line-height:1.2;
+  margin-bottom:6px;
+  letter-spacing:0.03em;
+  text-shadow:0 0 20px rgba(201,168,76,0.3);
+}
+.door-card:hover .door-label{color:var(--gold-edge)}
+
+.door-description{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(13px,1.8vw,16px);
+  color:var(--cream-dim);
+  text-align:center;line-height:1.4;
+  max-width:240px;margin:0 auto;
+}
+
+/* === RETURNING USER GREETING === */
+.returning-greeting{
+  margin-top:30px;text-align:center;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(13px,2vw,16px);color:var(--gold-dim);
+  max-width:600px;
+  opacity:0;transition:opacity 1.5s ease 1.5s;
+}
+.returning-greeting.visible{opacity:1}
+.returning-greeting strong{
+  font-style:normal;color:var(--gold-light);
+  font-family:'Cormorant Unicase',serif;font-weight:600;
+}
+
+/* === FOOTER === */
+.realm-footer{
+  margin-top:auto;padding-top:40px;text-align:center;
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;
+  color:var(--gold-dim);opacity:0.6;
+  text-transform:uppercase;
+}
+
+/* === RESPONSIVE === */
+@media(max-width:760px){
+  .doors-section{grid-template-columns:1fr;gap:18px;max-width:380px}
+  .door-image-wrap{aspect-ratio:3/2}
+  .realm-header{margin-top:30px;margin-bottom:30px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="castle-hall" id="castle-hall"></div>
+
+<!-- WELCOME PHASE: shown briefly on first load -->
+<div id="welcome-phase">
+  <div class="welcome-line" id="welcome-line-1"></div>
+  <div class="welcome-name" id="welcome-name"></div>
+  <div class="welcome-line" id="welcome-line-2"></div>
+  <div id="welcome-tap">✦ Tap to enter ✦</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <header class="realm-header" id="realm-header">
+    <h1 class="realm-title">The Royal Realm</h1>
+    <div class="realm-divider">
+      <div class="realm-divider-line"></div>
+      <span class="realm-divider-star">✦</span>
+      <div class="realm-divider-line"></div>
+    </div>
+    <p class="realm-subtitle" id="realm-subtitle">Three doors await thee. Choose where thy journey begins.</p>
+  </header>
+
+  <section class="doors-section" id="doors-section">
+
+    <a class="door-card" href="ceremony.html">
+      <div class="door-image-wrap">
+        <img class="door-image" src="assets/landing/door-reflection.jpg" alt="The Hall of Reflection" onerror="this.style.display='none'">
+        <div class="door-image-placeholder"><span>The Hall of Reflection</span></div>
+        <div class="door-spotlight"></div>
+      </div>
+      <div class="door-label">The Hall of Reflection</div>
+      <div class="door-description">Where the mirror reveals thy true nature</div>
+    </a>
+
+    <a class="door-card" href="chest.html">
+      <div class="door-image-wrap">
+        <img class="door-image" src="assets/landing/door-chest.jpg" alt="The Royal Chest" onerror="this.style.display='none'">
+        <div class="door-image-placeholder"><span>The Royal Chest</span></div>
+        <div class="door-spotlight"></div>
+      </div>
+      <div class="door-label">The Royal Chest</div>
+      <div class="door-description">Where letters of magic await thee</div>
+    </a>
+
+    <a class="door-card" href="https://beutlerde.github.io/" id="kingdom-door">
+      <div class="door-image-wrap">
+        <img class="door-image" src="assets/landing/door-kingdom.jpg" alt="The Crown Kingdom" onerror="this.style.display='none'">
+        <div class="door-image-placeholder"><span>The Crown Kingdom</span></div>
+        <div class="door-spotlight"></div>
+      </div>
+      <div class="door-label">The Crown Kingdom</div>
+      <div class="door-description">Where thou shalt build thine own realm</div>
+    </a>
+
+  </section>
+
+  <div class="returning-greeting" id="returning-greeting"></div>
+
+  <div class="realm-footer">✦ A Realm Built for Thee ✦</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// THE ROYAL REALM — Landing Page
+// ═══════════════════════════════════════════════
+
+// ─── LOAD CEREMONY + QUIZ STATE ───
+function loadCeremony(){
+  try{ return JSON.parse(localStorage.getItem('royalCeremony') || 'null'); }catch(e){return null}
+}
+function loadQuizResult(){
+  try{ return JSON.parse(localStorage.getItem('quizResult') || 'null'); }catch(e){return null}
+}
+function loadQuizHistory(){
+  try{ return JSON.parse(localStorage.getItem('quizHistory') || '[]'); }catch(e){return []}
+}
+
+const ceremony = loadCeremony();
+const quizResult = loadQuizResult();
+const history = loadQuizHistory();
+
+const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : null;
+const HAS_VISITED_BEFORE = !!ceremony || history.length > 0;
+
+// Princess display names for greeting
+const PRINCESS_DISPLAY = {
+  'elsa':'Elsa','rapunzel':'Rapunzel','belle':'Belle','moana':'Moana',
+  'raya':'Raya','aurora':'Aurora','ariel':'Ariel','tiana':'Tiana',
+  'snow-white':'Snow White','mulan':'Mulan','jasmine':'Jasmine','cinderella':'Cinderella'
+};
+
+// ─── STARFIELD ───
+(function(){
+  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){
+    c.width=innerWidth;c.height=innerHeight;stars=[];
+    for(let i=0;i<200;i++)stars.push({
+      x:Math.random()*innerWidth,y:Math.random()*innerHeight,
+      r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,
+      opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    const t=Date.now()/1000;
+    stars.forEach(s=>{
+      const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+// ─── WELCOME PHASE: build the right opening lines ───
+function setupWelcome(){
+  const line1 = document.getElementById('welcome-line-1');
+  const nameEl = document.getElementById('welcome-name');
+  const line2 = document.getElementById('welcome-line-2');
+  const tap = document.getElementById('welcome-tap');
+
+  if(HAS_VISITED_BEFORE && PRINCESS_NAME){
+    // Returning: warm and recognizing
+    line1.innerHTML = 'Welcome back...';
+    nameEl.textContent = PRINCESS_NAME;
+    line2.innerHTML = 'The realm has missed thee.';
+  } else if(PRINCESS_NAME){
+    line1.innerHTML = 'Welcome, noble traveler...';
+    nameEl.textContent = PRINCESS_NAME;
+    line2.innerHTML = 'Thy realm awaits.';
+  } else {
+    // First visit, no ceremony yet
+    line1.innerHTML = 'Welcome, noble traveler...';
+    nameEl.textContent = '';
+    nameEl.style.display = 'none';
+    line2.innerHTML = 'Thy realm awaits.';
+  }
+
+  // Animate sequence
+  setTimeout(()=>line1.classList.add('visible'), 400);
+  if(nameEl.textContent){
+    setTimeout(()=>nameEl.classList.add('visible'), 1800);
+    setTimeout(()=>line2.classList.add('visible'), 3600);
+    setTimeout(()=>tap.classList.add('show'), 5000);
+  } else {
+    setTimeout(()=>line2.classList.add('visible'), 2000);
+    setTimeout(()=>tap.classList.add('show'), 3400);
+  }
+}
+
+// ─── DISMISS WELCOME → REVEAL THE REALM ───
+let welcomeDismissed = false;
+function dismissWelcome(){
+  if(welcomeDismissed) return;
+  welcomeDismissed = true;
+
+  document.getElementById('welcome-phase').classList.add('fading');
+  document.getElementById('castle-hall').classList.add('visible');
+
+  // Stagger the reveal of header, doors, greeting
+  setTimeout(()=>{
+    document.getElementById('realm-header').classList.add('visible');
+    document.getElementById('doors-section').classList.add('visible');
+    setupReturningGreeting();
+  }, 800);
+}
+
+// Tap anywhere on welcome screen to dismiss
+document.getElementById('welcome-phase').addEventListener('click', dismissWelcome);
+// Auto-dismiss after a long pause if she doesn't tap (in case the cue is missed)
+setTimeout(dismissWelcome, 12000);
+
+// ─── RETURNING USER GREETING (subtle line below the doors) ───
+function setupReturningGreeting(){
+  const el = document.getElementById('returning-greeting');
+
+  if(quizResult && quizResult.winner && PRINCESS_NAME){
+    // She's done the quiz — full personal greeting
+    const princessName = PRINCESS_DISPLAY[quizResult.winner] || quizResult.winner;
+    const colorRealm = (ceremony && ceremony.colorNames && ceremony.colorNames.length)
+      ? ceremony.colorNames.join(' and ') + ' Realm' : 'Royal Realm';
+    el.innerHTML = 'Thou art known here as <strong>Princess ' + PRINCESS_NAME + '</strong>, of the ' + colorRealm + ' — the mirror named thee <strong>' + princessName + '</strong>.';
+    el.classList.add('visible');
+  } else if(ceremony && PRINCESS_NAME){
+    // Has done ceremony but not quiz
+    el.innerHTML = 'Thou art known here as <strong>Princess ' + PRINCESS_NAME + '</strong>. The mirror still waits to look upon thee.';
+    el.classList.add('visible');
+  }
+  // Otherwise no greeting — clean first visit
+}
+
+// Init
+setupWelcome();
+
+// ─── SERVICE WORKER ───
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});
+}
+</script>
+</body>
+</html>
