@@ -530,13 +530,17 @@ function beginQuiz(){
 // ═══════════════════════════════════════════════
 let pendingAnswer = null;
 
+// State to track which interludes have been shown (so we don't loop)
+const shownInterludes = new Set();
+
 function showQuestion(idx){
   state.currentIdx = idx;
 
-  // Check for interlude
+  // Check for interlude — but only if we haven't shown it yet
   const lineForHere = MIRROR_LINES.find(l => l.after === idx && idx > 0);
-  if(lineForHere){
-    speakMirror(lineForHere.text, ()=>showQuestion(idx)); // re-call after interlude
+  if(lineForHere && !shownInterludes.has(idx)){
+    shownInterludes.add(idx);
+    speakMirror(lineForHere.text, ()=>showQuestion(idx));
     return;
   }
 
