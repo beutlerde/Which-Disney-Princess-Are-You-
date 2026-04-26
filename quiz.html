@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D0818">
+<link rel="manifest" href="manifest.json">
+<title>The Royal Quiz ✦ Which Princess Art Thou?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Unicase:wght@300;400;600&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --gold:#C9A84C;--gold-light:#F0D080;--gold-dim:#8B6914;
+  --purple-deep:#0D0818;--purple-mid:#1E1438;
+  --cream:#F5EDD8;--cream-dim:#C8B99A;
+  --burgundy:#3a0a0a;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);font-family:'Cormorant Garamond',serif;color:var(--cream)}
+#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
+#app{position:relative;width:100%;height:100%;z-index:1;overflow:hidden}
+
+/* === MIRROR (always visible at top) === */
+.mirror-stage{
+  position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  width:120px;height:160px;z-index:50;pointer-events:none;
+  transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1);
+}
+.mirror-stage.large{width:280px;height:380px;top:8vh}
+.mirror-stage.huge{width:min(500px,80vw);height:min(680px,75vh);top:50%;left:50%;transform:translate(-50%,-50%)}
+.mirror-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 30px rgba(201,168,76,0.4))}
+.mirror-glow{
+  position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.3) 0%,transparent 60%);
+  animation:mirrorPulse 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes mirrorPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
+
+/* === MIRROR VOICE (text the mirror speaks) === */
+.mirror-voice{
+  position:fixed;left:50%;top:60%;transform:translate(-50%,-50%);
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(20px,4vw,30px);color:var(--gold-light);
+  text-align:center;line-height:1.5;max-width:600px;
+  padding:0 24px;letter-spacing:0.02em;
+  text-shadow:0 0 30px rgba(201,168,76,0.5);
+  opacity:0;pointer-events:none;z-index:60;
+  transition:opacity 1s ease;
+}
+.mirror-voice.visible{opacity:1}
+
+/* === SCENES === */
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.8s ease;padding-top:200px}
+.scene.active{opacity:1;pointer-events:all}
+
+.q-counter{
+  position:fixed;top:8px;right:16px;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.2em;
+  color:var(--gold-dim);text-transform:uppercase;z-index:55;
+}
+
+.scene-title{font-family:'Cinzel',serif;font-size:clamp(10px,2vw,13px);color:var(--gold);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:8px;text-align:center;opacity:0.7}
+.gold-divider{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
+
+.q-prompt{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(20px,3.5vw,30px);
+  color:var(--cream);
+  text-align:center;line-height:1.4;
+  max-width:680px;margin:0 auto 30px;
+  text-shadow:0 0 30px rgba(201,168,76,0.3);
+}
+.q-prompt em{color:var(--gold-light);font-style:italic}
+.q-prompt .name{font-family:'Cormorant Unicase',serif;color:var(--gold-light);font-style:normal}
+
+.q-context{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(13px,2vw,16px);color:var(--cream-dim);
+  text-align:center;max-width:560px;margin:0 auto 24px;line-height:1.5;
+}
+
+/* === ANSWER OPTIONS (text-based) === */
+.answer-list{display:flex;flex-direction:column;gap:10px;max-width:560px;width:100%;margin:0 auto;padding:0 16px}
+.answer-btn{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(14px,2.2vw,17px);
+  color:var(--cream);
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(139,105,20,0.4);
+  padding:14px 22px;cursor:pointer;border-radius:3px;
+  transition:all 0.25s;min-height:54px;text-align:left;
+  position:relative;
+}
+.answer-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold-light);transform:translateY(-1px)}
+.answer-btn.chosen{background:rgba(201,168,76,0.2);border-color:var(--gold-light);color:var(--gold-light);box-shadow:0 0 24px rgba(201,168,76,0.4)}
+.answer-btn::before{
+  content:'✦';margin-right:14px;color:var(--gold-dim);
+  transition:color 0.25s;
+}
+.answer-btn:hover::before,.answer-btn.chosen::before{color:var(--gold-light)}
+
+/* === VISUAL CHOICE CARDS === */
+.visual-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:560px;width:100%;margin:0 auto;padding:0 16px}
+.visual-card{
+  position:relative;aspect-ratio:1;
+  background:rgba(13,8,24,0.7);
+  border:2px solid rgba(139,105,20,0.4);
+  border-radius:6px;cursor:pointer;
+  overflow:hidden;transition:all 0.3s;
+  display:flex;align-items:center;justify-content:center;
+}
+.visual-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
+.visual-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3)}
+.visual-card:hover img{transform:scale(1.04)}
+.visual-card.chosen{border-color:var(--gold-light);box-shadow:0 0 32px rgba(201,168,76,0.6)}
+.visual-card-label{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(180deg,transparent,rgba(13,8,24,0.95));
+  padding:14px 12px 10px;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;
+  color:var(--gold-light);text-align:center;text-transform:uppercase;
+}
+/* Placeholder card style — used until Gemini art arrives */
+.visual-card.placeholder{
+  background:linear-gradient(135deg,var(--purple-mid),var(--purple-deep));
+  border:1px dashed var(--gold-dim);
+}
+.visual-card.placeholder::before{
+  content:'✦';font-size:48px;color:var(--gold-dim);opacity:0.3;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+}
+
+/* === FREE TEXT === */
+.free-text-input{
+  font-family:'Dancing Script',cursive;font-size:22px;
+  color:var(--gold-light);background:rgba(255,255,255,0.04);
+  border:1px solid var(--gold-dim);padding:14px 18px;
+  width:100%;max-width:560px;outline:none;border-radius:3px;
+  margin:0 auto;display:block;text-align:center;
+}
+.free-text-input:focus{border-color:var(--gold);box-shadow:0 0 24px rgba(201,168,76,0.3)}
+
+/* === BUTTONS === */
+.btn-royal{font-family:'Cinzel',serif;font-size:clamp(12px,1.8vw,15px);letter-spacing:0.15em;color:var(--purple-deep);background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dim));border:none;padding:13px 32px;border-radius:2px;cursor:pointer;min-height:48px;min-width:160px;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:all 0.3s;text-transform:uppercase}
+.btn-royal:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,168,76,0.6)}
+.btn-royal:disabled{opacity:0.4;pointer-events:none}
+.btn-secondary{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);padding:10px 22px;cursor:pointer;border-radius:2px;min-height:42px;text-transform:uppercase;transition:all 0.25s}
+.btn-secondary:hover{color:var(--gold-light);border-color:var(--gold)}
+
+/* === INTRO SCREEN === */
+#intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;z-index:5}
+.intro-greeting{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(20px,4vw,30px);color:var(--gold);
+  text-align:center;line-height:1.5;max-width:600px;
+  margin-top:60vh;opacity:0;text-shadow:0 0 30px rgba(201,168,76,0.5);
+}
+.intro-greeting.visible{animation:lineFade 1.6s ease forwards}
+@keyframes lineFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.intro-name{
+  font-family:'Cormorant Unicase',serif;
+  font-size:clamp(36px,7vw,56px);
+  color:var(--gold-light);
+  margin:20px 0;opacity:0;
+  text-shadow:0 0 40px rgba(201,168,76,0.7);
+}
+.intro-name.visible{animation:nameFade 2s ease forwards}
+@keyframes nameFade{0%{opacity:0;transform:scale(0.9)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+.intro-cta{
+  margin-top:40px;opacity:0;
+}
+.intro-cta.visible{animation:lineFade 1.5s ease forwards}
+
+/* === REVEAL TRANSITION === */
+#reveal-transition{position:fixed;inset:0;background:radial-gradient(circle,rgba(13,8,24,0.95),rgba(13,8,24,1));z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
+#reveal-transition.active{display:flex}
+.fog-layer{
+  position:absolute;inset:-50%;
+  background:radial-gradient(ellipse,rgba(201,168,76,0.4) 0%,transparent 70%);
+  filter:blur(40px);
+  animation:fogSwirl 6s ease-in-out infinite;
+}
+@keyframes fogSwirl{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.2)}}
+.reveal-text{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(22px,4vw,34px);color:var(--gold-light);
+  text-align:center;z-index:201;padding:0 24px;
+  text-shadow:0 0 40px rgba(201,168,76,0.8);
+  opacity:0;transition:opacity 1.2s ease;
+}
+.reveal-text.visible{opacity:1}
+
+/* === HISTORY VIEWER (analytics, hidden behind ?history=true) === */
+#history-viewer{
+  position:fixed;inset:0;background:var(--purple-deep);
+  z-index:500;overflow-y:auto;padding:24px;display:none;
+}
+#history-viewer.active{display:block}
+.history-content{max-width:720px;margin:0 auto;color:var(--cream)}
+.history-title{font-family:'Cinzel',serif;font-size:24px;color:var(--gold);text-align:center;margin-bottom:24px;letter-spacing:0.2em}
+.history-stat{
+  background:rgba(255,255,255,0.04);border:1px solid var(--gold-dim);
+  padding:14px 20px;margin-bottom:8px;border-radius:3px;
+  font-family:'Cormorant Garamond',serif;font-size:15px;
+}
+.history-stat strong{color:var(--gold-light);font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.1em}
+.history-run{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(139,105,20,0.3);
+  padding:12px 16px;margin-bottom:6px;border-radius:3px;
+  font-family:'Cormorant Garamond',serif;font-size:13px;
+  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+}
+.history-run:hover{background:rgba(201,168,76,0.08);border-color:var(--gold)}
+.history-detail{padding:14px;background:rgba(0,0,0,0.3);margin-top:6px;border-radius:3px;font-size:12px;font-family:'Cormorant Garamond',serif}
+.history-q{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed rgba(139,105,20,0.2)}
+.history-q strong{color:var(--gold);display:block;margin-bottom:3px}
+.history-q em{color:var(--cream-dim);font-style:italic}
+
+#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+@media(max-width:600px){
+  .scene{padding-top:170px}
+  .mirror-stage{width:90px;height:120px;top:14px}
+  .mirror-stage.large{width:200px;height:270px}
+}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+
+<!-- The mirror — always present, scales for different scenes -->
+<div class="mirror-stage" id="mirror-stage">
+  <div class="mirror-glow"></div>
+  <img class="mirror-img" id="mirror-img" src="assets/quiz/magic-mirror.png" alt="The Magic Mirror" onerror="this.style.display='none'">
+</div>
+
+<!-- The mirror's voice (text it speaks between questions) -->
+<div class="mirror-voice" id="mirror-voice"></div>
+
+<!-- Question counter -->
+<div class="q-counter" id="q-counter"></div>
+
+<div id="app">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="intro-greeting" id="intro-greeting-1">I have been waiting for thee...</div>
+    <div class="intro-name" id="intro-greeting-name"></div>
+    <div class="intro-greeting" id="intro-greeting-2">Look into me, and let us discover who thou truly art.</div>
+    <div class="intro-cta" id="intro-cta">
+      <button class="btn-royal" onclick="beginQuiz()">Begin the Mirror's Test</button>
+    </div>
+  </div>
+
+  <!-- QUESTION SCENE (template, populated dynamically) -->
+  <div class="scene" id="question-scene">
+    <div class="scene-title" id="q-category"></div>
+    <div class="q-prompt" id="q-prompt"></div>
+    <div class="q-context" id="q-context"></div>
+    <div id="q-answers"></div>
+    <div style="margin-top:30px;display:flex;justify-content:center;gap:12px">
+      <button class="btn-secondary" id="q-back" onclick="goPrev()" style="display:none">◂ Back</button>
+      <button class="btn-royal" id="q-next" onclick="goNext()" disabled>Continue</button>
+    </div>
+  </div>
+
+  <!-- MIRROR INTERLUDE (between question groups) -->
+  <div class="scene" id="interlude-scene">
+    <!-- Mirror voice handles all the content, this is just the framework -->
+    <div style="margin-top:40vh;text-align:center">
+      <button class="btn-secondary" onclick="continueFromInterlude()">Continue ✦</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- REVEAL TRANSITION -->
+<div id="reveal-transition">
+  <div class="fog-layer"></div>
+  <div class="fog-layer" style="animation-delay:-2s;animation-duration:8s"></div>
+  <div class="reveal-text" id="reveal-text-1">I am considering...</div>
+  <div class="reveal-text" id="reveal-text-2" style="margin-top:30px"></div>
+</div>
+
+<!-- ANALYTICS HISTORY VIEWER (?history=true) -->
+<div id="history-viewer">
+  <div class="history-content">
+    <div class="history-title">✦ The Mirror's Records ✦</div>
+    <div id="history-summary"></div>
+    <div id="history-runs"></div>
+    <div style="margin-top:30px;text-align:center">
+      <button class="btn-secondary" onclick="exportHistory()">Export Data</button>
+      <button class="btn-secondary" onclick="window.location.href='quiz.html'" style="margin-left:8px">Back to Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// THE ROYAL QUIZ — Phase 1 engine
+// ═══════════════════════════════════════════════
+
+// ─── PRINCESS ROSTER (must match reveal.html) ───
+const PRINCESSES = ['elsa','rapunzel','belle','moana','raya','aurora','ariel','tiana','snow-white','mulan','jasmine','cinderella'];
+
+// ─── CEREMONY STATE LOAD ───
+function loadCeremony(){
+  try{
+    const raw = localStorage.getItem('royalCeremony');
+    if(!raw) return null;
+    return JSON.parse(raw);
+  }catch(e){return null}
+}
+const ceremony = loadCeremony();
+const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : 'Princess';
+
+// ═══════════════════════════════════════════════
+// THE QUESTION BANK
+// ═══════════════════════════════════════════════
+// Each question:
+//   id: unique
+//   category: personality|style|kingdom|romance|animals|values|food|magic|friendship|fun
+//   type: multipleChoice | visual | scenario | dream | freetext | tradeoff | hurt | callback
+//   weight: 1.0 (default), 1.5 = early decisive, 2.0+ = late decisive
+//   prompt: the question text (supports {name} for personalization)
+//   context: optional italic subtitle
+//   answers: [{text, scores: {princess: points, ...}, callbackTag?: 'sea'|'forest'|...}]
+//   visualSrc: for visual type, path to image (one per answer)
+//   freetextTag: for freetext type, what to remember her words as
+//   triggers: optional callback condition {tag: 'sea'} to only show if she chose 'sea' before
+
+const QUESTIONS = [
+  {
+    id:'q1_treat',
+    category:'food',
+    type:'multipleChoice',
+    weight:1.0,
+    prompt:'Welcome, <span class="name">{name}</span>. Let us begin gently. <em>What treat dost thou crave most?</em>',
+    answers:[
+      {text:'A warm pastry, fresh from the oven',scores:{tiana:3,'snow-white':2,cinderella:1}},
+      {text:'Wild berries gathered from the forest',scores:{aurora:3,mulan:2,raya:1}},
+      {text:'Honey-sweetened tea by candlelight',scores:{belle:3,rapunzel:2}},
+      {text:'Something I have never tasted before',scores:{ariel:3,moana:2,jasmine:1}},
+    ]
+  },
+  {
+    id:'q2_morning',
+    category:'personality',
+    type:'multipleChoice',
+    weight:1.0,
+    prompt:'<em>How dost thou prefer to begin a day?</em>',
+    answers:[
+      {text:'In quiet, alone, watching the world wake up',scores:{elsa:3,belle:2,'snow-white':1,cinderella:-1,jasmine:-1}},
+      {text:'With a plan and a purpose',scores:{tiana:3,mulan:2,raya:1,aurora:-1}},
+      {text:'Somewhere new, ready for adventure',scores:{moana:3,ariel:2,jasmine:2,rapunzel:1}},
+      {text:'Surrounded by those I love',scores:{cinderella:2,'snow-white':2,aurora:2,belle:1}},
+    ]
+  },
+  {
+    id:'q3_door_visual',
+    category:'magic',
+    type:'visual',
+    weight:1.2,
+    prompt:'<em>Four doors stand before thee. Which one calls to thee?</em>',
+    context:'Choose with thy heart, not thy mind.',
+    answers:[
+      {label:'The Library Door',visualSrc:'assets/quiz/door-library.png',scores:{belle:4,'snow-white':1}},
+      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.png',scores:{aurora:3,mulan:2,raya:2}},
+      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.png',scores:{moana:4,ariel:3},callbackTag:'sea'},
+      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.png',scores:{elsa:4,jasmine:1}},
+    ]
+  },
+  {
+    id:'q4_wounded_bird',
+    category:'values',
+    type:'scenario',
+    weight:1.3,
+    prompt:'Thou findest a wounded bird in the garden. <em>What dost thou do?</em>',
+    answers:[
+      {text:'I gather it gently and care for it until it heals',scores:{'snow-white':4,aurora:3,cinderella:2}},
+      {text:'I find someone who knows more than I, to help us both',scores:{belle:3,tiana:2,mulan:1}},
+      {text:'I sit with it quietly. It will tell me what it needs',scores:{elsa:3,rapunzel:2,raya:1}},
+      {text:'I help it back to where it belongs — the wild, where it is free',scores:{moana:3,jasmine:3,ariel:2}},
+    ]
+  },
+  {
+    id:'q5_unwatched',
+    category:'personality',
+    type:'multipleChoice',
+    weight:1.4,
+    prompt:'<em>What dost thou do when no one is watching, <span class="name">{name}</span>?</em>',
+    context:'There is no wrong answer. The mirror does not judge.',
+    answers:[
+      {text:'I sing, or dance, or laugh out loud',scores:{ariel:3,rapunzel:3,'snow-white':2}},
+      {text:'I read, or write, or dream up stories',scores:{belle:4,rapunzel:1}},
+      {text:'I practice things I want to be better at',scores:{tiana:3,mulan:3,raya:1}},
+      {text:'I just... breathe. I rest.',scores:{elsa:3,aurora:2,cinderella:1}},
+    ]
+  },
+  {
+    id:'q6_dream_holding',
+    category:'magic',
+    type:'dream',
+    weight:1.3,
+    prompt:'<em>In the dream, thou art holding something. What is it?</em>',
+    context:'Trust the first answer that comes.',
+    answers:[
+      {text:'A book that has never been read',scores:{belle:4,rapunzel:1}},
+      {text:'A small flame that does not burn me',scores:{raya:3,mulan:2,elsa:-1}},
+      {text:'A piece of the sky',scores:{jasmine:3,moana:2,ariel:1}},
+      {text:'A key, but I do not know what it opens',scores:{rapunzel:3,belle:1,'snow-white':1}},
+      {text:'Nothing — and yet my hands feel full',scores:{aurora:2,elsa:2,cinderella:1}},
+    ]
+  },
+  {
+    id:'q7_tradeoff_books_garden',
+    category:'kingdom',
+    type:'tradeoff',
+    weight:1.4,
+    prompt:'Thou canst have only one. <em>Choose.</em>',
+    context:'A library that never runs out of new books — or a garden that blooms every season of the year.',
+    answers:[
+      {text:'The endless library',scores:{belle:4,'snow-white':-1,aurora:-1}},
+      {text:'The eternal garden',scores:{aurora:3,'snow-white':2,rapunzel:2,belle:-1}},
+    ]
+  },
+  {
+    id:'q8_hurt_lose',
+    category:'values',
+    type:'hurt',
+    weight:1.5,
+    prompt:'<em>Which of these would hurt the most to lose?</em>',
+    context:'The mirror asks gently. Choose the truest, not the kindest.',
+    answers:[
+      {text:'The freedom to choose mine own path',scores:{jasmine:4,moana:3,mulan:2,ariel:2}},
+      {text:'The ones I love',scores:{cinderella:3,'snow-white':3,aurora:2,tiana:1}},
+      {text:'The trust of those who depend on me',scores:{mulan:4,raya:3,tiana:2}},
+      {text:'The wonder I see in the world',scores:{rapunzel:4,belle:3,ariel:2}},
+    ]
+  },
+  {
+    id:'q9_kingdom_need',
+    category:'kingdom',
+    type:'multipleChoice',
+    weight:1.6,
+    prompt:'<em>What does thy kingdom need most, <span class="name">{name}</span>?</em>',
+    answers:[
+      {text:'Wisdom — that we may understand each other',scores:{belle:4,elsa:2}},
+      {text:'Courage — that we may stand for what is right',scores:{mulan:4,raya:3}},
+      {text:'Joy — that we may remember why we are here',scores:{rapunzel:3,'snow-white':2,ariel:1}},
+      {text:'Trust — that we may become whole',scores:{raya:4,tiana:1}},
+      {text:'Freedom — that each may follow her own path',scores:{jasmine:4,moana:3}},
+    ]
+  },
+  {
+    id:'q10_freetext_wish',
+    category:'personality',
+    type:'freetext',
+    weight:1.0,
+    prompt:'<em>Finish this sentence:</em>',
+    context:'"The thing I wish people knew about me is..."',
+    placeholder:'Write thy truth, {name}',
+    freetextTag:'wish_known',
+  },
+];
+
+// ═══════════════════════════════════════════════
+// MIRROR INTERJECTIONS
+// ═══════════════════════════════════════════════
+// These appear between question groups
+const MIRROR_LINES = [
+  {after:3, text:'Interesting... very interesting, <span class="name">{name}</span>.'},
+  {after:6, text:'Thou art beginning to take shape in mine eye.'},
+  {after:9, text:'The mirror sees thee more clearly now.'},
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state = {
+  currentIdx: 0,
+  scores: {},  // { elsa: 0, rapunzel: 0, ... }
+  answers: [], // [{questionId, answerIdx?, text?, callbackTag?}]
+  callbackTags: {}, // { sea: true, forest: true }
+  freetextAnswers: {}, // { wish_known: "her words" }
+  startTime: Date.now(),
+};
+PRINCESSES.forEach(p => state.scores[p] = 0);
+
+// ═══════════════════════════════════════════════
+// STARFIELD
+// ═══════════════════════════════════════════════
+(function(){
+  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
+  let stars=[];
+  function resize(){c.width=innerWidth;c.height=innerHeight;stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2});}
+  function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;stars.forEach(s=>{const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();});requestAnimationFrame(draw);}
+  window.addEventListener('resize',resize);resize();draw();
+})();
+
+// ═══════════════════════════════════════════════
+// INTRO
+// ═══════════════════════════════════════════════
+function showIntro(){
+  const nameEl = document.getElementById('intro-greeting-name');
+  nameEl.textContent = PRINCESS_NAME + ',';
+  setTimeout(()=>document.getElementById('intro-greeting-1').classList.add('visible'), 800);
+  setTimeout(()=>nameEl.classList.add('visible'), 2800);
+  setTimeout(()=>document.getElementById('intro-greeting-2').classList.add('visible'), 4800);
+  setTimeout(()=>document.getElementById('intro-cta').classList.add('visible'), 7000);
+}
+
+function beginQuiz(){
+  document.getElementById('intro').style.opacity = '0';
+  setTimeout(()=>{
+    document.getElementById('intro').style.display = 'none';
+    showQuestion(0);
+  }, 800);
+}
+
+// ═══════════════════════════════════════════════
+// QUESTION RENDERING
+// ═══════════════════════════════════════════════
+let pendingAnswer = null;
+
+function showQuestion(idx){
+  state.currentIdx = idx;
+
+  // Check for interlude
+  const lineForHere = MIRROR_LINES.find(l => l.after === idx && idx > 0);
+  if(lineForHere){
+    speakMirror(lineForHere.text, ()=>showQuestion(idx)); // re-call after interlude
+    return;
+  }
+
+  // Check if quiz is complete
+  if(idx >= QUESTIONS.length){
+    finishQuiz();
+    return;
+  }
+
+  const q = QUESTIONS[idx];
+  pendingAnswer = null;
+
+  // Show counter
+  document.getElementById('q-counter').textContent = `Question ${idx+1} of ${QUESTIONS.length}`;
+
+  // Hide intro / interlude / show question
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('mirror-voice').classList.remove('visible');
+
+  // Populate question content
+  document.getElementById('q-category').textContent = '✦ ' + q.category.charAt(0).toUpperCase() + q.category.slice(1) + ' ✦';
+  document.getElementById('q-prompt').innerHTML = q.prompt.replace(/{name}/g, PRINCESS_NAME);
+  document.getElementById('q-context').textContent = q.context || '';
+  document.getElementById('q-context').style.display = q.context ? 'block' : 'none';
+
+  const answersEl = document.getElementById('q-answers');
+  answersEl.innerHTML = '';
+
+  if(q.type === 'visual'){
+    const grid = document.createElement('div');
+    grid.className = 'visual-grid';
+    q.answers.forEach((a, i) => {
+      const card = document.createElement('div');
+      card.className = 'visual-card placeholder';
+      card.innerHTML = `<img src="${a.visualSrc}" alt="${a.label}" onload="this.parentElement.classList.remove('placeholder')" onerror="this.style.display='none'"><div class="visual-card-label">${a.label}</div>`;
+      card.addEventListener('click', () => selectAnswer(i, card));
+      grid.appendChild(card);
+    });
+    answersEl.appendChild(grid);
+  } else if(q.type === 'freetext'){
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'free-text-input';
+    input.placeholder = (q.placeholder || 'Write thy answer').replace('{name}', PRINCESS_NAME);
+    input.maxLength = 200;
+    input.addEventListener('input', () => {
+      pendingAnswer = {text: input.value};
+      document.getElementById('q-next').disabled = input.value.trim().length < 2;
+    });
+    answersEl.appendChild(input);
+    setTimeout(() => input.focus(), 400);
+  } else {
+    const list = document.createElement('div');
+    list.className = 'answer-list';
+    q.answers.forEach((a, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.textContent = a.text;
+      btn.addEventListener('click', () => selectAnswer(i, btn));
+      list.appendChild(btn);
+    });
+    answersEl.appendChild(list);
+  }
+
+  document.getElementById('q-back').style.display = idx > 0 ? 'inline-block' : 'none';
+  document.getElementById('q-next').disabled = q.type === 'freetext' ? true : true;
+
+  document.getElementById('question-scene').classList.add('active');
+  // Mirror shrinks to top during questions
+  document.getElementById('mirror-stage').classList.remove('large','huge');
+}
+
+function selectAnswer(idx, el){
+  // Visual selection
+  document.querySelectorAll('.answer-btn, .visual-card').forEach(e => e.classList.remove('chosen'));
+  el.classList.add('chosen');
+  pendingAnswer = {answerIdx: idx};
+  document.getElementById('q-next').disabled = false;
+}
+
+function goPrev(){
+  if(state.currentIdx > 0){
+    // Undo last answer's score impact
+    const lastAnswer = state.answers[state.currentIdx - 1];
+    if(lastAnswer && lastAnswer.scoresApplied){
+      Object.entries(lastAnswer.scoresApplied).forEach(([p, s]) => state.scores[p] -= s);
+    }
+    state.answers.pop();
+    showQuestion(state.currentIdx - 1);
+  }
+}
+
+function goNext(){
+  const q = QUESTIONS[state.currentIdx];
+  const answer = pendingAnswer;
+  if(!answer) return;
+
+  let recordedAnswer = {questionId: q.id, type: q.type};
+
+  if(q.type === 'freetext'){
+    const text = answer.text.trim();
+    state.freetextAnswers[q.freetextTag] = text;
+    recordedAnswer.text = text;
+    recordedAnswer.tag = q.freetextTag;
+  } else {
+    const chosen = q.answers[answer.answerIdx];
+    recordedAnswer.answerIdx = answer.answerIdx;
+    recordedAnswer.answerText = chosen.text || chosen.label;
+
+    // Apply scores (with question weight)
+    const scoresApplied = {};
+    if(chosen.scores){
+      Object.entries(chosen.scores).forEach(([p, s]) => {
+        const weighted = s * q.weight;
+        state.scores[p] = (state.scores[p] || 0) + weighted;
+        scoresApplied[p] = weighted;
+      });
+    }
+    recordedAnswer.scoresApplied = scoresApplied;
+
+    // Track callback tag
+    if(chosen.callbackTag){
+      state.callbackTags[chosen.callbackTag] = true;
+      recordedAnswer.callbackTag = chosen.callbackTag;
+    }
+  }
+
+  state.answers[state.currentIdx] = recordedAnswer;
+  showQuestion(state.currentIdx + 1);
+}
+
+// ═══════════════════════════════════════════════
+// MIRROR INTERJECTIONS
+// ═══════════════════════════════════════════════
+let interludeContinuation = null;
+function speakMirror(text, onContinue){
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('mirror-stage').classList.remove('huge');
+  document.getElementById('mirror-stage').classList.add('large');
+
+  const voice = document.getElementById('mirror-voice');
+  voice.innerHTML = text.replace(/{name}/g, PRINCESS_NAME);
+  voice.classList.add('visible');
+
+  document.getElementById('interlude-scene').classList.add('active');
+  interludeContinuation = onContinue;
+}
+
+function continueFromInterlude(){
+  document.getElementById('mirror-voice').classList.remove('visible');
+  document.getElementById('mirror-stage').classList.remove('large');
+  if(interludeContinuation){
+    const fn = interludeContinuation;
+    interludeContinuation = null;
+    setTimeout(fn, 600);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// FINISH
+// ═══════════════════════════════════════════════
+function finishQuiz(){
+  // Determine winner
+  const ranked = PRINCESSES
+    .map(p => ({princess: p, score: state.scores[p]}))
+    .sort((a,b) => b.score - a.score);
+  const winner = ranked[0].princess;
+
+  // Save run to history (analytics)
+  saveToHistory({
+    timestamp: Date.now(),
+    duration: Date.now() - state.startTime,
+    winner: winner,
+    scores: {...state.scores},
+    ranked: ranked,
+    answers: state.answers,
+    freetextAnswers: state.freetextAnswers,
+    callbackTags: {...state.callbackTags},
+    ceremonyName: PRINCESS_NAME,
+  });
+
+  // Save result for reveal page to consume
+  const quizResult = {
+    winner: winner,
+    scores: state.scores,
+    ranked: ranked.slice(0, 6),
+    callbackTags: state.callbackTags,
+    freetextAnswers: state.freetextAnswers,
+    timestamp: Date.now(),
+  };
+  localStorage.setItem('quizResult', JSON.stringify(quizResult));
+
+  // Reveal transition
+  showRevealTransition(winner);
+}
+
+function showRevealTransition(winner){
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('mirror-stage').classList.add('huge');
+  document.getElementById('mirror-voice').classList.remove('visible');
+
+  const t = document.getElementById('reveal-transition');
+  t.classList.add('active');
+
+  setTimeout(()=>document.getElementById('reveal-text-1').classList.add('visible'), 600);
+  setTimeout(()=>{
+    document.getElementById('reveal-text-1').classList.remove('visible');
+  }, 3500);
+  setTimeout(()=>{
+    const t2 = document.getElementById('reveal-text-2');
+    t2.innerHTML = `I see thee now, <span style="font-family:'Cormorant Unicase',serif;color:var(--gold-light)">${PRINCESS_NAME}</span>...`;
+    t2.classList.add('visible');
+  }, 4200);
+  setTimeout(()=>{
+    window.location.href = 'reveal.html';
+  }, 7800);
+}
+
+// ═══════════════════════════════════════════════
+// HISTORY / ANALYTICS
+// ═══════════════════════════════════════════════
+function saveToHistory(run){
+  try{
+    const raw = localStorage.getItem('quizHistory');
+    const history = raw ? JSON.parse(raw) : [];
+    history.push(run);
+    if(history.length > 100) history.shift(); // cap at 100 runs
+    localStorage.setItem('quizHistory', JSON.stringify(history));
+  }catch(e){console.warn('Could not save history',e)}
+}
+
+function showHistoryViewer(){
+  let history = [];
+  try{
+    history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+  }catch(e){}
+
+  const viewer = document.getElementById('history-viewer');
+  viewer.classList.add('active');
+  document.getElementById('intro').style.display = 'none';
+
+  // Summary
+  const summaryEl = document.getElementById('history-summary');
+  if(history.length === 0){
+    summaryEl.innerHTML = '<div class="history-stat">No runs recorded yet.</div>';
+    document.getElementById('history-runs').innerHTML = '';
+    return;
+  }
+  const counts = {};
+  history.forEach(r => counts[r.winner] = (counts[r.winner]||0) + 1);
+  const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
+  const lastRun = history[history.length - 1];
+  const lastDate = new Date(lastRun.timestamp);
+
+  summaryEl.innerHTML = `
+    <div class="history-stat"><strong>Total Runs:</strong> ${history.length}</div>
+    <div class="history-stat"><strong>Last Completion:</strong> ${lastDate.toLocaleDateString()} ${lastDate.toLocaleTimeString()}</div>
+    <div class="history-stat"><strong>Princess Outcomes:</strong><br>${
+      sorted.map(([p,c]) => `&nbsp;&nbsp;${p}: ${c} times (${Math.round(c/history.length*100)}%)`).join('<br>')
+    }</div>
+  `;
+
+  // Recent runs
+  const runsEl = document.getElementById('history-runs');
+  runsEl.innerHTML = '<div class="history-stat" style="margin-top:20px"><strong>Recent Runs (tap to expand):</strong></div>';
+  history.slice().reverse().forEach((r, i) => {
+    const date = new Date(r.timestamp);
+    const div = document.createElement('div');
+    div.className = 'history-run';
+    div.innerHTML = `<span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span><span style="color:var(--gold-light);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.1em">${r.winner.toUpperCase()}</span>`;
+    div.addEventListener('click', () => {
+      const existing = div.nextElementSibling;
+      if(existing && existing.classList.contains('history-detail')){
+        existing.remove();
+      }else{
+        const detail = document.createElement('div');
+        detail.className = 'history-detail';
+        let html = `<strong style="color:var(--gold-light)">Top scores:</strong> ${r.ranked.slice(0,4).map(x=>x.princess+'('+Math.round(x.score)+')').join(', ')}<br><br>`;
+        r.answers.forEach((a, i) => {
+          if(a.type === 'freetext'){
+            html += `<div class="history-q"><strong>Q${i+1}: ${a.tag}</strong><em>"${a.text}"</em></div>`;
+          } else {
+            html += `<div class="history-q"><strong>Q${i+1}:</strong>${a.answerText}</div>`;
+          }
+        });
+        detail.innerHTML = html;
+        div.parentNode.insertBefore(detail, div.nextSibling);
+      }
+    });
+    runsEl.appendChild(div);
+  });
+}
+
+function exportHistory(){
+  try{
+    const data = localStorage.getItem('quizHistory') || '[]';
+    const blob = new Blob([data], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'quiz-history.json'; a.click();
+    URL.revokeObjectURL(url);
+  }catch(e){alert('Export failed: '+e.message)}
+}
+
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+const params = new URLSearchParams(window.location.search);
+if(params.get('history') === 'true'){
+  showHistoryViewer();
+}else{
+  showIntro();
+}
+
+// Service worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});
+}
+</script>
+</body>
+</html>
