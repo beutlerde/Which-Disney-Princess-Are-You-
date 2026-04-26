@@ -34,7 +34,7 @@ html,body{
   background-size:cover;
   background-position:center;
   opacity:0;
-  transition:opacity 2.5s ease;
+  transition:opacity 4s ease;
   filter:brightness(0.75) saturate(1.0);
 }
 .castle-hall.visible{opacity:1}
@@ -454,12 +454,17 @@ function dismissWelcome(){
   document.getElementById('welcome-phase').classList.add('fading');
   document.getElementById('castle-hall').classList.add('visible');
 
-  // Stagger the reveal of header, doors, greeting
+  // First: let her breathe in the castle hall on its own
+  // Then: stagger the reveal of header → doors → greeting
   setTimeout(()=>{
     document.getElementById('realm-header').classList.add('visible');
+  }, 2800);
+  setTimeout(()=>{
     document.getElementById('doors-section').classList.add('visible');
+  }, 4200);
+  setTimeout(()=>{
     setupReturningGreeting();
-  }, 800);
+  }, 5600);
 }
 
 // Tap anywhere on welcome screen to dismiss
