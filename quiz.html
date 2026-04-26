@@ -66,7 +66,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
   color:var(--gold-dim);text-transform:uppercase;z-index:55;
 }
 
-.scene-title{font-family:'Cinzel',serif;font-size:clamp(10px,2vw,13px);color:var(--gold);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:8px;text-align:center;opacity:0.7}
+.scene-title{font-family:'Cinzel',serif;font-size:clamp(10px,2vw,13px);color:var(--gold);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:8px;text-align:center;opacity:0.7;display:flex;align-items:center;justify-content:center;gap:10px}
+.category-icon{
+  width:28px;height:28px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 8px rgba(201,168,76,0.4));
+  opacity:0;animation:iconFadeIn 0.8s ease 0.3s forwards;
+}
+@keyframes iconFadeIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
 .gold-divider{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
 
 .q-prompt{
@@ -140,14 +147,65 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 }
 
 /* === FREE TEXT === */
-.free-text-input{
-  font-family:'Dancing Script',cursive;font-size:22px;
-  color:var(--gold-light);background:rgba(255,255,255,0.04);
-  border:1px solid var(--gold-dim);padding:14px 18px;
-  width:100%;max-width:560px;outline:none;border-radius:3px;
-  margin:0 auto;display:block;text-align:center;
+/* === FREE TEXT (PARCHMENT STYLE) === */
+.free-text-wrap{
+  position:relative;
+  width:100%;max-width:560px;
+  margin:0 auto;
+  padding:32px 28px 28px;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(212,180,90,0.12),transparent 50%),
+    radial-gradient(ellipse at 70% 80%,rgba(212,180,90,0.08),transparent 50%),
+    linear-gradient(180deg,#f4e4c1 0%,#e8d4a6 100%);
+  border-radius:4px;
+  box-shadow:
+    0 0 0 1px rgba(139,105,20,0.35),
+    0 4px 24px rgba(0,0,0,0.5),
+    inset 0 0 60px rgba(180,140,60,0.1);
 }
-.free-text-input:focus{border-color:var(--gold);box-shadow:0 0 24px rgba(201,168,76,0.3)}
+/* Decorative corners that suggest old parchment */
+.free-text-wrap::before,
+.free-text-wrap::after{
+  content:'✦';position:absolute;color:rgba(139,69,19,0.5);
+  font-size:14px;
+}
+.free-text-wrap::before{top:8px;left:12px}
+.free-text-wrap::after{bottom:8px;right:12px}
+.free-text-wrap .corner-tr,
+.free-text-wrap .corner-bl{
+  position:absolute;color:rgba(139,69,19,0.5);font-size:14px;
+}
+.free-text-wrap .corner-tr{top:8px;right:12px;content:'✦'}
+.free-text-wrap .corner-bl{bottom:8px;left:12px;content:'✦'}
+
+.free-text-prefix{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(14px,2.2vw,17px);
+  color:rgba(80,40,15,0.7);
+  text-align:center;margin-bottom:14px;
+  letter-spacing:0.02em;
+}
+.free-text-input{
+  font-family:'Dancing Script',cursive;
+  font-weight:600;
+  font-size:clamp(18px,3vw,24px);
+  color:#3a1a0a;
+  background:transparent;
+  border:none;
+  border-bottom:2px solid rgba(139,69,19,0.3);
+  padding:8px 8px 12px;
+  width:100%;
+  outline:none;
+  text-align:center;
+  display:block;
+  caret-color:#3a1a0a;
+}
+.free-text-input::placeholder{
+  color:rgba(80,40,15,0.4);
+  font-weight:400;
+  font-style:italic;
+}
+.free-text-input:focus{border-bottom-color:rgba(139,69,19,0.7)}
 
 /* === BUTTONS === */
 .btn-royal{font-family:'Cinzel',serif;font-size:clamp(12px,1.8vw,15px);letter-spacing:0.15em;color:var(--purple-deep);background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dim));border:none;padding:13px 32px;border-radius:2px;cursor:pointer;min-height:48px;min-width:160px;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:all 0.3s;text-transform:uppercase}
@@ -856,7 +914,15 @@ function showIntro(){
   const nameEl = document.getElementById('intro-greeting-name');
   const greet1 = document.getElementById('intro-greeting-1');
   const greet2 = document.getElementById('intro-greeting-2');
+  const ctaEl = document.getElementById('intro-cta');
   const ctaBtn = document.querySelector('#intro-cta button');
+
+  // Make sure all elements start hidden (in case showIntro is called more than once)
+  greet1.classList.remove('visible');
+  nameEl.classList.remove('visible');
+  greet2.classList.remove('visible');
+  ctaEl.classList.remove('visible');
+  ctaEl.style.opacity = '0';
 
   if(isRetake){
     // Different intro for retakes — mirror acknowledges her return
@@ -868,7 +934,6 @@ function showIntro(){
     nameEl.textContent = '';
     nameEl.style.display = 'none';
 
-    // Pick a return message based on how many times she's taken it
     if(priorHistory.length === 1){
       greet2.innerHTML = 'Last we met, I saw <em>' + lastPrincessName + '</em> in thee. Let us look deeper this time.';
     } else if(priorHistory.length < 5){
@@ -886,14 +951,35 @@ function showIntro(){
     if(ctaBtn) ctaBtn.textContent = 'Begin the Mirror\'s Test';
   }
 
-  // Show all intro elements immediately
-  greet1.classList.add('visible');
-  if(!isRetake) nameEl.classList.add('visible');
-  greet2.classList.add('visible');
-  const cta = document.getElementById('intro-cta');
-  cta.classList.add('visible');
-  cta.style.opacity = '1';
-  cta.style.display = 'block';
+  // ── DRAMATIC SLOW REVEAL ──
+  // Each line breathes in, the name lands like a coronation, then the button arrives last
+  setTimeout(()=>greet1.classList.add('visible'), 800);
+
+  if(isRetake){
+    // No name display on retake — just two lines + button
+    setTimeout(()=>greet2.classList.add('visible'), 3200);
+    setTimeout(()=>{
+      ctaEl.classList.add('visible');
+      ctaEl.style.opacity = '1';
+      ctaEl.style.display = 'block';
+    }, 5400);
+  } else {
+    // First visit: line 1 → name → line 2 → button
+    setTimeout(()=>nameEl.classList.add('visible'), 2800);
+    setTimeout(()=>greet2.classList.add('visible'), 5000);
+    setTimeout(()=>{
+      ctaEl.classList.add('visible');
+      ctaEl.style.opacity = '1';
+      ctaEl.style.display = 'block';
+    }, 7200);
+  }
+
+  // SAFETY: force CTA visible after 9 seconds no matter what (in case anything stalls)
+  setTimeout(()=>{
+    ctaEl.classList.add('visible');
+    ctaEl.style.opacity = '1';
+    ctaEl.style.display = 'block';
+  }, 9000);
 }
 
 function beginQuiz(){
@@ -969,7 +1055,10 @@ function showQuestion(idx){
   document.getElementById('mirror-voice').classList.remove('visible');
 
   // Populate question content
-  document.getElementById('q-category').textContent = '✦ ' + q.category.charAt(0).toUpperCase() + q.category.slice(1) + ' ✦';
+  // Build category title with optional icon (icon shows if image exists, falls back to text only)
+  const catLabel = q.category.charAt(0).toUpperCase() + q.category.slice(1);
+  const catEl = document.getElementById('q-category');
+  catEl.innerHTML = '<img class="category-icon" src="assets/quiz/icon-' + q.category + '.png" alt="" onerror="this.style.display=\'none\'"><span>✦ ' + catLabel + ' ✦</span>';
   document.getElementById('q-prompt').innerHTML = q.prompt.replace(/{name}/g, PRINCESS_NAME);
   document.getElementById('q-context').textContent = q.context || '';
   document.getElementById('q-context').style.display = q.context ? 'block' : 'none';
@@ -989,6 +1078,12 @@ function showQuestion(idx){
     });
     answersEl.appendChild(grid);
   } else if(q.type === 'freetext'){
+    // Parchment-styled free-text question
+    const wrap = document.createElement('div');
+    wrap.className = 'free-text-wrap';
+    const prefix = document.createElement('div');
+    prefix.className = 'free-text-prefix';
+    prefix.textContent = '~ Write upon the parchment ~';
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'free-text-input';
@@ -998,7 +1093,9 @@ function showQuestion(idx){
       pendingAnswer = {text: input.value};
       document.getElementById('q-next').disabled = input.value.trim().length < 2;
     });
-    answersEl.appendChild(input);
+    wrap.appendChild(prefix);
+    wrap.appendChild(input);
+    answersEl.appendChild(wrap);
     setTimeout(() => input.focus(), 400);
   } else {
     const list = document.createElement('div');
@@ -1207,7 +1304,8 @@ function showTiebreaker(p1, p2){
 
   document.getElementById('q-counter').textContent = '✦ The Mirror\'s Decree ✦';
 
-  document.getElementById('q-category').textContent = '✦ The Final Word ✦';
+  const tbCatEl = document.getElementById('q-category');
+  tbCatEl.innerHTML = '<img class="category-icon" src="assets/quiz/icon-magic.png" alt="" onerror="this.style.display=\'none\'"><span>✦ The Final Word ✦</span>';
   document.getElementById('q-prompt').innerHTML = tb.prompt.replace(/{name}/g, PRINCESS_NAME);
   document.getElementById('q-context').textContent = tb.context || '';
   document.getElementById('q-context').style.display = tb.context ? 'block' : 'none';
