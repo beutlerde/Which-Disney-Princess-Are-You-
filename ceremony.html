@@ -302,7 +302,7 @@ function loadChamber(idx){state.chamberIdx=(idx+CHAMBERS.length)%CHAMBERS.length
 function prevChamber(){loadChamber(state.chamberIdx-1);renderPlacedItems();}
 function nextChamber(){loadChamber(state.chamberIdx+1);renderPlacedItems();}
 
-function switchTab(tab){state.currentTab=tab;document.querySelectorAll('.picker-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');const scroll=document.getElementById('picker-scroll');scroll.innerHTML='';const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;items.forEach((item,i)=>{const img=document.createElement('img');img.src=item.src;img.loading='lazy';img.className='adorn-thumb'+(state.placed[tab]===i?' chosen':'');img.addEventListener('click',()=>placeItem(tab,i,img));scroll.appendChild(img);});}
+function switchTab(tab){state.currentTab=tab;document.querySelectorAll('.picker-tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');const scroll=document.getElementById('picker-scroll');while(scroll.firstChild)scroll.removeChild(scroll.firstChild);const items=tab==='dress'?DRESSES:tab==='tiara'?TIARAS:SHOES;items.forEach((item,i)=>{const img=document.createElement('img');img.src=item.src;img.loading='lazy';img.className='adorn-thumb'+(state.placed[tab]===i?' chosen':'');img.addEventListener('click',()=>placeItem(tab,i,img));scroll.appendChild(img);});}
 
 function placeItem(tab,idx,thumbEl){document.querySelectorAll('#picker-scroll .adorn-thumb').forEach(t=>t.classList.remove('chosen'));thumbEl.classList.add('chosen');state.placed[tab]=idx;renderPlacedItem(tab,true);}
 
