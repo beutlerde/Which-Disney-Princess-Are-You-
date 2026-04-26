@@ -717,6 +717,98 @@ const QUESTIONS = [
 // MIRROR INTERJECTIONS
 // ═══════════════════════════════════════════════
 // These appear between question groups
+// ═══════════════════════════════════════════════
+// TIEBREAKER QUESTIONS — shown only when top 2 princesses are within 5%
+// One per princess pair. The mirror gives a decisive question.
+// ═══════════════════════════════════════════════
+// Each tiebreaker uses keyed pairs (alphabetical) for lookup.
+// If a pair isn't defined, falls back to GENERIC_TIEBREAKER.
+const TIEBREAKERS = {
+  // Cinderella vs Belle — kindness vs curiosity
+  'belle|cinderella': {
+    prompt:'<em>Both kindness and curiosity live in thee, <span class="name">{name}</span>. The mirror asks one final thing.</em>',
+    context:'Which would thou rather be told?',
+    answers:[
+      {text:'"Thou hast made me feel seen."',scores:{cinderella:10,belle:-3}},
+      {text:'"Thou hast made me see the world anew."',scores:{belle:10,cinderella:-3}},
+    ]
+  },
+  // Belle vs Mulan — wisdom vs courage
+  'belle|mulan': {
+    prompt:'<em>Wisdom and courage both burn within thee, <span class="name">{name}</span>.</em>',
+    context:'When the kingdom calls, which dost thou bring first?',
+    answers:[
+      {text:'My questions',scores:{belle:10,mulan:-3}},
+      {text:'My sword',scores:{mulan:10,belle:-3}},
+    ]
+  },
+  // Mulan vs Raya — duty vs trust
+  'mulan|raya': {
+    prompt:'<em>Two warriors live in thee, <span class="name">{name}</span>.</em>',
+    context:'When the world has wronged those thou lovest, what carries thee forward?',
+    answers:[
+      {text:'The promise I made',scores:{mulan:10,raya:-3}},
+      {text:'The hope it could be made whole again',scores:{raya:10,mulan:-3}},
+    ]
+  },
+  // Jasmine vs Moana — freedom vs purpose
+  'jasmine|moana': {
+    prompt:'<em>The horizon calls thee, <span class="name">{name}</span>. But why dost thou go?</em>',
+    answers:[
+      {text:'Because no one shall tell me where I belong',scores:{jasmine:10,moana:-3}},
+      {text:'Because something out there is calling me home',scores:{moana:10,jasmine:-3}},
+    ]
+  },
+  // Elsa vs Belle — solitude vs solitude-with-books
+  'belle|elsa': {
+    prompt:'<em>Thou art most thyself in stillness, <span class="name">{name}</span>. But what kind?</em>',
+    answers:[
+      {text:'Stillness with a book in my hand',scores:{belle:10,elsa:-3}},
+      {text:'Stillness with nothing but my own breath',scores:{elsa:10,belle:-3}},
+    ]
+  },
+  // Aurora vs Snow White — gentle vs gentle
+  'aurora|snow-white': {
+    prompt:'<em>Both grace and goodness live in thee.</em>',
+    context:'Which feels more like home?',
+    answers:[
+      {text:'A meadow at sunrise',scores:{aurora:10,'snow-white':-3}},
+      {text:'A cottage with friends gathered close',scores:{'snow-white':10,aurora:-3}},
+    ]
+  },
+  // Ariel vs Rapunzel — wonder vs wonder
+  'ariel|rapunzel': {
+    prompt:'<em>The world dazzles thee, <span class="name">{name}</span>.</em>',
+    context:'But which pulls thee more?',
+    answers:[
+      {text:'The world I have not yet seen',scores:{ariel:10,rapunzel:-3}},
+      {text:'The world I might one day make',scores:{rapunzel:10,ariel:-3}},
+    ]
+  },
+  // Tiana vs Mulan — building vs fighting
+  'mulan|tiana': {
+    prompt:'<em>Thou art a builder of things that last, <span class="name">{name}</span>.</em>',
+    context:'But what dost thou build for?',
+    answers:[
+      {text:'A dream that is mine alone to make real',scores:{tiana:10,mulan:-3}},
+      {text:'Those who cannot fight for themselves',scores:{mulan:10,tiana:-3}},
+    ]
+  },
+  // Generic fallback — used for any pair not listed above
+  GENERIC: {
+    prompt:'<em>Two paths shine equally bright in thee, <span class="name">{name}</span>. Let me see one more thing.</em>',
+    context:'Which is more thee?',
+    answers:[
+      {text:'The quiet one. The one no one sees.',scores:{}}, // filled at runtime
+      {text:'The bold one. The one the world remembers.',scores:{}},
+    ]
+  }
+};
+
+// Generic tiebreaker mapping — quiet princess vs bold princess
+const QUIET_PRINCESSES = ['elsa','belle','aurora','snow-white','cinderella','rapunzel'];
+const BOLD_PRINCESSES = ['mulan','raya','moana','jasmine','ariel','tiana'];
+
 const MIRROR_LINES = [
   {after:5, text:'Interesting... very interesting, <span class="name">{name}</span>.'},
   {after:10, text:'Thou art beginning to take shape in mine eye.'},
@@ -752,12 +844,52 @@ PRINCESSES.forEach(p => state.scores[p] = 0);
 // INTRO
 // ═══════════════════════════════════════════════
 function showIntro(){
+  // Detect retake — does she have prior history?
+  let priorHistory = [];
+  try{
+    priorHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
+  }catch(e){}
+
+  const isRetake = priorHistory.length > 0;
+  state.isRetake = isRetake;
+
   const nameEl = document.getElementById('intro-greeting-name');
-  nameEl.textContent = PRINCESS_NAME + ',';
-  // Show all intro elements immediately — no fancy timing while we debug
-  document.getElementById('intro-greeting-1').classList.add('visible');
-  nameEl.classList.add('visible');
-  document.getElementById('intro-greeting-2').classList.add('visible');
+  const greet1 = document.getElementById('intro-greeting-1');
+  const greet2 = document.getElementById('intro-greeting-2');
+  const ctaBtn = document.querySelector('#intro-cta button');
+
+  if(isRetake){
+    // Different intro for retakes — mirror acknowledges her return
+    const lastRun = priorHistory[priorHistory.length - 1];
+    const lastPrincess = lastRun.winner;
+    const lastPrincessName = lastPrincess.split('-').map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(' ');
+
+    greet1.innerHTML = 'I have looked at thee before, <span class="name">' + PRINCESS_NAME + '</span>...';
+    nameEl.textContent = '';
+    nameEl.style.display = 'none';
+
+    // Pick a return message based on how many times she's taken it
+    if(priorHistory.length === 1){
+      greet2.innerHTML = 'Last we met, I saw <em>' + lastPrincessName + '</em> in thee. Let us look deeper this time.';
+    } else if(priorHistory.length < 5){
+      greet2.innerHTML = 'Thou hast returned. The mirror does not change its mind without reason — but it shall consider.';
+    } else {
+      greet2.innerHTML = 'Many times hast thou looked into me. Each time, the mirror sees what is true at this moment.';
+    }
+    if(ctaBtn) ctaBtn.textContent = 'Look Again';
+  } else {
+    // First-visit intro
+    greet1.textContent = 'I have been waiting for thee...';
+    nameEl.textContent = PRINCESS_NAME + ',';
+    nameEl.style.display = '';
+    greet2.textContent = 'Look into me, and let us discover who thou truly art.';
+    if(ctaBtn) ctaBtn.textContent = 'Begin the Mirror\'s Test';
+  }
+
+  // Show all intro elements immediately
+  greet1.classList.add('visible');
+  if(!isRetake) nameEl.classList.add('visible');
+  greet2.classList.add('visible');
   const cta = document.getElementById('intro-cta');
   cta.classList.add('visible');
   cta.style.opacity = '1';
@@ -987,10 +1119,30 @@ function continueFromInterlude(){
 // FINISH
 // ═══════════════════════════════════════════════
 function finishQuiz(){
-  // Determine winner
+  // Determine ranking
   const ranked = PRINCESSES
     .map(p => ({princess: p, score: state.scores[p]}))
     .sort((a,b) => b.score - a.score);
+
+  // Check if top 2 are within 5% of each other → trigger tiebreaker
+  const top1 = ranked[0];
+  const top2 = ranked[1];
+  // Only trigger tiebreaker if top1 is positive and within 5% of top1's value (or absolute diff < 2)
+  const range = Math.max(top1.score, 1);
+  const gap = top1.score - top2.score;
+  const isClose = (gap / range < 0.05) || (gap < 2 && top1.score > 0);
+
+  // Don't trigger tiebreaker on retake — keep simple
+  if(isClose && !state.tiebreakerShown){
+    state.tiebreakerShown = true;
+    showTiebreaker(top1.princess, top2.princess);
+    return;
+  }
+
+  finalizeFinish(ranked);
+}
+
+function finalizeFinish(ranked){
   const winner = ranked[0].princess;
 
   // Save run to history (analytics)
@@ -1004,6 +1156,8 @@ function finishQuiz(){
     freetextAnswers: state.freetextAnswers,
     callbackTags: {...state.callbackTags},
     ceremonyName: PRINCESS_NAME,
+    tiebreakerUsed: state.tiebreakerShown || false,
+    isRetake: state.isRetake || false,
   });
 
   // Save result for reveal page to consume
@@ -1019,6 +1173,92 @@ function finishQuiz(){
 
   // Reveal transition
   showRevealTransition(winner);
+}
+
+// ═══════════════════════════════════════════════
+// TIEBREAKER
+// ═══════════════════════════════════════════════
+function showTiebreaker(p1, p2){
+  // Build the lookup key (alphabetical order)
+  const key = [p1, p2].sort().join('|');
+  let tb = TIEBREAKERS[key];
+
+  // Fallback: build a generic tiebreaker between these two
+  if(!tb){
+    const generic = TIEBREAKERS.GENERIC;
+    // Determine which is "quiet" and which is "bold" for generic
+    const p1IsQuiet = QUIET_PRINCESSES.includes(p1);
+    const quietP = p1IsQuiet ? p1 : p2;
+    const boldP = p1IsQuiet ? p2 : p1;
+    tb = {
+      prompt: generic.prompt,
+      context: generic.context,
+      answers: [
+        {text: generic.answers[0].text, scores: {[quietP]: 10, [boldP]: -3}},
+        {text: generic.answers[1].text, scores: {[boldP]: 10, [quietP]: -3}},
+      ]
+    };
+  }
+
+  // Render the tiebreaker as a special question
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('mirror-voice').classList.remove('visible');
+  document.getElementById('mirror-stage').classList.remove('huge','large');
+
+  document.getElementById('q-counter').textContent = '✦ The Mirror\'s Decree ✦';
+
+  document.getElementById('q-category').textContent = '✦ The Final Word ✦';
+  document.getElementById('q-prompt').innerHTML = tb.prompt.replace(/{name}/g, PRINCESS_NAME);
+  document.getElementById('q-context').textContent = tb.context || '';
+  document.getElementById('q-context').style.display = tb.context ? 'block' : 'none';
+
+  const answersEl = document.getElementById('q-answers');
+  answersEl.innerHTML = '';
+  const list = document.createElement('div');
+  list.className = 'answer-list';
+  tb.answers.forEach((a, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'answer-btn';
+    btn.textContent = a.text;
+    btn.addEventListener('click', () => selectTiebreaker(i, btn, tb));
+    list.appendChild(btn);
+  });
+  answersEl.appendChild(list);
+
+  // Hide back button (no going back from tiebreaker)
+  document.getElementById('q-back').style.display = 'none';
+  document.getElementById('q-next').disabled = true;
+  document.getElementById('q-next').onclick = () => applyTiebreakerAndFinish(tb);
+
+  document.getElementById('question-scene').classList.add('active');
+}
+
+let pendingTiebreakerIdx = null;
+function selectTiebreaker(idx, el, tb){
+  document.querySelectorAll('.answer-btn').forEach(e => e.classList.remove('chosen'));
+  el.classList.add('chosen');
+  pendingTiebreakerIdx = idx;
+  document.getElementById('q-next').disabled = false;
+}
+
+function applyTiebreakerAndFinish(tb){
+  if(pendingTiebreakerIdx === null) return;
+  const chosen = tb.answers[pendingTiebreakerIdx];
+
+  // Apply tiebreaker scores (with high weight - 2x)
+  Object.entries(chosen.scores).forEach(([p, s]) => {
+    state.scores[p] = (state.scores[p] || 0) + (s * 2);
+  });
+
+  // Re-rank and finish
+  const ranked = PRINCESSES
+    .map(p => ({princess: p, score: state.scores[p]}))
+    .sort((a,b) => b.score - a.score);
+
+  // Reset onclick to normal goNext for any future use
+  document.getElementById('q-next').onclick = goNext;
+
+  finalizeFinish(ranked);
 }
 
 function showRevealTransition(winner){

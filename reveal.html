@@ -490,6 +490,45 @@ const PRINCESSES = [
 // Helper: get portrait URL (relative path = works on GitHub Pages and locally)
 const portraitUrl = (id) => `assets/princesses/${id}.png`;
 
+// ─── ROYAL STORY PERSONALIZATION ───
+// Weaves her ceremony name, free-text answer, and quiz choices into the story
+function personalizeStory(originalStory, princessId) {
+  // Try to load quiz result and ceremony from localStorage
+  let quizResult = null, ceremony = null;
+  try{ quizResult = JSON.parse(localStorage.getItem('quizResult') || 'null'); }catch(e){}
+  try{ ceremony = JSON.parse(localStorage.getItem('royalCeremony') || 'null'); }catch(e){}
+
+  if(!quizResult && !ceremony) return originalStory;
+
+  const name = (ceremony && ceremony.name) ? ceremony.name : 'thee';
+  const wishKnown = (quizResult && quizResult.freetextAnswers && quizResult.freetextAnswers.wish_known) ?
+    quizResult.freetextAnswers.wish_known.trim() : '';
+  const choseSea = quizResult && quizResult.callbackTags && quizResult.callbackTags.sea;
+
+  // Add a personalized opening line (replaces the generic opener with her name)
+  // The story stays the same, but we prepend a personal sentence and append a closing
+  let opening = originalStory;
+
+  // If she wrote a free-text answer, weave it in naturally near the end
+  if(wishKnown && wishKnown.length > 5){
+    // Trim trailing punctuation and lowercase first letter for natural flow
+    const cleaned = wishKnown.replace(/[.!?;,]+$/, '').trim();
+    const lcFirst = cleaned.charAt(0).toLowerCase() + cleaned.slice(1);
+    opening = opening + ' Long hast thou kept within thee the truth that ' + lcFirst + '. The mirror honors this, ' + name + '.';
+  } else {
+    // No free-text — just personalize with name at the end
+    opening = opening + ' The mirror knows thee now, ' + name + '.';
+  }
+
+  // If she chose the sea path, add a small reference for sea-aligned princesses
+  if(choseSea && (princessId === 'moana' || princessId === 'ariel')){
+    opening = opening + ' The sea remembers thy choosing.';
+  }
+
+  return opening;
+}
+
+
 // Mock match scores — replace with real quiz logic later
 function mockScores(primaryIdx) {
   // If we have real quiz scores, use them
@@ -563,7 +602,9 @@ function showPrincess(idx, scroll = true) {
   // Below fold
   document.getElementById('royal-title').textContent = '"' + p.title + '"';
   const storyEl = document.getElementById('story-body');
-  storyEl.innerHTML = '<span class="dropcap">' + p.story[0] + '</span>' + p.story.slice(1);
+  // Personalize the story with her ceremony name, free-text answer, and quiz choices
+  let personalizedStory = personalizeStory(p.story, p.id);
+  storyEl.innerHTML = '<span class="dropcap">' + personalizedStory[0] + '</span>' + personalizedStory.slice(1);
 
   // Match bars
   const scores = mockScores(idx);
