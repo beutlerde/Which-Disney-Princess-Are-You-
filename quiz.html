@@ -149,12 +149,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 .btn-secondary:hover{color:var(--gold-light);border-color:var(--gold)}
 
 /* === INTRO SCREEN === */
-#intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;z-index:5}
+#intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:200px;z-index:5}
 .intro-greeting{
   font-family:'Cormorant Garamond',serif;font-style:italic;
   font-size:clamp(20px,4vw,30px);color:var(--gold);
   text-align:center;line-height:1.5;max-width:600px;
-  margin-top:60vh;opacity:0;text-shadow:0 0 30px rgba(201,168,76,0.5);
+  margin:8px 0;opacity:0;text-shadow:0 0 30px rgba(201,168,76,0.5);
 }
 .intro-greeting.visible{animation:lineFade 1.6s ease forwards}
 @keyframes lineFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -162,15 +162,15 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
   font-family:'Cormorant Unicase',serif;
   font-size:clamp(36px,7vw,56px);
   color:var(--gold-light);
-  margin:20px 0;opacity:0;
+  margin:16px 0;opacity:0;
   text-shadow:0 0 40px rgba(201,168,76,0.7);
 }
 .intro-name.visible{animation:nameFade 2s ease forwards}
 @keyframes nameFade{0%{opacity:0;transform:scale(0.9)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 .intro-cta{
-  margin-top:40px;opacity:0;
+  margin-top:30px;opacity:0;
 }
-.intro-cta.visible{animation:lineFade 1.5s ease forwards}
+.intro-cta.visible{opacity:1 !important;animation:lineFade 1.5s ease forwards}
 
 /* === REVEAL TRANSITION === */
 #reveal-transition{position:fixed;inset:0;background:radial-gradient(circle,rgba(13,8,24,0.95),rgba(13,8,24,1));z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
@@ -365,10 +365,10 @@ const QUESTIONS = [
     prompt:'<em>Four doors stand before thee. Which one calls to thee?</em>',
     context:'Choose with thy heart, not thy mind.',
     answers:[
-      {label:'The Library Door',visualSrc:'assets/quiz/door-library.png',scores:{belle:4,'snow-white':1}},
-      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.png',scores:{aurora:3,mulan:2,raya:2}},
-      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.png',scores:{moana:4,ariel:3},callbackTag:'sea'},
-      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.png',scores:{elsa:4,jasmine:1}},
+      {label:'The Library Door',visualSrc:'assets/quiz/door-library.jpg',scores:{belle:4,'snow-white':1}},
+      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.jpg',scores:{aurora:3,mulan:2,raya:2}},
+      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.jpg',scores:{moana:4,ariel:3},callbackTag:'sea'},
+      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.jpg',scores:{elsa:4,jasmine:1}},
     ]
   },
   {
@@ -505,10 +505,14 @@ PRINCESSES.forEach(p => state.scores[p] = 0);
 function showIntro(){
   const nameEl = document.getElementById('intro-greeting-name');
   nameEl.textContent = PRINCESS_NAME + ',';
-  setTimeout(()=>document.getElementById('intro-greeting-1').classList.add('visible'), 800);
-  setTimeout(()=>nameEl.classList.add('visible'), 2800);
-  setTimeout(()=>document.getElementById('intro-greeting-2').classList.add('visible'), 4800);
-  setTimeout(()=>document.getElementById('intro-cta').classList.add('visible'), 7000);
+  // Show all intro elements immediately — no fancy timing while we debug
+  document.getElementById('intro-greeting-1').classList.add('visible');
+  nameEl.classList.add('visible');
+  document.getElementById('intro-greeting-2').classList.add('visible');
+  const cta = document.getElementById('intro-cta');
+  cta.classList.add('visible');
+  cta.style.opacity = '1';
+  cta.style.display = 'block';
 }
 
 function beginQuiz(){
