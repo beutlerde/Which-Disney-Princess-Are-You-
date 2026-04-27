@@ -416,7 +416,17 @@ const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : 'noble trave
 const FREETEXT_WISH = (quizResult && quizResult.freetextAnswers && quizResult.freetextAnswers.wish_known)
   ? quizResult.freetextAnswers.wish_known.trim() : '';
 const CHOSE_SEA = !!(quizResult && quizResult.callbackTags && quizResult.callbackTags.sea);
-const PRINCESS_ID = quizResult ? quizResult.winner : null;
+// Allow forcing a specific princess via URL: ?force=belle (for testing)
+const urlParams = new URLSearchParams(window.location.search);
+const FORCED_PRINCESS = urlParams.get('force');
+
+const PRINCESS_ID = FORCED_PRINCESS || (quizResult ? quizResult.winner : null);
+
+// If we're forcing a princess and there's no quiz result, hide the error state
+if(FORCED_PRINCESS && !quizResult){
+  document.getElementById('no-result').classList.remove('visible');
+  document.getElementById('app').style.display = '';
+}
 
 // Princess display names + their portrait paths
 const PRINCESS_DATA = {
