@@ -490,6 +490,24 @@ const PRINCESSES = [
 // Helper: get portrait URL (relative path = works on GitHub Pages and locally)
 const portraitUrl = (id) => `assets/princesses/${id}.png`;
 
+// Loads a portrait with fallback: .png → .jpg → .jpeg
+function loadPortraitWithFallback(imgEl, princessId){
+  const exts = ['.png', '.jpg', '.jpeg'];
+  let attempt = 0;
+  function tryNext(){
+    if(attempt >= exts.length){
+      console.warn('No portrait found for', princessId);
+      return;
+    }
+    const src = `assets/princesses/${princessId}${exts[attempt]}`;
+    attempt++;
+    imgEl.onerror = tryNext;
+    imgEl.onload = ()=>{ imgEl.onerror = null; };
+    imgEl.src = src;
+  }
+  tryNext();
+}
+
 // ─── ROYAL STORY PERSONALIZATION ───
 // Weaves her ceremony name, free-text answer, and quiz choices into the story
 function personalizeStory(originalStory, princessId) {
@@ -578,11 +596,11 @@ function showPrincess(idx, scroll = true) {
   // Update switcher
   document.querySelectorAll('.sw-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
 
-  // Portrait
+  // Portrait — try .png → .jpg → .jpeg
   const img = document.getElementById('portrait-img');
   img.style.animation = 'none';
   img.offsetHeight;
-  img.src = portraitUrl(p.id);
+  loadPortraitWithFallback(img, p.id);
   img.alt = p.name;
   img.style.animation = '';
 
@@ -720,7 +738,8 @@ const sw = document.getElementById('switcher');
 PRINCESSES.forEach((p, i) => {
   const btn = document.createElement('button');
   btn.className = 'sw-btn' + (i === 0 ? ' active' : '');
-  btn.innerHTML = '<img class="sw-thumb" src="' + portraitUrl(p.id) + '" alt="' + p.name + '"><span class="sw-name">' + p.name + '</span>';
+  btn.innerHTML = '<img class="sw-thumb" src="" alt="' + p.name + '"><span class="sw-name">' + p.name + '</span>';
+  loadPortraitWithFallback(btn.querySelector('.sw-thumb'), p.id);
   btn.addEventListener('click', () => showPrincess(i));
   sw.appendChild(btn);
 });
