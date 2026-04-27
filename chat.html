@@ -26,14 +26,22 @@ html,body{
 /* === STARFIELD === */
 #starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
 
-/* === AMBIENT BACKDROP (subtle, behind everything) === */
+/* === AMBIENT BACKDROP (the painted scene — Belle's library/study) === */
 .chat-backdrop{
   position:fixed;inset:0;z-index:1;
-  background:radial-gradient(ellipse at center,
-    rgba(40,25,15,0.4) 0%,
-    rgba(13,8,24,0.95) 80%
-  );
+  background-image:url('assets/chat/chat-backdrop.jpg');
+  background-size:cover;background-position:center;
+  opacity:0;transition:opacity 2s ease;
+  filter:brightness(0.65) saturate(0.95);
   pointer-events:none;
+}
+.chat-backdrop.visible{opacity:0.7}
+.chat-backdrop::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,
+    rgba(13,8,24,0.2) 0%,
+    rgba(13,8,24,0.85) 90%
+  );
 }
 
 /* === MAIN APP === */
@@ -122,38 +130,37 @@ html,body{
   color:var(--cream-dim);text-align:center;margin-top:4px;
 }
 
-/* === PARCHMENT SCROLL CHAT AREA === */
+/* === PARCHMENT (translucent vellum page floating over the painted scene) === */
 .parchment{
   position:relative;
   margin-top:6px;
-  padding:42px 32px 36px;
-  /* Painted parchment as the actual writing surface */
-  background-image:url('assets/chat/chat-backdrop.jpg');
-  background-size:cover;
-  background-position:center top;
-  background-color:#e8d4a6; /* fallback if image fails */
+  padding:34px 28px 28px;
+  /* Clean cream/parchment surface — semi-translucent so you sense the scene behind */
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(255,240,200,0.5),transparent 60%),
+    linear-gradient(180deg,rgba(248,232,192,0.96) 0%,rgba(232,212,166,0.96) 100%);
   border-radius:6px;
+  border:1px solid rgba(139,105,20,0.5);
   box-shadow:
-    0 0 0 1px rgba(139,105,20,0.4),
-    0 4px 30px rgba(0,0,0,0.6);
+    0 0 0 1px rgba(139,105,20,0.3),
+    0 8px 40px rgba(0,0,0,0.7),
+    inset 0 0 60px rgba(180,140,60,0.15);
   opacity:0;transition:opacity 1.5s ease 0.5s;
   min-height:300px;
-  /* Soft inner glow to make text legible over busy parchment art */
-  position:relative;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
 }
 .parchment.visible{opacity:1}
-/* Subtle warm overlay so text stays readable over the painted parchment */
-.parchment::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at center,
-    rgba(244,228,193,0.4) 0%,
-    rgba(244,228,193,0.15) 70%);
-  border-radius:6px;
-  pointer-events:none;
-  z-index:0;
+/* Decorative parchment corners */
+.parchment::before,
+.parchment::after,
+.parchment .pc-tr,
+.parchment .pc-bl{
+  content:'✦';position:absolute;color:rgba(139,69,19,0.5);font-size:14px;
+  z-index:2;
 }
-/* Make sure all message content stacks above the overlay */
-.parchment > * { position:relative; z-index:1; }
+.parchment::before{top:10px;left:14px}
+.parchment::after{bottom:10px;right:14px}
 
 /* === MESSAGE STYLING === */
 .message{
@@ -372,16 +379,16 @@ html,body{
 // CHAT WITH THY PRINCESS
 // ═══════════════════════════════════════════════
 
-// ─── PRELOAD CHAT PARCHMENT (with .jpg → .jpeg → .png fallback) ───
+// ─── PRELOAD CHAT BACKDROP (with .jpg → .jpeg → .png fallback) ───
 (function(){
-  const parchmentEl = document.getElementById('parchment');
+  const backdropEl = document.getElementById('chat-backdrop');
   const exts = ['.jpg', '.jpeg', '.png'];
   let attempt = 0;
   function tryNext(){
     if(attempt >= exts.length) return;
     const src = 'assets/chat/chat-backdrop' + exts[attempt];
     const testImg = new Image();
-    testImg.onload = ()=>{ parchmentEl.style.backgroundImage = `url('${src}')`; };
+    testImg.onload = ()=>{ backdropEl.style.backgroundImage = `url('${src}')`; };
     testImg.onerror = ()=>{ attempt++; tryNext(); };
     testImg.src = src;
   }
@@ -741,6 +748,7 @@ if(PRINCESS_ID){
   document.getElementById('princess-name').textContent = data.name;
 
   // Reveal sequence
+  setTimeout(()=>document.getElementById('chat-backdrop').classList.add('visible'), 200);
   setTimeout(()=>document.getElementById('princess-header').classList.add('visible'), 600);
   setTimeout(()=>document.getElementById('parchment').classList.add('visible'), 1400);
 
