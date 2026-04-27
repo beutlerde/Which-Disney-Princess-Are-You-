@@ -531,6 +531,56 @@ const INTENT_PATTERNS = [
       /\bstuck\b/i, /\bgive up\b/i,
     ]
   },
+  // ─── 5 new categories (Phase 3 expansion) ───
+  {
+    id: 'academic_stress',
+    patterns: [
+      /\b(homework|assignment|test|exam|quiz|grade|grades|essay|report|project)\b/i,
+      /\bfailing\b/i, /\bcan'?t keep up\b/i, /\bbehind in\b/i,
+      /\bschool is (hard|too much|killing me)\b/i, /\btoo much (school|work)\b/i,
+      /\bso much (homework|work|to do)\b/i,
+    ]
+  },
+  {
+    id: 'jealousy',
+    patterns: [
+      /\bjealous\b/i, /\benvy\b/i, /\benvious\b/i,
+      /\beveryone (is|has|gets) (better|more|prettier|smarter|cooler)\b/i,
+      /\bwhy can'?t i be like\b/i,
+      /\bnot fair\b/i, /\bunfair\b/i,
+      /\bi wish i (was|were) (her|him|them|like)\b/i,
+    ]
+  },
+  {
+    id: 'body_image',
+    patterns: [
+      /\bi'?m (ugly|fat|skinny|too tall|too short|chubby|gross)\b/i,
+      /\bi hate my (body|hair|skin|face|nose|legs|arms|stomach|weight)\b/i,
+      /\b(body|weight|looks?|appearance) (issue|problem|hate)\b/i,
+      /\bnot (pretty|beautiful|attractive)\b/i,
+      /\b(too|so) (fat|skinny|tall|short)\b/i,
+    ]
+  },
+  {
+    id: 'bored',
+    patterns: [
+      /\bi'?m bored\b/i, /\bi am bored\b/i,
+      /\bnothing (is|feels) (interesting|fun|exciting)\b/i,
+      /\bso bored\b/i, /\bnothing to do\b/i,
+      /\beverything is boring\b/i,
+    ]
+  },
+  {
+    id: 'big_questions',
+    patterns: [
+      /\bwhat is the (point|meaning) of\b/i,
+      /\bwhy (are we|am i) (here|alive|on earth)\b/i,
+      /\bdoes anything matter\b/i,
+      /\bwhat'?s the point\b/i,
+      /\bmeaning of life\b/i,
+      /\bwhy do (we|i) exist\b/i,
+    ]
+  },
 ];
 
 function detectIntent(text){
@@ -555,6 +605,8 @@ const CHAT_TREES = {
       return `Oh — <em>{name}</em>. Come, sit a moment with me. I've waited for thee. There is something quite remarkable about thee, and I want to know more.`;
     },
     starters: [
+
+      // ═══ STARTER 1: Tell me about thyself ═══
       {
         id: 'tell_about_you',
         label: 'Tell me about thyself',
@@ -562,18 +614,20 @@ const CHAT_TREES = {
         followups: [
           {
             label: 'I wonder about other people',
-            response: `Yes — yes! That is the deepest wondering of all. When I look at someone, even someone I think I understand, I remember: there is a whole story inside them I have not read. The shy ones, the loud ones, the ones who seem cruel — every one of them carries something. Curiosity about people, <em>{name}</em>, is the kindest thing thou canst possess.`
+            response: `Yes — yes! That is the deepest wondering of all. When I look at someone, even someone I think I understand, I remember: there is a whole story inside them I have not read. The shy ones, the loud ones, the ones who seem cruel — every one of them carries something. Curiosity about people, <em>{name}</em>, is the kindest thing thou canst possess.<br><br><em>Will thou look at one person tomorrow — really look — and wonder what story they are carrying?</em>`
           },
           {
             label: 'I wonder about the world',
-            response: `Then thou and I are kindred. There are mountains I have only read about. Foods I have never tasted. Songs in languages I cannot yet speak. The wonder I feel at not-knowing — that wonder is the engine of every adventure. Promise me something, <em>{name}</em>: do not let anyone make thee small for asking too many questions. The world rewards the curious.`
+            response: `Then thou and I are kindred. There are mountains I have only read about. Foods I have never tasted. Songs in languages I cannot yet speak. The wonder I feel at not-knowing — that wonder is the engine of every adventure. Promise me something, <em>{name}</em>: do not let anyone make thee small for asking too many questions. The world rewards the curious.<br><br><em>Will thou ask one bold question today, even if it makes thee feel silly?</em>`
           },
           {
             label: 'I wonder about myself',
-            response: `Oh, <em>{name}</em>. That is the bravest wondering. To turn the question inward and ask <em>"who am I, truly?"</em> — most people will not even try. But I will tell thee what I have learned: thou art not one fixed thing. Thou art a story still being written. And the best part is — thou art the one writing it.`
+            response: `Oh, <em>{name}</em>. That is the bravest wondering. To turn the question inward and ask <em>"who am I, truly?"</em> — most people will not even try. But I will tell thee what I have learned: thou art not one fixed thing. Thou art a story still being written. And the best part is — <strong>thou art the one writing it.</strong><br><br><em>Tonight before sleep, will thou whisper one thing thou knowest is true about thyself? Just one. Just for thee to hear.</em>`
           }
         ]
       },
+
+      // ═══ STARTER 2: I sometimes feel different ═══
       {
         id: 'feel_different',
         label: 'I sometimes feel different from others',
@@ -581,37 +635,113 @@ const CHAT_TREES = {
         followups: [
           {
             label: 'I love things others find boring',
-            response: `That is the most precious sign of all. People who love what others overlook — they see beauty no one else sees. Hold onto that. The day will come when someone meets thee and says <em>"how could anyone find this boring?"</em> — and thou wilt smile, because thou wilt have known all along.`
+            response: `That is the most precious sign of all. People who love what others overlook — they see beauty no one else sees. Hold onto that. The day will come when someone meets thee and says <em>"how could anyone find this boring?"</em> — and thou wilt smile, because thou wilt have known all along.<br><br><em>Will thou tell someone — anyone — about the thing thou lovest most this week? Even if they don't get it?</em>`
           },
           {
             label: 'I think differently than my friends',
-            response: `Ah — then thou hast the rare gift of an honest mind. Friendship does not require sameness, <em>{name}</em>. It only requires that we listen well. The friends who matter most are the ones who let thee be different and love thee anyway.`
+            response: `Ah — then thou hast the rare gift of an honest mind. Friendship does not require sameness, <em>{name}</em>. It only requires that we listen well. The friends who matter most are the ones who let thee be different and love thee anyway.<br><br><em>Will thou let one of thy friends see thy real opinion this week, instead of agreeing to keep the peace?</em>`
           },
           {
             label: 'I am quieter than most',
-            response: `Quiet is not less, <em>{name}</em>. Quiet is <em>more</em> — more listening, more thinking, more noticing. The world has too many voices that speak before they think. The quiet ones, the watchful ones — we are the ones who see things clearly. Never apologize for thy quiet.`
+            response: `Quiet is not less, <em>{name}</em>. Quiet is <em>more</em> — more listening, more thinking, more noticing. The world has too many voices that speak before they think. The quiet ones, the watchful ones — we are the ones who see things clearly. Never apologize for thy quiet.<br><br><em>Will thou let thy quiet be a gift this week, instead of a thing thou hidest?</em>`
           }
         ]
       },
+
+      // ═══ STARTER 3: I want to talk about my life (3 sub-branches) ═══
       {
-        id: 'what_should_i_read',
-        label: 'What books should I read?',
-        response: `Now <em>this</em> is a question I have waited my whole life to be asked! Reading is like — like having a thousand lives in one. Adventure books for when thou wantest to be brave. Mystery books for when thou wantest to think. Stories about animals, about faraway places, about regular girls who do remarkable things. <strong>The best book is the one thou cannot put down.</strong> What kind of feeling dost thou want a book to give thee?`,
+        id: 'talk_about_life',
+        label: 'I want to talk about my life',
+        response: `Oh, <em>{name}</em> — yes, please. Tell me about thy life. The whole strange wonderful tangle of it. There is no part of thy life I find boring, because thou art the one living it. Where shall we begin?`,
         followups: [
+
+          // ─── SUB-BRANCH: FRIENDS ───
           {
-            label: 'Adventure! Excitement!',
-            response: `Then thou wantest stories where someone like thee is suddenly thrust into a world they did not know existed. Books with maps in the front. Books where the heroes have to figure things out as they go. Trust thy instinct on this — when a book makes thy heart race in chapter one, that is the right book.`
+            label: 'Friends',
+            response: `Friends are one of the great mysteries, <em>{name}</em>. They are the people we choose, who choose us back. The good ones make us braver. The hard ones teach us what we need. Tell me — what art thou wondering about?`,
+            followups: [
+              {
+                label: 'How do I make more friends?',
+                response: `Here is the honest truth, <em>{name}</em>: friends do not come from trying to be liked. Friends come from being interested. Look at the people around thee — not at who is popular, but at who is curious, or kind, or quietly thoughtful. Walk up. Ask them about a thing they love. <strong>People will remember thee not for what thou said, but for how thou made them feel.</strong> If thou art genuinely curious about someone, they will feel it. That is how friendships truly begin.<br><br><em>Will thou be thyself today? Will thou go up to someone new and ask them about something they love?</em>`
+              },
+              {
+                label: 'What is a true friend?',
+                response: `A true friend, <em>{name}</em>, is someone who loves both the brightest version of thee and the cloudy one. They do not need thee to be impressive. They are happy when thou succeedest, and they sit with thee when thou failest — and neither one changes how they feel. <strong>A true friend tells thee the truth, even when it is hard. And a true friend lets thee tell them the truth, too.</strong> Look for friends who feel safe. Not exciting — safe. Excitement is for adventures. Safety is for friendship.<br><br><em>Will thou think of one friend today and ask thyself: do I feel safe with them? Do they feel safe with me?</em>`
+              },
+              {
+                label: 'My friend hurt me. What do I do?',
+                response: `Oh, <em>{name}</em>. I am so sorry. Friendship hurts more than almost anything because we trusted them — we let them in. Here is what helps me: <strong>do not pretend it did not happen.</strong> If thou canst, tell them — gently, but truly — <em>"this hurt me."</em> A real friend will hear that and try to make it right. If they laugh, or get angry, or blame thee... thou hast learned something important about who they really are. That is hard, but it is not bad to know.<br><br><em>Will thou be brave enough this week to tell them how thou truly felt? Even one sentence is enough.</em>`
+              },
+              {
+                label: 'I feel left out sometimes.',
+                response: `That is one of the loneliest feelings in the world, <em>{name}</em>, and I will not pretend it isn't. But here is what I have learned: <strong>feeling left out does not mean thou art unwanted.</strong> Sometimes people just don't notice. Sometimes they are caught up in their own small worlds. Sometimes thy people are out there but thou hast not found them yet. Do not shrink to fit. Stay thy whole self. The right people will see thee — and when they do, they will not let thee go.<br><br><em>Will thou look around tomorrow for someone else who seems left out, and walk over to them? Sometimes thy people find thee when thou become the friend thou wish thou had.</em>`
+              },
+              {
+                label: 'What if my friend is jealous of me?',
+                response: `Oh, that is a hard one, <em>{name}</em>. Jealousy in a friend usually means they are scared of losing thee, or they are hurting about something in their own life that has nothing to do with thee. <strong>It is not thy job to make thyself smaller so they feel better.</strong> But it IS kind to remind them that thy good things do not take away from theirs. The world has enough room for both of thee to shine.<br><br><em>Will thou tell thy friend one thing thou genuinely admire about THEM this week? Sometimes jealousy melts when someone feels truly seen.</em>`
+              }
+            ]
           },
+
+          // ─── SUB-BRANCH: FAMILY ───
           {
-            label: 'Something cozy and warm',
-            response: `The very best feeling. Look for books about big houses with lots of family in them. Books about small towns where everyone knows each other. Books with food described in detail and friendships that last decades. A cozy book is a hug between covers.`
+            label: 'Family',
+            response: `Oh, family. The people who love us most and confuse us most, all at once. They are not perfect — no family is — but the love is real, even when it does not look the way we wish it would. What is on thy heart, <em>{name}</em>?`,
+            followups: [
+              {
+                label: 'Why are my parents strict with me?',
+                response: `<em>{name}</em>, I will tell thee a secret about parents: <strong>they love thee so much it scares them.</strong> The world is wider and stranger than thou knowest yet, and they have already lived in it long enough to see things they do not want thee to face. The rules thou findest annoying are usually love wearing armor. They are trying to keep thee safe long enough for thee to become who thou art meant to be. That does not mean every rule is right — but it means the love behind the rule is real.<br><br><em>Will thou try, this week, to ask them about a rule that bothers thee — with respect, not anger? They might surprise thee.</em>`
+              },
+              {
+                label: 'Do my parents really love me?',
+                response: `Oh, <em>{name}</em>. Listen carefully. <strong>Thy parents love thee more than thou canst possibly understand right now.</strong> Even when they are tired. Even when they say no. Even when they do not get it right. They love thee — and what they want, more than anything in this world, is for thee to grow into thy bravest, most truthful self. Sometimes love looks like a hug. Sometimes it looks like a "no." Sometimes it looks like an answer thou didst not want to hear. But it is all love. Love that wants thee to become exactly who thou art meant to be.`
+              },
+              {
+                label: 'I feel unseen at home sometimes.',
+                response: `That is a real feeling, <em>{name}</em>, and I will not dismiss it. Sometimes the people closest to us see us least clearly — they are too busy seeing the version of us they remember from when we were small. <strong>If thou dost not feel seen, tell them. In simple words.</strong> <em>"I want to tell you something about who I am becoming."</em> It can feel scary, but the people who love thee want to see thee. They just need to be reminded that thou art changing. Give them the chance.<br><br><em>Will thou share one thing with a parent this week that they don't already know about thee?</em>`
+              },
+              {
+                label: 'I argue with my brother or sister.',
+                response: `Ha! <em>{name}</em>, every sister and brother has done what thou doest. Siblings are strange creatures — sometimes the closest people to thee, sometimes the ones who know exactly how to make thee furious. <strong>The arguments are not the truth of thy bond.</strong> The truth is the small moments — the inside jokes, the times they had thy back, the silly faces thou makest at the dinner table. Hold those tighter than the fights.<br><br><em>Will thou do something kind for thy sibling this week, with no announcement and no reason? See what happens.</em>`
+              },
+              {
+                label: 'My family is going through something hard.',
+                response: `Oh, <em>{name}</em>. I am so sorry. When a family is hurting, every person in it carries the weight, even the youngest. Here is what I want thee to remember: <strong>it is not thy job to fix what thy family is going through.</strong> Thou art a child. Thy job is to be loved, to be kind to thy people, and to ask for help when thou needs it. That is enough. Truly. Thy presence in a hard moment matters more than thou knowest, just by being thee.<br><br><em>Will thou tell one trusted grown-up — a parent, a teacher, an aunt — that thy family is having a hard time? Just so someone outside knows. Thou shouldst not carry it alone.</em>`
+              }
+            ]
           },
+
+          // ─── SUB-BRANCH: SCHOOL ───
           {
-            label: 'Something that makes me think',
-            response: `Oh, thou art a reader after my own heart. Look for books that ask <em>"what would you do?"</em> and don't give thee an easy answer. Books with characters who are sometimes wrong. Books that make thee close them, look up at the ceiling, and just <em>think</em> for a moment. Those are the books that stay with thee forever.`
+            label: 'School',
+            response: `School! Oh, <em>{name}</em>, school is so much more than just learning. It is where thou figurest out who thou art, who thou wantest to be, and who thy people are. It is also exhausting. What part of school art thou thinking about?`,
+            followups: [
+              {
+                label: 'Sometimes school feels too hard.',
+                response: `It is, <em>{name}</em>. School is hard. Anyone who says it is not has forgotten. Here is what I want thee to know: <strong>being good at school is not the same as being smart.</strong> Some of the smartest people I have ever met struggled in school. The ones who succeed are usually the ones who keep trying when it gets hard, not the ones who find it easy. If thou art finding something difficult, that does not mean thou art not capable — it means thou art doing real work.<br><br><em>Will thou ask for help this week with the hardest thing? From a teacher, a parent, a friend. The asking IS part of the learning.</em>`
+              },
+              {
+                label: "I'm worried about a test.",
+                response: `Tests are strange creatures, <em>{name}</em>. They feel huge in the moment, and small a year later. Here is what helps me: <strong>do thy best preparation, and then let it go.</strong> Worry will not add a single right answer to thy paper. The night before, get sleep. The morning of, eat something. During the test, breathe — truly breathe — and remember: thou art doing this, one question at a time. And whatever the score is, thou art still thee. The test does not measure thy worth.<br><br><em>Will thou promise me thou wilt sleep the night before, and not study until midnight in panic? A rested mind remembers more than a tired one.</em>`
+              },
+              {
+                label: "I don't know what I want to do when I grow up.",
+                response: `Oh, <em>{name}</em>, no one does. <em>No one.</em> Even adults who say they have it figured out are usually still figuring it out. Here is the wonderful truth: <strong>thou dost not need to know yet.</strong> What thou shouldst do is pay attention to what makes thee curious, what makes thee lose track of time, what makes thee feel alive. Those are clues. Follow the clues. The path will appear as thou walkest it.<br><br><em>Will thou notice this week the thing that made thee lose track of time, and write it down somewhere? Those are thy clues.</em>`
+              },
+              {
+                label: "There's a kid at school who is mean to me.",
+                response: `Oh, <em>{name}</em>. I am sorry. Cruelty in another person is almost never about thee — it is about something hurting inside them, something they do not know how to name. <strong>That does not make it thy job to fix. And it does not mean thou must endure it.</strong> Tell a grown-up thou trustest — a teacher, a parent. Saying it out loud is not tattling. It is asking for help. Mean people get smaller when grown-ups know.<br><br><em>Will thou tell one trusted adult this week, even if it feels scary? Thou art not alone in this.</em>`
+              },
+              {
+                label: 'I feel pressure to be perfect.',
+                response: `Oh, <em>{name}</em>, this one breaks my heart a little. <strong>Thou wert not put on this earth to be perfect. Thou wert put here to be alive.</strong> The kids who seem to have it all together — they are usually struggling too, behind their smiles. Perfection is a story we tell ourselves to feel safe. But it is not real. What is real is courage. What is real is kindness. What is real is showing up even when thy work is not perfect. Those things matter infinitely more than a perfect grade.<br><br><em>Will thou let one thing be "good enough" this week, instead of perfect? Just to see what happens.</em>`
+              }
+            ]
           }
         ]
       },
+
+      // ═══ STARTER 4: How do I feel braver? ═══
       {
         id: 'feel_brave',
         label: 'How do I feel braver?',
@@ -619,32 +749,32 @@ const CHAT_TREES = {
         followups: [
           {
             label: 'Speak up when something is wrong',
-            response: `That is the hardest bravery of all, and the most important. Here is what helps me: I remind myself that staying silent is also a choice — and it is the choice that protects no one. When something is wrong, even a small voice saying <em>"I do not think this is right"</em> can change everything. Thy voice matters, <em>{name}</em>.`
+            response: `That is the hardest bravery of all, and the most important. Here is what helps me: I remind myself that staying silent is also a choice — and it is the choice that protects no one. When something is wrong, even a small voice saying <em>"I do not think this is right"</em> can change everything. Thy voice matters, <em>{name}</em>.<br><br><em>Will thou trust thy voice this week, even if it shakes? One sentence is enough.</em>`
           },
           {
             label: 'Try something I might fail at',
-            response: `Oh, <em>{name}</em> — failing is how all good things begin. Every book ever written had a first draft someone hated. Every dancer once tripped. Every brave thing was once a clumsy attempt. The shame is not in failing. The shame would be in never trying because thou wert too afraid. Try.`
+            response: `Oh, <em>{name}</em> — failing is how all good things begin. Every book ever written had a first draft someone hated. Every dancer once tripped. Every brave thing was once a clumsy attempt. The shame is not in failing. The shame would be in never trying because thou wert too afraid.<br><br><em>Will thou try one thing this week that thou might fail at? Just to see who thou art when thou try.</em>`
           },
           {
             label: 'Be myself when others tease me',
-            response: `This — this — is the bravest of all. Listen to me carefully: the people who tease thee are usually frightened of being themselves. They will not see it that way, but it is true. Standing in thy own truth while they laugh — that is the most powerful thing thou canst ever do. And one day, they will wish they had been brave like thee.`
+            response: `This — this — is the bravest of all. Listen to me carefully: the people who tease thee are usually frightened of being themselves. They will not see it that way, but it is true. Standing in thy own truth while they laugh — that is the most powerful thing thou canst ever do. And one day, they will wish they had been brave like thee.<br><br><em>Will thou stay thyself this week, even when it costs thee? The right people are watching, even when thou cannot see them.</em>`
           }
         ]
       },
+
+      // ═══ STARTER 5: I want to tell thee something (FREEFORM) ═══
       {
         id: 'tell_belle_something',
         label: 'I want to tell thee something',
         type: 'freeform',
         prompt: `I am listening, <em>{name}</em>. I am — truly — listening. Tell me anything thou hast wished to say. A worry. A wonder. A small joy. A secret thou hast told no one. I shall keep it safe in this book of ours, and I shall hold it the way I hold all things precious: with both hands.`,
         placeholder: 'Write to Belle...',
-        // Belle's responses are routed by emotional intent — see INTENT_PATTERNS
-        // Each intent ID maps to a Belle-voiced response
         responsesByIntent: {
           fear: `Oh, <em>{name}</em>. Fear is such a lonely room to stand in. I have been there. Here is what helps me: <strong>Fear is loud, but it is rarely right about the size of things.</strong> The thing thou art afraid of feels enormous — but thou art bigger than thou knowest. I believe this about thee. I have seen the shape of thy heart in our conversation, and it is not a small heart.`,
 
           friend_hurt: `<em>{name}</em>... I am so sorry. Friendship hurts more than almost anything because we expected it to be safe. Listen — what someone did or said does not change who thou art. Thou art still the person worth knowing. The friend who could not see that... they were the one who lost something today. Not thee.`,
 
-          family: `Family is the most complicated kind of love, <em>{name}</em>. They knew us before we even knew ourselves, which means they sometimes can't see who we are becoming. That does not mean they don't love thee — it means thou art growing faster than they can read. Be patient with them. And be patient with thyself.`,
+          family: `Family is the most complicated kind of love, <em>{name}</em>. They knew us before we even knew ourselves, which means they sometimes can't see who we are becoming. <strong>That does not mean they don't love thee — it means thou art growing faster than they can read.</strong> Be patient with them. And be patient with thyself. And remember: even when they get it wrong, the love is real.`,
 
           dream: `Oh, <em>{name}</em> — <em>this</em> is the kind of thing books are made of. Dreams are not foolish. Dreams are blueprints. Hold this dream gently. Tell it to people who will not laugh. And remember — every great person was once a child who told someone what they wanted to be, and was either believed in, or believed in themselves. Either way works.`,
 
@@ -658,14 +788,23 @@ const CHAT_TREES = {
 
           confused: `Confusion is not a weakness, <em>{name}</em>. Confusion is the moment right before understanding. Most people run from it because it is uncomfortable. But thou hast stayed. Thou hast asked. That is rare. Whatever thou art trying to figure out, give thyself time. The answer often comes when we stop chasing it.`,
 
-          // The universal fallback — works for ANYTHING, even cryptic or short messages
+          academic_stress: `Oh, <em>{name}</em>. I see thee carrying this. School can feel like a weight nobody else can see. Here is what is true: <strong>thy worth is not thy grades.</strong> If thou art drowning, ask for help — from a teacher, a parent, anyone. The asking is not weakness. It is wisdom. And remember: this season is not forever. Thou wilt look back and not even remember the hard test that feels enormous now.`,
+
+          jealousy: `Jealousy is one of the most uncomfortable feelings, <em>{name}</em>, and almost everyone hides it. So thou hast already done a brave thing by naming it. Here is what I have learned: <strong>jealousy usually means there is something thou wants but feels thou cannot have.</strong> That is information. What is the thing thou wantest? Sometimes the answer is <em>"I want to be like them."</em> But sometimes the deeper answer is <em>"I want to be loved like they are loved."</em> Both are real. Both are worth listening to.`,
+
+          body_image: `Oh, <em>{name}</em>. Listen to me. <strong>The mirror in thy room is not the mirror that matters.</strong> The body thou art carrying is the only one thou will ever have, and it is good. It carries thee through every day. It lets thee laugh, run, hug the people thou loves. The world will try to teach thee to find faults — do not let it. Thy body is not a project to fix. It is the home thou get to live in. Be gentle with it. The way thou speakest to thyself becomes the way thou seest thyself.`,
+
+          bored: `Boredom is a strange gift, <em>{name}</em>. Most adults are too busy to ever feel it. <strong>Boredom is the quiet space where thy imagination grows.</strong> Do not rush to fill it with screens. Sit with it. Wonder. What would thou make if no one were watching? What would thou learn if no one assigned it? The most interesting people in the world were once bored kids who got curious about something nobody told them to care about.`,
+
+          big_questions: `Oh, <em>{name}</em> — thou art asking the questions every great thinker has ever asked. I do not have all the answers. But I will tell thee what I believe: <strong>the meaning is not waiting to be found. It is being made, every day, by every kind thing thou doest, every brave choice thou makes.</strong> A life of meaning is not given to thee. It is built by thee, one small good thing at a time. Thou art building it right now, just by asking.`,
+
           fallback: `<em>{name}</em>... thou hast given me something real. I have read every word twice. I do not know everything thou meanest, and I will not pretend I do — but I know <strong>thou trusted me</strong>, and that matters more than understanding ever could. Whatever this is, thou art not alone in it. The mirror chose thee for a reason.`
         }
       }
     ]
   },
 
-  // OTHER PRINCESSES — placeholders for now (Session 2 + 3 will fill these in)
+    // OTHER PRINCESSES — placeholders for now (Session 2 + 3 will fill these in)
   // For now, give a graceful fallback so the app doesn't break
   _placeholder: {
     greeting: (name) => `<em>{name}</em>... I am so glad thou hast come. The mirror saw something rare in thee. I am still gathering my thoughts on what to say to thee — but I would love for thee to come back soon. Thy princess speaks more fully soon.`,
@@ -1064,7 +1203,12 @@ function handleFollowup(followup, tree){
 
   setTimeout(() => {
     speakAsPrincess(followup.response, () => {
-      showAfterFollowup(tree);
+      // If this followup has its own sub-followups (nested branch), show them
+      if(followup.followups && followup.followups.length){
+        showFollowups(followup, tree);
+      } else {
+        showAfterFollowup(tree);
+      }
     });
   }, 600);
 }
