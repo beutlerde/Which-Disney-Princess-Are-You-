@@ -752,8 +752,15 @@ if(ceremony && ceremony.name){
 }
 
 // Determine which princess to show
+// Allow URL override for testing: ?force=jasmine
+const urlParams = new URLSearchParams(window.location.search);
+const FORCED_PRINCESS = urlParams.get('force');
+
 let initialIdx = 0;
-if(quizResult && quizResult.winner){
+if(FORCED_PRINCESS){
+  const forcedIdx = PRINCESSES.findIndex(p => p.id === FORCED_PRINCESS);
+  if(forcedIdx >= 0) initialIdx = forcedIdx;
+} else if(quizResult && quizResult.winner){
   const winnerIdx = PRINCESSES.findIndex(p => p.id === quizResult.winner);
   if(winnerIdx >= 0) initialIdx = winnerIdx;
 }
