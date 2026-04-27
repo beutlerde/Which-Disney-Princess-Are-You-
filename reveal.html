@@ -490,9 +490,9 @@ const PRINCESSES = [
 // Helper: get portrait URL (relative path = works on GitHub Pages and locally)
 const portraitUrl = (id) => `assets/princesses/${id}.png`;
 
-// Loads a portrait with fallback: .png → .jpg → .jpeg
+// Loads a portrait with fallback: tries .png, .jpg, .jpeg in both lowercase and uppercase
 function loadPortraitWithFallback(imgEl, princessId){
-  const exts = ['.png', '.jpg', '.jpeg'];
+  const exts = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG'];
   let attempt = 0;
   function tryNext(){
     if(attempt >= exts.length){

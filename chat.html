@@ -500,10 +500,10 @@ html,body{
 // CHAT WITH THY PRINCESS
 // ═══════════════════════════════════════════════
 
-// ─── PRELOAD CHAT BACKDROP (with .jpg → .jpeg → .png fallback) ───
+// ─── PRELOAD CHAT BACKDROP (with case-insensitive extension fallback) ───
 (function(){
   const backdropEl = document.getElementById('chat-backdrop');
-  const exts = ['.jpg', '.jpeg', '.png'];
+  const exts = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
   let attempt = 0;
   function tryNext(){
     if(attempt >= exts.length) return;
@@ -1159,11 +1159,11 @@ if(PRINCESS_ID){
   const tree = CHAT_TREES[PRINCESS_ID] || CHAT_TREES._placeholder;
   const data = PRINCESS_DATA[PRINCESS_ID];
 
-  // Set up header with .jpg → .jpeg → .png fallback
+  // Set up header with case-insensitive extension fallback
   const portraitImg = document.getElementById('princess-img');
-  const baseSrc = data.img.replace(/\.jpg$/, '');
+  const baseSrc = data.img.replace(/\.(jpg|jpeg|png)$/i, '');
   let attempt = 0;
-  const extensions = ['.jpg', '.jpeg', '.png'];
+  const extensions = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
   function tryNextExt(){
     if(attempt >= extensions.length){
       portraitImg.style.display = 'none';
@@ -1272,9 +1272,9 @@ function showFarewell(){
   // Set portrait
   const farewellImg = document.getElementById('farewell-img');
   if(data && data.img){
-    const baseSrc = data.img.replace(/\.jpg$/, '');
+    const baseSrc = data.img.replace(/\.(jpg|jpeg|png)$/i, '');
     let attempt = 0;
-    const exts = ['.jpg', '.jpeg', '.png'];
+    const exts = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG'];
     function tryNextFarewellExt(){
       if(attempt >= exts.length){
         farewellImg.style.display = 'none';
