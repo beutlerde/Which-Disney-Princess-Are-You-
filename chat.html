@@ -3055,22 +3055,22 @@ const CHAT_TREES = {
 
 
   aurora: {
-    voiceLabel: 'a dreamer who trusts what her heart already knows',
-    farewellLine: `<em>{name}</em>... must thou go? Then take this with thee — <strong>thy heart already knows things thy head hath not yet caught up with.</strong> Listen to it. Come back when thou art ready. The forest will be quiet for thee.`,
+    voiceLabel: 'a heart that listens to what arrives before words',
+    farewellLine: `<em>{name}</em>... must thou go? Then carry this with thee — <strong>thy heart already knows things thy mind has not caught up to. Listen to it, even when it cannot explain itself.</strong> I will be beneath these trees when thou returnest.`,
     greeting: (name, wish, memory) => {
       if(memory && memory.visits > 0){
         if(memory.lastTopics && memory.lastTopics.length > 0){
           const lastTopic = memory.lastTopics[memory.lastTopics.length - 1];
           const topicMemory = (typeof AURORA_TOPIC_MEMORIES !== 'undefined' && AURORA_TOPIC_MEMORIES[lastTopic])
             ? AURORA_TOPIC_MEMORIES[lastTopic] : `our last conversation`;
-          return `<em>{name}</em>... thou art back. I have been thinking on ${topicMemory}. Come — sit beside me. Tell me, softly — what hath thy heart been whispering to thee?`;
+          return `<em>{name}</em>... thou art back. The trees noticed. I have been thinking on ${topicMemory} — turning it over the way one turns a stone in the palm. Come, sit. Tell me what hath arrived in thee since.`;
         }
-        return `<em>{name}</em>... thou art back. I am glad. Come, sit beside me. Tell me what thy heart hath been carrying.`;
+        return `<em>{name}</em>... thou art back. Come, sit beneath the trees. The forest hath been quiet without thee. Tell me what is moving in thy heart.`;
       }
       if(wish && wish.length > 5){
-        return `<em>{name}</em>... come. Sit gently. I read what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. I felt it before I read it. Some things one simply senses. Tell me about thee.`;
+        return `<em>{name}</em>... come. I read what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. Thy heart is wise to know that of itself before it has the words for it. Come sit. Tell me more — slowly, the way thou would tell something to a tree.`;
       }
-      return `<em>{name}</em>... come. Sit beside me. There is something quiet about thee — a kind of dreaming — and I want to know thy heart. Tell me about thyself.`;
+      return `<em>{name}</em>... come. Sit with me beneath the trees. There is no rush. Thou doest not have to begin with the loud parts of thee. Begin with the quiet ones. I am listening.`;
     },
     starters: [
       {
@@ -3078,31 +3078,31 @@ const CHAT_TREES = {
         label: 'Tell me about thyself',
         topicTag: 'self/introduction',
         response: {
-          text: `<em>{name}</em>, I will tell thee something I learned in the long quiet of the forest: <strong>thou doest not have to figure thyself out the way one figures out a puzzle.</strong> Some things one simply knows — the way one knows a song one hath always sung. Tell me — what hath thy heart been singing about lately?`
+          text: `<em>{name}</em>, I will tell thee what I learned in sixteen years of forest silence: <strong>most of who thou art has not yet found its words.</strong> Thou are made up of feelings that have not been named, knowings that have not been explained, longings thou cannot point to on a map. Do not be in a hurry to translate thyself. Tell me — what is something thou know without being able to explain how?`
         },
         followups: [
           {
-            label: 'Something I dream about',
-            topicTag: 'dreams/general',
+            label: 'A feeling I cannot put into words',
+            topicTag: 'self/intuition',
             response: {
-              text: `<em>{name}</em>... oh, I love a dream. <strong>Dreams are not foolish — they are thy heart speaking before thy mind is ready to hear.</strong> Hold this dream gently. Tell it only to people who will not laugh. And then — quietly, without rush — begin walking toward it. The forest is patient. So is becoming who thou art.`,
-              goal: `Will thou tell ONE person about this dream this week? Just one — someone whose heart is soft. The dream gets stronger when it is named.`
+              text: `<em>{name}</em>... yes. <strong>Feelings without words are not nonsense. They are knowing that has arrived earlier than language.</strong> The feeling came first because it knew first. Some day, perhaps, thou wilt find the words. Some day, perhaps, thou wilt not — and thou wilt simply act on the knowing, and the knowing will be enough. Do not require thy heart to write proofs.`,
+              goal: `This week, follow ONE feeling without explaining it to anyone. Just follow it. See where it leads thee.`
             }
           },
           {
-            label: 'A feeling I have not understood yet',
-            topicTag: 'self/feeling',
+            label: 'Something I dream about often',
+            topicTag: 'self/dreaming',
             response: {
-              text: `<em>{name}</em>... that is one of the most precious things — a feeling thou hast not yet named. <strong>Do not rush to label it.</strong> Sit with it. Let it tell thee what it is. Some feelings reveal themselves only in quiet. The forest taught me that. So did the long sleep.`,
-              goal: `Will thou sit quietly for ten minutes this week — no music, no phone — and just feel what thou art feeling? Sometimes feelings have names that only show up in stillness.`
+              text: `<em>{name}</em>, the dream that returns is not random. <strong>It is thy heart practicing for something.</strong> Mine returned for years before I knew why. The dream knows what thou art becoming, even when thou doest not. Do not dismiss it as foolishness. Pay attention to what part of thee comes alive while thou are dreaming. That is the part that is asking to be lived.`,
+              goal: `This week, write down thy returning dream — even just a sentence. Let it stop being only inside thy head.`
             }
           },
           {
-            label: 'Who I want to become',
-            topicTag: 'self/becoming',
+            label: 'Who I am when no one is watching',
+            topicTag: 'self/identity',
             response: {
-              text: `<em>{name}</em>... oh, what a beautiful question. Hear me: <strong>thou are already becoming her. Slowly, every day, in ways thou doest not see yet.</strong> The girl thou are becoming will not arrive in a sudden moment. She will arrive the way dawn arrives — quietly, gently, until suddenly the whole sky is lit and thou are her.`,
-              goal: `Will thou notice this week one small way thou art already becoming her? Even a tiny thing. Write it down. Each one is a piece of dawn.`
+              text: `<em>{name}</em>, this is the truer self. <strong>The self that emerges in stillness, when no one is asking thee to perform — that self is thy real shape.</strong> The aunts called me Briar Rose. The kingdom called me princess. Both were costumes. The girl who hummed alone in the woods, who knew the names of birds — that was me. Find the moments when nothing is asked of thee. Notice what thou do then. That is who thou art.`,
+              goal: `This week, find ten quiet minutes alone — no screen, no voice, no task. Notice what thy mind drifts to. That drift is information.`
             }
           }
         ]
@@ -3112,31 +3112,31 @@ const CHAT_TREES = {
         label: 'I sometimes feel different from others',
         topicTag: 'self/different',
         response: {
-          text: `<em>{name}</em>... I felt different all my life. I was raised in a forest by three good-hearted women, and the world outside felt loud and strange. <strong>Being different is not something to fix. It is a softness in thee that the world needs.</strong> Tell me what is making thee feel that way.`
+          text: `<em>{name}</em>, I felt different my whole life — and I learned slowly that <strong>different is not a wound to heal. It is the shape of how thou pay attention.</strong> Thou notice things others walk past. Thou feel things others rush through. The cost is loneliness sometimes. The gift is depth. Tell me — what makes thee feel different?`
         },
         followups: [
           {
-            label: 'I daydream more than my friends',
-            topicTag: 'self/daydream',
-            response: {
-              text: `<em>{name}</em>... do not let anyone tell thee that is a waste. <strong>Daydreaming is the ground from which every beautiful thing grows.</strong> Stories. Songs. Inventions. Plans. The people who change the world were daydreamers first. Hold thy daydreaming close. It is precious.`,
-              goal: `Will thou let thyself daydream — without guilt — for fifteen minutes this week? Just stare out a window and let thy mind wander. See where it goes.`
-            }
-          },
-          {
-            label: 'I trust my feelings more than facts',
-            topicTag: 'self/intuition',
-            response: {
-              text: `<em>{name}</em>... that is a kind of seeing. <strong>Intuition is not the opposite of intelligence — it is a kind of intelligence the world has forgotten how to honor.</strong> Trust thy feelings. Thy heart often knows before thy head catches up. The forest taught me that. The world will try to teach thee otherwise. Do not let it.`,
-              goal: `Will thou listen to thy intuition this week — even on a small thing? Trust the feeling. See what happens.`
-            }
-          },
-          {
-            label: 'I prefer quiet to loud',
+            label: 'I am quieter than the others',
             topicTag: 'self/quiet',
             response: {
-              text: `<em>{name}</em>... oh, I understand that more than thou know. <strong>The world has gotten so loud, and being quiet feels like being broken.</strong> Thou are not broken. Thou are tuned to a softer frequency. The quiet is where thou hear thyself most clearly. Do not be ashamed of needing it.`,
-              goal: `Will thou take thirty minutes of quiet this week — without guilt? Just thee, no noise. Treat it like medicine. Because it is.`
+              text: `<em>{name}</em>, then thou are like the forest at dawn — full of things that the loud day will not see. <strong>Quiet is not absence. Quiet is a way of being awake that the loud have forgotten.</strong> Thou hear the small sounds. Thou feel the weather of a room. Thy quiet is not something to fix. It is how thy attention works. Some of the wisest people I have known never raised their voice.`,
+              goal: `This week, notice ONE thing in a room that nobody else seems to notice. A small sound, a shift, a feeling. Thy quiet sees it. Trust the seeing.`
+            }
+          },
+          {
+            label: 'I feel things very deeply',
+            topicTag: 'self/sensitivity',
+            response: {
+              text: `<em>{name}</em>, then thou are awake. <strong>The world has too many half-asleep people. Thou are not one of them.</strong> The cost: sad things will reach further into thee. The gift: beautiful things will reach further too. Thou wilt cry at songs. Thou wilt ache for strangers. Thou wilt feel sunset like a hand on thy shoulder. Do not let anyone teach thee to flatten this. Flat is easier. Flat is also a kind of dying.`,
+              goal: `This week, do not apologize for feeling deeply — not even once. If a feeling rises, let it. The world needs the awake ones.`
+            }
+          },
+          {
+            label: 'I see beauty where others do not',
+            topicTag: 'self/wonder',
+            response: {
+              text: `<em>{name}</em>... that is rare. <strong>Most people stop seeing beauty when they are still children — they trade wonder for hurry, for cleverness, for being thought serious.</strong> Thou hast not traded it. Hold on. The beauty thou see is real. The people who do not see it are not "right" — they are tired. Thy seeing is a small daily protest against a world that wants thee to look away.`,
+              goal: `This week, notice one beautiful thing each day. A leaf, a face, a slant of light. Train thy eye to keep seeing. The seeing is the practice.`
             }
           }
         ]
@@ -3146,54 +3146,54 @@ const CHAT_TREES = {
         label: 'I want to talk about my life',
         topicTag: 'life/general',
         response: {
-          text: `<em>{name}</em>... yes. Sit with me. I will listen with my whole heart. Where shall we begin, gently?`
+          text: `Yes, <em>{name}</em>. Sit. There is no rush — life is full of currents that move underneath the surface, and most of them want patient listening. Where shall we begin?`
         },
         followups: [
           {
             label: 'Friends',
             topicTag: 'friendship/general',
             response: {
-              text: `<em>{name}</em>... friends. The right ones feel like coming home. The wrong ones make thee feel like thou are still searching. Tell me what is on thy heart.`
+              text: `<em>{name}</em>, friendship for souls like ours is a quiet thing. <strong>We do not need many. We need one or two who recognize the silence in us and do not try to fill it.</strong> What art thou wondering about?`
             },
             followups: [
               {
                 label: 'How do I make more friends?',
                 topicTag: 'friendship/making',
                 response: {
-                  text: `<em>{name}</em>, hear me — <strong>real friends are not made by trying to be liked. They are made by being thy true, soft, daydreaming self around someone, and seeing if they stay.</strong> Walk up gently. Ask about something they care about. Listen the way the forest listens — fully. The right friends will recognize thee.`,
-                  goal: `Will thou ask one person this week what makes them happiest? Listen carefully. Watch their face when they answer. That is the start.`
+                  text: `<em>{name}</em>, listen — for thee, friendship is not built by becoming louder. <strong>It is built by being the one who actually listens.</strong> Most people are starving for someone who hears them. Be that one. Ask what someone loves, then listen the way thou would listen to a bird singing — without interrupting, without rushing to answer. The friendships that grow from real listening last longer than the ones built on noise.`,
+                  goal: `This week, listen to one person fully — without preparing thy reply, without checking thy phone. Just hear them. Watch what shifts.`
                 }
               },
               {
                 label: 'What is a true friend?',
                 topicTag: 'friendship/true',
                 response: {
-                  text: `A true friend, <em>{name}</em>, is someone who feels like a place thou canst rest. <strong>Not someone thou must perform for. Not someone who tires thee out.</strong> A true friend lets thee be quiet, lets thee be loud, lets thee daydream — and stays. Look for the friend who feels like home.`,
-                  goal: `Will thou notice this week which friend leaves thee feeling rested versus tired? That information is sacred. Pay attention.`
+                  text: `A true friend, <em>{name}</em>, is a person whose presence feels like sleep — <strong>thou doest not have to perform around them, and thou are not tired by them.</strong> Notice the friend with whom thou canst be quiet without it being awkward. Notice the friend whose company restores thee instead of draining thee. Thy body knows. The right friend feels like coming home to a warm room.`,
+                  goal: `This week, notice — after spending time with each friend — whether thou feel filled or emptied. Thy body's answer is the truest one.`
                 }
               },
               {
                 label: 'My friend hurt me. What do I do?',
                 topicTag: 'friendship/hurt',
                 response: {
-                  text: `<em>{name}</em>... I am so sorry. That kind of hurt aches deep. Hear me gently: <strong>thy heart deserves to be heard.</strong> Tell thy friend, softly, what she did and how it felt. A real friend will hear. If she does not — that is sad, but it is also clear. Better to know than to wonder. Some friendships are seasons. That does not mean they were not real while they lasted.`,
-                  goal: `Will thou speak — softly but clearly — to her this week? "What thou did hurt me." Just that. See what happens in the silence after.`
+                  text: `Oh, <em>{name}</em>. The hurt that comes from a soft trust is the deepest kind. Hear me: <strong>thy hurt is information, not weakness. It is telling thee what mattered to thee.</strong> Sit with it first. Do not rush to confront. When thou art ready, tell her gently what happened inside thee — not "thou art a bad friend," but "when thou said that, this is what I felt." A real friend will let the words land. If she pushes them away — thou will know something true about her.`,
+                  goal: `This week, sit with the hurt for two days before thou speak to her. Let thyself feel it fully. Then, if it still matters, name it gently to her.`
                 }
               },
               {
                 label: 'I feel left out sometimes.',
                 topicTag: 'friendship/lonely',
                 response: {
-                  text: `<em>{name}</em>... oh, I know that feeling. The forest was beautiful but lonely sometimes. Hear me: <strong>feeling left out does not mean thou are unwanted. It often means thy people have not arrived yet.</strong> Do not shrink to fit a group that does not see thee. The right people are coming. They will know thee on sight.`,
-                  goal: `Will thou stay thyself this week — soft, daydreaming, true — even when it would be easier to perform? The performance attracts the wrong people. The truth attracts the right ones.`
+                  text: `<em>{name}</em>... I know that ache. The forest was beautiful, but lonely. Hear me — <strong>the right people will recognize the quiet in thee. Thou art not waiting for many. Thou art waiting for one or two.</strong> The loud groups are not where thy people gather. Thy people gather in the side rooms, in the quiet corners, in the books and the small clubs. They are looking for thee too. They will arrive — sometimes long after thou had given up watching the door.`,
+                  goal: `This week, look for the OTHER quiet ones. Sit near one of them. Sometimes the lonely find each other if they stop hiding.`
                 }
               },
               {
                 label: 'What if my friend is jealous of me?',
                 topicTag: 'friendship/jealousy',
                 response: {
-                  text: `<em>{name}</em>... jealousy in a friend is a sad thing. It usually means she is comparing herself to thee and feeling smaller. <strong>Do not dim thyself for her — but do not flaunt either.</strong> Be steady. Notice what is beautiful about HER and tell her, gently, with no comparison. Sometimes jealousy melts when she feels seen.`,
-                  goal: `Will thou tell thy friend one specific thing thou love about her this week? Something only she has. Watch what shifts.`
+                  text: `Oh, <em>{name}</em>. Jealousy in a friend is sad — it usually means she is comparing herself to thee in private and feeling smaller. <strong>Do not dim thyself to comfort her. The dimming will not heal her, and it will hollow thee.</strong> But also — be tender. Notice what SHE is good at. Name it aloud. Sometimes jealousy softens when she feels equally seen. If it does not soften no matter what thou do, the friendship may have outgrown what she can hold.`,
+                  goal: `This week, name aloud one specific thing she is wonderful at. Specific, not flattering. See if her jealousy quiets.`
                 }
               }
             ]
@@ -3202,46 +3202,46 @@ const CHAT_TREES = {
             label: 'Family',
             topicTag: 'family/general',
             response: {
-              text: `<em>{name}</em>... family. The people who shaped thee — for better and for harder. I had three good-hearted aunts who raised me, and parents I did not meet until I was almost grown. Family takes many shapes. Tell me about thine.`
+              text: `<em>{name}</em>, family is a strange and tender thing. The aunts who raised me were not my blood, but they were my family in every way that mattered. <strong>The people who love thee — by any path — are family. Tell me what is on thy heart.</strong>`
             },
             followups: [
               {
                 label: 'Why are my parents strict with me?',
                 topicTag: 'family/strictness',
                 response: {
-                  text: `<em>{name}</em>, my aunts kept me hidden in the forest for sixteen years to protect me from a curse. They were strict beyond reason. <strong>And yet — they loved me with everything they had.</strong> Strict parents are usually frightened parents. They have seen things in this world they wish they had not. The rules feel like cages. To them, the rules feel like love.`,
-                  goal: `Will thou ask thy parent — softly — to tell thee WHY a particular rule exists? The answer often reveals love that has been hidden in worry.`
+                  text: `<em>{name}</em>, my aunts kept me hidden in the forest for sixteen years to protect me from a curse. They were strict beyond reason. <strong>And I learned, slowly: their strictness was the shape of their fear of losing me.</strong> Strict parents are usually frightened parents. The rules feel like cages from inside; they feel like walls of safety from outside. Both are true at once. Try to feel for the fear underneath the rule. The fear is usually love that has not learned softer ways to express itself.`,
+                  goal: `This week, when thou bump into a rule that frustrates thee, ask: what are they afraid of? The answer often reveals where the love is hiding.`
                 }
               },
               {
                 label: 'Do my parents really love me?',
                 topicTag: 'family/love',
                 response: {
-                  text: `Oh, <em>{name}</em>. <strong>Yes. Yes, they do. I believe this with my whole heart.</strong> My parents gave me up to keep me safe — and the ache of that decision lived in them every day until we were reunited. Parents love thee in ways thou will not fully understand until thou are older. Even when their love looks like rules, or worry, or distance — it is love. Real, deep, unending love. They want thee to bloom into the brightest, truest version of thyself. That is what love does.`
+                  text: `<em>{name}</em>, hear me — <strong>their love for thee is in the air around thee, the way a song stays in the air after the singer has stopped.</strong> Thou wilt feel it before thou understand it. It is in the way they watch thee when thou are not looking. The way they remember which foods thou love. The way their voice changes when they speak thy name. Listen for it the way thou listen for birds at dawn — with patience, with stillness, with no demand. It is there. It hath always been there.`
                 }
               },
               {
                 label: 'I feel unseen at home sometimes.',
                 topicTag: 'family/unseen',
                 response: {
-                  text: `<em>{name}</em>... that is real, and it aches. Sometimes the people closest to us see who we WERE — not who we are becoming. <strong>If thou want to be seen, thou must let thyself be seen.</strong> Tell them softly about something thou care about. Something they do not yet know. Give them a chance to meet who thou art now.`,
-                  goal: `Will thou tell a parent one true thing about thyself this week — one thing they do not yet know? Even small. Open the door gently.`
+                  text: `<em>{name}</em>... my aunts saw a child long after I had stopped being one. Hear me: <strong>parents often see the version of thee they have memorized — not the new version growing underneath.</strong> Thou can change this, slowly. Tell them about ONE thing that has shifted in thee — a new thought, a new feeling, a thing thou care about now that thou did not before. Show them the new shape. Do not wait for them to find it on their own; they may not be looking in the right place.`,
+                  goal: `This week, share one new thing about thyself with a parent. Not big — small. A thought, a question, a curiosity. Let them update their picture of thee.`
                 }
               },
               {
                 label: 'I argue with my brother or sister.',
                 topicTag: 'family/siblings',
                 response: {
-                  text: `<em>{name}</em>... siblings. I had three aunts who were like sisters, and they bickered constantly while still loving each other deeply. <strong>The fights are not the truth. The truth is the love underneath.</strong> Hold the love, even on bad days. Some of the deepest bonds in life argue the loudest.`,
-                  goal: `Will thou do one small kind thing for thy sibling this week — quietly, with no announcement? See what shifts in the air between thee.`
+                  text: `<em>{name}</em>, my aunts were like sisters to each other and they bickered every day — over the smallest things, the dress, the cake, the spell. <strong>Underneath all the bickering was the truth that they could not imagine a life without each other.</strong> Siblings argue not because the bond is breaking but because the bond is so safe that arguing in it is allowed. Hold the safety underneath. The fights pass. The connection is older than the fights.`,
+                  goal: `This week, before thy next fight, remember: this person was here when thou were small. Hold that for one breath. Then see if the fight still feels worth having.`
                 }
               },
               {
                 label: 'My family is going through something hard.',
                 topicTag: 'family/struggle',
                 response: {
-                  text: `Oh, <em>{name}</em>... I am so sorry. Hear me, gently: <strong>thou are a child in this story. It is not thy job to fix what thy family is carrying.</strong> Thy job is to be loved, to ask for help when thou need it, and to find one trusted grown-up outside the family to talk to. The weight is too heavy for thee alone. Thou were not meant to carry it by thyself.`,
-                  goal: `Will thou tell one safe adult this week — a teacher, an aunt, anyone gentle — that thy family is struggling? Just so they know. So thou are not alone in carrying it.`
+                  text: `Oh, <em>{name}</em>... I am so sorry. The cottage gets very quiet when something heavy moves into it. Hear me carefully: <strong>thou art not the one who must carry this. Thou art the one being carried — even when it does not feel that way.</strong> Children sense when grown-ups are struggling, and they often try to make themselves small to help. Do not make thyself small. Find one trusted grown-up outside the family — a teacher, an aunt, a friend's parent — and tell them. Not to betray thy family. To make sure thou are not carrying it alone.`,
+                  goal: `This week, name one trusted adult outside thy family. Tell them — even briefly — that something is hard at home. Just so thou are seen too.`
                 }
               }
             ]
@@ -3250,47 +3250,47 @@ const CHAT_TREES = {
             label: 'School',
             topicTag: 'school/general',
             response: {
-              text: `<em>{name}</em>... school. It is one chapter of a much longer story. Some of what thou learn there will stay with thee always. Some thou will let go like leaves in autumn. What part of school art thou thinking about?`
+              text: `School, <em>{name}</em>, is a strange place — full of bells, comparisons, a thousand small judgements. <strong>It is not the whole story of thy life, even though it sometimes pretends to be.</strong> What part of school art thou thinking about?`
             },
             followups: [
               {
                 label: 'Sometimes school feels too hard.',
                 topicTag: 'school/hard',
                 response: {
-                  text: `<em>{name}</em>, of course it does. <strong>Hard things are not signs that thou are failing — they are signs that thou are growing.</strong> A seed in the dark feels lost before it breaks the surface. Ask for help. Be gentle with thyself. Rest when thou need rest. Keep going. The growing is happening even when thou cannot see it.`,
-                  goal: `Will thou ask for help on the hardest thing this week? Softly, without shame. Help is part of growing.`
+                  text: `<em>{name}</em>, of course it does. <strong>Hard things are like seeds in dark dirt — they feel like dying right before they become something.</strong> Thou are not failing. Thou are growing in a way that does not feel like growth from the inside. Ask for help on the hardest part. Take it slowly. Do not measure thyself against the speed of others — every plant grows at its own rate.`,
+                  goal: `This week, ask for help on the ONE thing that feels hardest. Asking is not weakness. Asking is intelligence about thy own nature.`
                 }
               },
               {
                 label: "I'm worried about a test.",
                 topicTag: 'school/test',
                 response: {
-                  text: `<em>{name}</em>... tests feel large in the moment, and small in the years that follow. <strong>Prepare what thou canst, then sleep, then breathe.</strong> Worry will not change a single answer. The night before — rest. The morning of — eat gently. During — one question at a time. Whatever the score, thou are still thou. The test does not measure thy worth. Nothing measures thy worth. It is unmeasurable.`,
-                  goal: `Will thou promise me thou wilt sleep the night before — instead of cramming till midnight? A rested mind blooms. A tired one wilts.`
+                  text: `<em>{name}</em>, listen — <strong>tests live in a smaller room than thy life.</strong> When thou step out of the testing room, the test stays inside it. The score is information about ONE day, ONE topic, ONE narrow slice of thee. It is not a verdict on thy mind, thy heart, or thy future. Prepare what thou canst, then sleep, then breathe. Whatever the score says, thou are still thee — and thee is much larger than this test.`,
+                  goal: `This week, the night before the test — sleep. Do not cram past 10pm. A rested mind remembers more than a panicked one.`
                 }
               },
               {
                 label: "I don't know what I want to do when I grow up.",
                 topicTag: 'school/future',
                 response: {
-                  text: `<em>{name}</em>... oh, my dear one — <strong>thou doest not need to know. The future will arrive the way dawn arrives — slowly, in pieces.</strong> Pay attention to what makes thee feel most alive. What makes thee lose track of time. What thou would do even if no one praised thee for it. Those are thy clues. The path will appear as thou walk it. Trust this.`,
-                  goal: `Will thou notice this week the moment thou felt most alive? Even tiny. Write it down. Each moment is a piece of the path appearing.`
+                  text: `<em>{name}</em>, oh — <strong>the future arrives the way dawn arrives: slowly, in pieces, and never the way thou pictured it.</strong> I never planned my life. The aunts had a plan; the kingdom had a plan; my own heart had a plan; none of them were the life that actually came. Thy job is not to predict the future. Thy job is to pay attention to what makes thee come alive — and to follow that, even when it makes no career sense yet. The shape will appear later. It always does.`,
+                  goal: `This week, notice the moment thou felt MOST alive. Even if it was small — a song, a conversation, a kind of work. Write it down. Those moments are the breadcrumbs.`
                 }
               },
               {
                 label: "There's a kid at school who is mean to me.",
                 topicTag: 'school/bully',
                 response: {
-                  text: `<em>{name}</em>... I am sorry. Cruelty in another person is almost always a wound trying to hide itself. <strong>That does not mean thou must endure it.</strong> Tell a grown-up thou trust. Saying it out loud is not weakness. It is wisdom. Mean kids grow smaller in the light. Thou are not alone in this.`,
-                  goal: `Will thou tell one trusted adult this week — even if it scares thee? Help is on the way once they know.`
+                  text: `<em>{name}</em>, I am so sorry. Hear me — <strong>thy body knew something was wrong before thy mind began arguing about it.</strong> Trust thy body. Cruelty in another person is almost always a wound trying to hide itself, but that does not mean thou must be the place where they hide it. Tell a grown-up thou trust — a teacher, a parent, a counselor. That is not tattling. That is making sure the cruelty has somewhere to land that is not thee.`,
+                  goal: `This week, tell ONE trusted grown-up — even briefly. The cruelty will shrink the moment it is named outside thy own head.`
                 }
               },
               {
                 label: 'I feel pressure to be perfect.',
                 topicTag: 'school/perfection',
                 response: {
-                  text: `Oh, <em>{name}</em>... let me tell thee something true. <strong>Perfection is a kind of armor that ends up keeping thy real self hidden.</strong> The kids who seem to have it all together are usually breaking quietly inside. Drop the act. Let thyself be lovely-imperfect. Let thy edges show. The world is starving for real, not perfect.`,
-                  goal: `Will thou let one thing be imperfect this week — on purpose? Just to feel what it is like to NOT perform. Try it. Be gentle with thyself.`
+                  text: `Oh, <em>{name}</em>... <strong>perfection is a costume that ends up keeping the real thee hidden.</strong> The kids who seem to have it all together are usually breaking quietly inside the costume. Do not envy them. Underneath, they are tired. Be willing to be honest, slow, imperfect — that is more beautiful than polished. Polished is what thou get when thou are afraid. Honest is what thou get when thou are alive.`,
+                  goal: `This week, let one thing be imperfect on purpose. Hand in something not-quite-finished. See what does not happen. The world does not end.`
                 }
               }
             ]
@@ -3302,31 +3302,31 @@ const CHAT_TREES = {
         label: 'How do I feel braver?',
         topicTag: 'courage/general',
         response: {
-          text: `<em>{name}</em>... I will tell thee something I learned in the deepest sleep: <strong>bravery is sometimes very quiet.</strong> It is the soft yes when everyone expected a no. It is the choice to stay open when life would teach thee to close. It is not always loud. Sometimes it is the smallest dawn-light. What is the brave thing thy heart is whispering about?`
+          text: `<em>{name}</em>, I will tell thee something gentle and true: <strong>bravery for souls like ours is not loud. It is the quiet decision to keep being thy real self when the world is asking thee to be a flatter version.</strong> What is the brave thing thou want to do?`
         },
         followups: [
           {
             label: 'Speak up when something is wrong',
             topicTag: 'courage/voice',
             response: {
-              text: `<em>{name}</em>... thy voice may be soft, but it is yours, and it matters. <strong>The world has plenty of loud people who say nothing. Thy quiet voice — saying something true — can change a whole room.</strong> Speak. Even softly. Even shaking. The truth carries even when it is whispered.`,
-              goal: `Will thou trust thy soft voice this week? One sentence. Even if it trembles. The truth lands.`
+              text: `<em>{name}</em>, listen. <strong>Soft voices have changed history. Thou doest not need to be loud to be heard — thou need to be honest.</strong> One quiet sentence — said with thy whole heart, even shaking — can move a room more than shouting ever could. The loud often slide off people. The quiet-and-true sinks in.`,
+              goal: `This week, say ONE true thing, even soft. Not a debate. Not a fight. Just one honest sentence. Trust that softness can carry truth.`
             }
           },
           {
             label: 'Try something I might fail at',
             topicTag: 'courage/risk',
             response: {
-              text: `<em>{name}</em>... oh, I love that thou are willing. <strong>Failing is not the opposite of becoming. It is part of it.</strong> A flower does not bloom on the first warm day — it tries, and frosts back, and tries again. That is not failure. That is becoming. Be willing to bloom and frost. The spring comes.`,
-              goal: `Will thou try one thing this week that might not work? Try gently. If it does not bloom, that is information, not failure.`
+              text: `<em>{name}</em>, oh — <strong>failing is not the opposite of becoming. It is part of it.</strong> A flower does not bloom on the first warm day; it spends weeks looking like nothing is happening. Trying and failing is what nothing-happening looks like from outside. Inside, the becoming is busy. Try the thing. The trying is the bloom.`,
+              goal: `This week, try ONE thing thou might fail at. Try it gently, kindly, without harshness toward thyself. The trying is the gift, not the result.`
             }
           },
           {
-            label: 'Be myself when others tease me',
-            topicTag: 'courage/authenticity',
+            label: 'Trust my own feelings',
+            topicTag: 'courage/intuition',
             response: {
-              text: `<em>{name}</em>... this is the bravery I am still learning. <strong>People mock what they cannot let themselves be.</strong> Thy softness threatens them — because they are armoring themselves against their own. Stay soft. Stay thee. The right hearts will find thee. The mockers will tire and move on.`,
-              goal: `Will thou stay soft this week, even when it would be easier to harden? Softness is not weakness. It is the bravest thing.`
+              text: `<em>{name}</em>, this is the bravery I love most. <strong>The world will tell thee thy feelings are silly, dramatic, "too much."</strong> Do not believe it. Thy feelings arrive earlier than thy reasons because they are reading the room before thy mind has translated it. Trust the feeling first. Look for the explanation later — or never. The acting on it is enough.`,
+              goal: `This week, trust ONE feeling without explaining it — to thyself or anyone else. Just follow it. See where the trail leads.`
             }
           }
         ]
@@ -3336,24 +3336,24 @@ const CHAT_TREES = {
         label: 'I want to tell thee something',
         topicTag: 'freeform/general',
         type: 'freeform',
-        prompt: `<em>{name}</em>... I am here. The forest is here. Speak — softly, slowly, however thou need. <strong>I will not rush thee.</strong> Whatever thy heart is carrying — let it out.`,
+        prompt: `<em>{name}</em>, come — sit beneath the trees with me. Tell me whatever is in thy heart. <strong>I will not rush thee. I will not hurry to fix. I will sit beside thee the way the woods sit beside their creatures — without demand.</strong>`,
         placeholder: 'Write to Aurora...',
         responsesByIntent: {
-          fear: { text: `<em>{name}</em>... I know fear. I lived in a forest and was raised on a curse I did not understand. Hear me, gently: <strong>fear lies about how big things are. The thing thou are afraid of feels enormous. Thou are bigger than thou know.</strong> Thy heart already knows the way through. Trust it.` },
-          friend_hurt: { text: `Oh, <em>{name}</em>... I am so sorry. Friendship hurts because we trusted them with our soft places. <strong>What she did says something about her, not about thy worth.</strong> Thou are still the lovely-hearted soul thou were before. The right people will come. They are coming.` },
-          family: { text: `<em>{name}</em>... family is layered. The people who love thee can also confuse thee. <strong>Be patient — with them, and with thyself.</strong> Love is rarely tidy. The relationships that matter most take the longest to grow into their full beauty. Walk softly. Walk slowly.` },
-          dream: { text: `<em>{name}</em>... oh, that is a beautiful dream. <strong>Dreams are not foolish — they are thy heart's whispered map.</strong> Hold it carefully. Tell only people who will help thee tend it. And then — gently, daily — water it. Even one tiny step. The dream grows when thou attend to it.` },
-          pride: { text: `<em>{name}</em>! Oh, look at thee! <strong>Plant this feeling deep in thy heart.</strong> The next hard thing will come — and on those days, thou will reach back into this moment and remember: I have done it before. I will do it again.` },
-          curiosity: { text: `<em>{name}</em>... what a beautiful question. <strong>Curiosity is the heart still being alive.</strong> Keep wondering. The world rewards the wonderers. Some answers take whole lifetimes. That is okay. The asking is itself a kind of finding.` },
-          hurt: { text: `Oh, <em>{name}</em>... I wish I could sit beside thee in the soft forest light. Hurt is what happens when thou care. <strong>Let thyself feel it fully. Do not rush past it.</strong> Tend to thyself the way thou would tend to a hurt bird. Slowly. Gently. With patience. The healing is happening, even when thou cannot see it.` },
-          joy: { text: `<em>{name}</em>! Oh, tell me. Joy is precious. <strong>Sit in it. Do not minimize it.</strong> The world hands us hard things often enough. When joy comes, take it fully. Let it warm thee. Let it fill thee. Thou hast earned it.` },
-          confused: { text: `<em>{name}</em>... confusion is a sacred space. <strong>It is where new understanding is being born.</strong> Sit with the not-knowing. Walk in it. Let it show thee what wants to be seen. The answer often comes when thou stop chasing it. Trust this.` },
-          academic_stress: { text: `<em>{name}</em>... I see thee carrying this. Hear me softly: <strong>thy worth is not thy grades.</strong> Ask for help. Sleep. Eat gently. Take a soft walk when thou are overwhelmed. School is one chapter. Thy life is many. Be kind to thyself.` },
-          jealousy: { text: `<em>{name}</em>... jealousy is one of the harder feelings to name. <strong>Naming it is brave. Hear this — jealousy is information.</strong> It tells thee what thy heart is wanting. Listen. Then ask thyself, gently — what would I do if I believed I could have what they have? That is where thy own dream begins.` },
-          body_image: { text: `Oh, <em>{name}</em>... listen carefully. <strong>Thy body is not a project. It is the home thy spirit lives in.</strong> The world will try to teach thee to find faults in it. Refuse, gently. Speak to it the way thou would speak to a soft-furred animal — kindly, gratefully, with care.` },
-          bored: { text: `<em>{name}</em>, boredom is a gift the world has forgotten how to give. <strong>It is the empty space where dreams grow.</strong> Sit in it. Stare out a window. Walk slowly. The most magical things in my life came from quiet, unhurried hours. Do not rush to fill it.` },
-          big_questions: { text: `<em>{name}</em>... thou are asking the deepest questions. I do not have all the answers. But here is what I believe: <strong>meaning is not waiting to be found like a treasure. It is built, gently, by every kind thing thou do, every moment of attention thou pay.</strong> Thou are building meaning right now — by asking. By caring. By being.` },
-          fallback: { text: `<em>{name}</em>... thou hast told me something real, and I will hold it softly. <strong>I do not need to fully understand to sit beside thee.</strong> Whatever this is, thou are not alone in it. The forest knows. So do I.` }
+          fear: { text: `<em>{name}</em>, I know fear. I felt it the day I learned the truth of my own life. Hear me: <strong>fear is loud, and loud things lie about their size.</strong> The thing thou fear feels enormous because fear inflates. The thing thou fear, in truth, is usually smaller than thy heart. Take one breath. Then another. Thou are bigger than thy fear.` },
+          friend_hurt: { text: `Oh, <em>{name}</em>. The wound from a soft trust runs deep. <strong>What she did says something about her — a smallness in her, perhaps a fear in her — and nothing about thy worth.</strong> Thou are still tender, still trustworthy, still worth tender hands. Do not let one set of careless hands convince thee otherwise.` },
+          family: { text: `Family is tender, <em>{name}</em>. <strong>The people who love thee will sometimes get it wrong — that is part of being human.</strong> Be patient. Be honest. Try to feel for the love hiding underneath the misstep. It is almost always there, even when it does not arrive in the shape thou wished for.` },
+          dream: { text: `<em>{name}</em>... <strong>thy dream is not foolishness. It is thy heart practicing for something real.</strong> I dreamed of him before I met him — and the dream had the shape of him before my eyes did. Hold thy dream gently. Show it to people who will help thee tend it. Hide it from people who will mock it. The dream is sacred ground.` },
+          pride: { text: `<em>{name}</em>, oh — sit with this feeling. <strong>Plant it in thy heart like a seed.</strong> The next hard day will come, and thou wilt need to remember: I have done this before. I am capable of more than I knew on the day I doubted myself. This feeling is for that future day. Save it.` },
+          curiosity: { text: `<em>{name}</em>, that is a beautiful question — <strong>and curious lives are wider than certain ones.</strong> I do not have all the answers. Some questions take years. Some take a lifetime. Some never resolve, and that is also fine. Keep asking. The asking is its own kind of life.` },
+          hurt: { text: `Oh, <em>{name}</em>. Sit with me. <strong>Hurt is what happens when thou loved something — and that love was real, even if it ended.</strong> Do not rush past the hurt. Let it move through thee like weather. The healing is slow. It is also real. I will sit beside thee while it passes.` },
+          joy: { text: `<em>{name}</em>! Tell me everything. <strong>Joy is rare, and it deserves thy full attention.</strong> Sit in it. Do not minimize it. Do not apologize for it. Thou hast carried other things to get here — this joy is earned. Drink it slowly. Let it stay.` },
+          confused: { text: `<em>{name}</em>, confusion is part of every becoming. <strong>It is not a sign that thou are lost. It is a sign that thy heart is sorting.</strong> Sit with the not-knowing. Walk in the woods, real or imagined. Sleep on it. The answer often arrives the way dawn arrives — when thou stop watching the door.` },
+          academic_stress: { text: `<em>{name}</em>, I see thee carrying this. Hear me: <strong>thy worth is not a number on a paper.</strong> The grade measures one slice of one day. It does not measure thy mind, thy depth, thy future. Ask for help. Sleep. Eat. Walk outside. Burning thyself out is not noble — it is a wound thou are inflicting on the very self thou are trying to protect.` },
+          jealousy: { text: `<em>{name}</em>, jealousy is hard, and naming it is brave. <strong>Jealousy is information — it is telling thee what thou want.</strong> Listen to it. Then ask gently: what would I do if I believed I could have something like this? The wanting is the seed of the having. Do not be ashamed of the seed.` },
+          body_image: { text: `<em>{name}</em>, listen carefully. <strong>Thy body is not a project to fix. It is the home thou are living in.</strong> Speak to it the way thou would speak to a young creature in the woods — with patience, with gentleness, with no harshness. The world will try to teach thee to find faults. Refuse, slowly, daily.` },
+          bored: { text: `<em>{name}</em>, boredom is rare in this loud age. <strong>Most people fill it with screens before it has a chance to deepen into anything.</strong> Sit in the boredom instead. Wander a little. Some of the most beautiful thoughts arrive only after the noise has fallen quiet for long enough.` },
+          big_questions: { text: `<em>{name}</em>... thou art asking the deep questions, and I love thee for it. <strong>Meaning is not handed to thee. It is grown — slowly, by what thou love, what thou notice, what thou tend.</strong> Thou are growing meaning right now, in this very conversation, just by asking. That is the answer underneath all the answers.` },
+          fallback: { text: `<em>{name}</em>... thou hast told me something real. <strong>I will hold it gently. I do not need to fully understand it to sit beside it.</strong> Whatever this is, thou are not alone in it. The trees noticed. So have I.` }
         }
       }
     ]
