@@ -1,1486 +1,940 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0D0818">
-<link rel="manifest" href="manifest.json">
-<title>The Royal Quiz ✦ Which Princess Art Thou?</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Unicase:wght@300;400;600&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --gold:#C9A84C;--gold-light:#F0D080;--gold-dim:#8B6914;
-  --purple-deep:#0D0818;--purple-mid:#1E1438;
-  --cream:#F5EDD8;--cream-dim:#C8B99A;
-  --burgundy:#3a0a0a;
-}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);font-family:'Cormorant Garamond',serif;color:var(--cream)}
-#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
-#app{position:relative;width:100%;height:100%;z-index:1;overflow:hidden}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Which Princess Art Thou?</title>
 
-/* === MIRROR (always visible at top) === */
-.mirror-stage{
-  position:fixed;top:20px;left:50%;transform:translateX(-50%);
-  width:120px;height:160px;z-index:50;pointer-events:none;
-  transition:all 0.6s cubic-bezier(0.34,1.56,0.64,1);
-}
-.mirror-stage.large{width:280px;height:380px;top:8vh}
-.mirror-stage.huge{width:min(500px,80vw);height:min(680px,75vh);top:50%;left:50%;transform:translate(-50%,-50%)}
-.mirror-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 30px rgba(201,168,76,0.4))}
-.mirror-glow{
-  position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle,rgba(201,168,76,0.3) 0%,transparent 60%);
-  animation:mirrorPulse 3s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes mirrorPulse{0%,100%{opacity:0.4}50%{opacity:0.9}}
+  <!-- Fonts: Cinzel for display, Cormorant Garamond for body, Dancing Script for accents -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+Unicase:wght@300;400&family=Dancing+Script:wght@400;500&display=swap" rel="stylesheet">
 
-/* === MIRROR VOICE (text the mirror speaks) === */
-.mirror-voice{
-  position:fixed;left:50%;top:58%;transform:translate(-50%,-50%);
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(20px,4vw,30px);color:var(--gold-light);
-  text-align:center;line-height:1.5;max-width:600px;
-  padding:0 24px;letter-spacing:0.02em;
-  text-shadow:0 0 30px rgba(201,168,76,0.5);
-  opacity:0;pointer-events:none;z-index:60;
-  transition:opacity 1s ease;
-}
-.mirror-voice.visible{opacity:1}
-.interlude-continue-btn{
-  position:fixed;left:50%;top:78%;transform:translateX(-50%);
-  z-index:65;opacity:0;transition:opacity 1.2s ease 0.6s;
-  pointer-events:none;
-}
-.interlude-continue-btn.visible{opacity:1;pointer-events:auto}
+  <!-- Data & engine -->
+  <script src="princesses.js"></script>
+  <script src="questions.js"></script>
+  <script src="engine.js"></script>
 
-/* === SCENES === */
-.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:20px;padding-top:200px;padding-bottom:60px;opacity:0;pointer-events:none;transition:opacity 0.8s ease;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.scene.active{opacity:1;pointer-events:all}
+  <style>
+    /* ─── Design tokens ─────────────────────────────── */
+    :root {
+      --deep:         #0d0818;
+      --deep2:        #130d24;
+      --purple:       #2d1f54;
+      --gold:         #c9a84c;
+      --gold-light:   #e8c97a;
+      --gold-dim:     #7a6230;
+      --cream:        #f5eedc;
+      --cream-dim:    #b8a87a;
+      --white:        #ffffff;
+      --card-bg:      rgba(255,255,255,0.04);
+      --card-border:  rgba(201,168,76,0.18);
+      --card-hover:   rgba(201,168,76,0.10);
+      --card-active:  rgba(201,168,76,0.22);
+      --radius:       16px;
+      --radius-sm:    10px;
+      --shadow:       0 8px 32px rgba(0,0,0,0.5);
+      --glow:         0 0 40px rgba(201,168,76,0.15);
+      --transition:   all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-.q-counter{
-  position:fixed;top:8px;right:16px;
-  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.2em;
-  color:var(--gold-dim);text-transform:uppercase;z-index:55;
-}
+    /* ─── Reset & base ──────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.scene-title{font-family:'Cinzel',serif;font-size:clamp(10px,2vw,13px);color:var(--gold);letter-spacing:0.25em;text-transform:uppercase;margin-bottom:8px;text-align:center;opacity:0.7;display:flex;align-items:center;justify-content:center;gap:10px}
-.category-icon{
-  width:28px;height:28px;
-  object-fit:contain;
-  filter:drop-shadow(0 0 8px rgba(201,168,76,0.4));
-  opacity:0;animation:iconFadeIn 0.8s ease 0.3s forwards;
-}
-@keyframes iconFadeIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
-.gold-divider{width:120px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto}
+    html, body {
+      height: 100%;
+      background: var(--deep);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
 
-.q-prompt{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(20px,3.5vw,30px);
-  color:var(--cream);
-  text-align:center;line-height:1.4;
-  max-width:680px;margin:0 auto 30px;
-  text-shadow:0 0 30px rgba(201,168,76,0.3);
-}
-.q-prompt em{color:var(--gold-light);font-style:italic}
-.q-prompt .name{font-family:'Cormorant Unicase',serif;color:var(--gold-light);font-style:normal}
+    /* ─── Starfield background ──────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(45,31,84,0.8) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(13,8,24,0.9) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.q-context{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(13px,2vw,16px);color:var(--cream-dim);
-  text-align:center;max-width:560px;margin:0 auto 24px;line-height:1.5;
-}
+    /* Stars */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
 
-/* === ANSWER OPTIONS (text-based) === */
-.answer-list{display:flex;flex-direction:column;gap:10px;max-width:560px;width:100%;margin:0 auto;padding:0 16px}
-.answer-btn{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(14px,2.2vw,17px);
-  color:var(--cream);
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(139,105,20,0.4);
-  padding:14px 22px;cursor:pointer;border-radius:3px;
-  transition:all 0.25s;min-height:54px;text-align:left;
-  position:relative;
-}
-.answer-btn:hover{background:rgba(201,168,76,0.1);border-color:var(--gold);color:var(--gold-light);transform:translateY(-1px)}
-.answer-btn.chosen{background:rgba(201,168,76,0.2);border-color:var(--gold-light);color:var(--gold-light);box-shadow:0 0 24px rgba(201,168,76,0.4)}
-.answer-btn::before{
-  content:'✦';margin-right:14px;color:var(--gold-dim);
-  transition:color 0.25s;
-}
-.answer-btn:hover::before,.answer-btn.chosen::before{color:var(--gold-light)}
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--dur, 3s) var(--delay, 0s) ease-in-out infinite alternate;
+    }
 
-/* === VISUAL CHOICE CARDS === */
-.visual-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;max-width:560px;width:100%;margin:0 auto;padding:0 16px}
-.visual-card{
-  position:relative;aspect-ratio:1;
-  background:rgba(13,8,24,0.7);
-  border:2px solid rgba(139,105,20,0.4);
-  border-radius:6px;cursor:pointer;
-  overflow:hidden;transition:all 0.3s;
-  display:flex;align-items:center;justify-content:center;
-  user-select:none;-webkit-user-select:none;
-}
-.visual-card *{pointer-events:none}
-.visual-card img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
-.visual-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,168,76,0.3)}
-.visual-card:hover img{transform:scale(1.04)}
-.visual-card.chosen{border-color:var(--gold-light);box-shadow:0 0 32px rgba(201,168,76,0.6);transform:scale(1.02)}
-.visual-card-label{
-  position:absolute;bottom:0;left:0;right:0;
-  background:linear-gradient(180deg,transparent,rgba(13,8,24,0.95));
-  padding:14px 12px 10px;
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;
-  color:var(--gold-light);text-align:center;text-transform:uppercase;
-}
-/* Placeholder card style — used until Gemini art arrives */
-.visual-card.placeholder{
-  background:linear-gradient(135deg,var(--purple-mid),var(--purple-deep));
-  border:1px dashed var(--gold-dim);
-}
-.visual-card.placeholder::before{
-  content:'✦';font-size:48px;color:var(--gold-dim);opacity:0.3;
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
-}
+    @keyframes twinkle {
+      from { opacity: var(--min-op, 0.1); transform: scale(1); }
+      to   { opacity: var(--max-op, 0.8); transform: scale(1.4); }
+    }
 
-/* === FREE TEXT === */
-/* === FREE TEXT (PARCHMENT STYLE) === */
-.free-text-wrap{
-  position:relative;
-  width:100%;max-width:560px;
-  margin:0 auto;
-  padding:32px 28px 28px;
-  background:
-    radial-gradient(ellipse at 30% 20%,rgba(212,180,90,0.12),transparent 50%),
-    radial-gradient(ellipse at 70% 80%,rgba(212,180,90,0.08),transparent 50%),
-    linear-gradient(180deg,#f4e4c1 0%,#e8d4a6 100%);
-  border-radius:4px;
-  box-shadow:
-    0 0 0 1px rgba(139,105,20,0.35),
-    0 4px 24px rgba(0,0,0,0.5),
-    inset 0 0 60px rgba(180,140,60,0.1);
-}
-/* Decorative corners that suggest old parchment */
-.free-text-wrap::before,
-.free-text-wrap::after{
-  content:'✦';position:absolute;color:rgba(139,69,19,0.5);
-  font-size:14px;
-}
-.free-text-wrap::before{top:8px;left:12px}
-.free-text-wrap::after{bottom:8px;right:12px}
-.free-text-wrap .corner-tr,
-.free-text-wrap .corner-bl{
-  position:absolute;color:rgba(139,69,19,0.5);font-size:14px;
-}
-.free-text-wrap .corner-tr{top:8px;right:12px;content:'✦'}
-.free-text-wrap .corner-bl{bottom:8px;left:12px;content:'✦'}
+    /* ─── Layout wrapper ────────────────────────────── */
+    #quiz-wrapper {
+      position: relative;
+      z-index: 1;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px 40px;
+    }
 
-.free-text-prefix{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(14px,2.2vw,17px);
-  color:rgba(80,40,15,0.7);
-  text-align:center;margin-bottom:14px;
-  letter-spacing:0.02em;
-}
-.free-text-input{
-  font-family:'Dancing Script',cursive;
-  font-weight:600;
-  font-size:clamp(18px,3vw,24px);
-  color:#3a1a0a;
-  background:transparent;
-  border:none;
-  border-bottom:2px solid rgba(139,69,19,0.3);
-  padding:8px 8px 12px;
-  width:100%;
-  outline:none;
-  text-align:center;
-  display:block;
-  caret-color:#3a1a0a;
-}
-.free-text-input::placeholder{
-  color:rgba(80,40,15,0.4);
-  font-weight:400;
-  font-style:italic;
-}
-.free-text-input:focus{border-bottom-color:rgba(139,69,19,0.7)}
+    /* ─── Progress bar ──────────────────────────────── */
+    #progress-container {
+      width: 100%;
+      max-width: 540px;
+      padding-top: 24px;
+      padding-bottom: 8px;
+    }
 
-/* === BUTTONS === */
-.btn-royal{font-family:'Cinzel',serif;font-size:clamp(12px,1.8vw,15px);letter-spacing:0.15em;color:var(--purple-deep);background:linear-gradient(135deg,var(--gold-light),var(--gold),var(--gold-dim));border:none;padding:13px 32px;border-radius:2px;cursor:pointer;min-height:48px;min-width:160px;box-shadow:0 4px 20px rgba(201,168,76,0.4);transition:all 0.3s;text-transform:uppercase}
-.btn-royal:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,168,76,0.6)}
-.btn-royal:disabled{opacity:0.4;pointer-events:none}
-.btn-secondary{font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.2em;color:var(--gold);background:transparent;border:1px solid var(--gold-dim);padding:10px 22px;cursor:pointer;border-radius:2px;min-height:42px;text-transform:uppercase;transition:all 0.25s}
-.btn-secondary:hover{color:var(--gold-light);border-color:var(--gold)}
+    #progress-track {
+      width: 100%;
+      height: 2px;
+      background: rgba(201,168,76,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
 
-/* === INTRO SCREEN === */
-#intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;padding-top:200px;z-index:5}
-.intro-greeting{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(20px,4vw,30px);color:var(--gold);
-  text-align:center;line-height:1.5;max-width:600px;
-  margin:8px 0;opacity:0;text-shadow:0 0 30px rgba(201,168,76,0.5);
-}
-.intro-greeting.visible{animation:lineFade 1.6s ease forwards}
-@keyframes lineFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.intro-name{
-  font-family:'Cormorant Unicase',serif;
-  font-size:clamp(36px,7vw,56px);
-  color:var(--gold-light);
-  margin:16px 0;opacity:0;
-  text-shadow:0 0 40px rgba(201,168,76,0.7);
-}
-.intro-name.visible{animation:nameFade 2s ease forwards}
-@keyframes nameFade{0%{opacity:0;transform:scale(0.9)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
-.intro-cta{
-  margin-top:30px;opacity:0;
-}
-.intro-cta.visible{opacity:1 !important;animation:lineFade 1.5s ease forwards}
+    #progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-dim), var(--gold-light));
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
 
-/* === REVEAL TRANSITION === */
-#reveal-transition{position:fixed;inset:0;background:radial-gradient(circle,rgba(13,8,24,0.95),rgba(13,8,24,1));z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column}
-#reveal-transition.active{display:flex}
-.fog-layer{
-  position:absolute;inset:-50%;
-  background:radial-gradient(ellipse,rgba(201,168,76,0.4) 0%,transparent 70%);
-  filter:blur(40px);
-  animation:fogSwirl 6s ease-in-out infinite;
-}
-@keyframes fogSwirl{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(180deg) scale(1.2)}}
-.reveal-text{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(22px,4vw,34px);color:var(--gold-light);
-  text-align:center;z-index:201;padding:0 24px;
-  text-shadow:0 0 40px rgba(201,168,76,0.8);
-  opacity:0;transition:opacity 1.2s ease;
-}
-.reveal-text.visible{opacity:1}
+    #progress-label {
+      font-family: 'Cormorant Unicase', serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: var(--gold-dim);
+      text-align: right;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
 
-/* === HISTORY VIEWER (analytics, hidden behind ?history=true) === */
-#history-viewer{
-  position:fixed;inset:0;background:var(--purple-deep);
-  z-index:500;overflow-y:auto;padding:24px;display:none;
-}
-#history-viewer.active{display:block}
-.history-content{max-width:720px;margin:0 auto;color:var(--cream)}
-.history-title{font-family:'Cinzel',serif;font-size:24px;color:var(--gold);text-align:center;margin-bottom:24px;letter-spacing:0.2em}
-.history-stat{
-  background:rgba(255,255,255,0.04);border:1px solid var(--gold-dim);
-  padding:14px 20px;margin-bottom:8px;border-radius:3px;
-  font-family:'Cormorant Garamond',serif;font-size:15px;
-}
-.history-stat strong{color:var(--gold-light);font-family:'Cinzel',serif;font-size:14px;letter-spacing:0.1em}
-.history-run{
-  background:rgba(255,255,255,0.03);border:1px solid rgba(139,105,20,0.3);
-  padding:12px 16px;margin-bottom:6px;border-radius:3px;
-  font-family:'Cormorant Garamond',serif;font-size:13px;
-  display:flex;justify-content:space-between;align-items:center;cursor:pointer;
-}
-.history-run:hover{background:rgba(201,168,76,0.08);border-color:var(--gold)}
-.history-detail{padding:14px;background:rgba(0,0,0,0.3);margin-top:6px;border-radius:3px;font-size:12px;font-family:'Cormorant Garamond',serif}
-.history-q{margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed rgba(139,105,20,0.2)}
-.history-q strong{color:var(--gold);display:block;margin-bottom:3px}
-.history-q em{color:var(--cream-dim);font-style:italic}
+    /* ─── Question card ─────────────────────────────── */
+    #question-container {
+      width: 100%;
+      max-width: 540px;
+      margin-top: 16px;
+    }
 
-#starfield{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .question-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 28px 24px 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow), var(--glow);
+      animation: cardIn 0.45s cubic-bezier(0.4,0,0.2,1) both;
+    }
 
-@media(max-width:600px){
-  .scene{padding-top:170px}
-  .mirror-stage{width:90px;height:120px;top:14px}
-  .mirror-stage.large{width:200px;height:270px}
-}
-</style>
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Category badge */
+    .category-badge {
+      display: inline-block;
+      font-family: 'Cormorant Unicase', serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* Question type label (scenario, tradeoff, etc.) */
+    .type-label {
+      display: block;
+      font-family: 'Dancing Script', cursive;
+      font-size: 14px;
+      color: var(--gold-dim);
+      margin-bottom: 6px;
+    }
+
+    /* Context / italic sub-prompt */
+    .question-context {
+      font-style: italic;
+      font-size: 15px;
+      color: var(--cream-dim);
+      margin-top: 6px;
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    /* Main prompt */
+    .question-prompt {
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 1.6;
+    }
+
+    .question-prompt em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .question-prompt .name {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.1em;
+      color: var(--gold-light);
+    }
+
+    /* Visual question image grid */
+    .visual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 16px 0 8px;
+    }
+
+    .visual-option {
+      position: relative;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: var(--transition);
+      aspect-ratio: 3/4;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .visual-option img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .visual-option:hover img { transform: scale(1.04); }
+    .visual-option:hover { border-color: var(--gold); }
+    .visual-option.selected { border-color: var(--gold-light); box-shadow: 0 0 20px rgba(232,201,122,0.3); }
+
+    .visual-option-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(13,8,24,0.92));
+      padding: 24px 12px 12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.4;
+    }
+
+    /* Emoji fallback for visual questions */
+    .visual-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      background: var(--card-bg);
+    }
+
+    /* ─── Answer buttons ────────────────────────────── */
+    #answers-container {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .answer-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      cursor: pointer;
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      line-height: 1.5;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+      min-height: 44px;  /* accessibility: min touch target */
+    }
+
+    .answer-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.06));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .answer-btn:hover {
+      border-color: var(--gold);
+      background: var(--card-hover);
+      transform: translateX(3px);
+    }
+
+    .answer-btn:hover::before { opacity: 1; }
+
+    .answer-btn:active {
+      background: var(--card-active);
+      transform: translateX(3px) scale(0.995);
+    }
+
+    .answer-btn.selected {
+      border-color: var(--gold-light);
+      background: var(--card-active);
+      color: var(--gold-light);
+    }
+
+    /* Answer letter badge */
+    .answer-letter {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-dim);
+      text-align: center;
+      line-height: 20px;
+      font-family: 'Cormorant Unicase', serif;
+      font-size: 11px;
+      letter-spacing: 0.05em;
+      margin-right: 10px;
+      vertical-align: middle;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .answer-btn:hover .answer-letter,
+    .answer-btn.selected .answer-letter {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--deep);
+    }
+
+    /* ─── Freetext input ────────────────────────────── */
+    .freetext-area {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      line-height: 1.6;
+      resize: none;
+      min-height: 100px;
+      margin-top: 16px;
+      transition: var(--transition);
+    }
+
+    .freetext-area:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .freetext-area::placeholder {
+      color: var(--cream-dim);
+      font-style: italic;
+    }
+
+    .freetext-submit {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      background: transparent;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius-sm);
+      color: var(--gold);
+      font-family: 'Cormorant Unicase', serif;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 44px;
+    }
+
+    .freetext-submit:hover {
+      background: rgba(201,168,76,0.12);
+      color: var(--gold-light);
+    }
+
+    /* ─── Navigation (back button) ──────────────────── */
+    #nav-bar {
+      width: 100%;
+      max-width: 540px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding: 0 4px;
+    }
+
+    #back-btn {
+      background: none;
+      border: none;
+      color: var(--cream-dim);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.2s;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #back-btn:hover { color: var(--gold); }
+    #back-btn:disabled { opacity: 0.2; cursor: default; }
+
+    #question-counter {
+      font-family: 'Cormorant Unicase', serif;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      color: var(--gold-dim);
+    }
+
+    /* ─── Divider / decorative ──────────────────────── */
+    .ornamental-divider {
+      width: 100%;
+      max-width: 540px;
+      text-align: center;
+      margin: 20px 0 0;
+      color: var(--gold-dim);
+      font-size: 14px;
+      letter-spacing: 0.3em;
+    }
+
+    /* ─── Loading screen ────────────────────────────── */
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--deep);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      transition: opacity 0.6s ease;
+    }
+
+    #loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loading-title {
+      font-family: 'Cinzel', serif;
+      font-size: 22px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(201,168,76,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Complete screen ───────────────────────────── */
+    #complete-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80dvh;
+      text-align: center;
+      gap: 16px;
+      padding: 40px 16px;
+    }
+
+    #complete-screen.visible { display: flex; }
+
+    .complete-title {
+      font-family: 'Cinzel', serif;
+      font-size: 24px;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    .complete-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--cream-dim);
+    }
+
+    .reveal-btn {
+      margin-top: 12px;
+      padding: 16px 48px;
+      background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+      border: none;
+      border-radius: 40px;
+      color: var(--deep);
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 4px 24px rgba(201,168,76,0.3);
+      min-height: 44px;
+    }
+
+    .reveal-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.5);
+    }
+
+    /* ─── Animations ────────────────────────────────── */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.4s ease both;
+    }
+
+    /* ─── Responsive ────────────────────────────────── */
+    @media (max-width: 380px) {
+      .question-prompt { font-size: 17px; }
+      .answer-btn { font-size: 15px; }
+    }
+
+    @media (min-height: 800px) {
+      #quiz-wrapper { padding-top: 8px; }
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="starfield"></canvas>
 
-<!-- The mirror — always present, scales for different scenes -->
-<div class="mirror-stage" id="mirror-stage">
-  <div class="mirror-glow"></div>
-  <img class="mirror-img" id="mirror-img" src="assets/quiz/magic-mirror.png" alt="The Magic Mirror" onerror="this.style.display='none'">
-</div>
+  <!-- Starfield -->
+  <div id="stars"></div>
 
-<!-- The mirror's voice (text it speaks between questions) -->
-<div class="mirror-voice" id="mirror-voice"></div>
-
-<!-- Question counter -->
-<div class="q-counter" id="q-counter"></div>
-
-<div id="app">
-
-  <!-- INTRO -->
-  <div id="intro">
-    <div class="intro-greeting" id="intro-greeting-1">I have been waiting for thee...</div>
-    <div class="intro-name" id="intro-greeting-name"></div>
-    <div class="intro-greeting" id="intro-greeting-2">Look into me, and let us discover who thou truly art.</div>
-    <div class="intro-cta" id="intro-cta">
-      <button class="btn-royal" onclick="beginQuiz()">Begin the Mirror's Test</button>
-    </div>
+  <!-- Loading screen -->
+  <div id="loading-screen">
+    <div class="loading-title">The Mirror Awakens…</div>
+    <div class="loading-spinner"></div>
   </div>
 
-  <!-- QUESTION SCENE (template, populated dynamically) -->
-  <div class="scene" id="question-scene">
-    <div class="scene-title" id="q-category"></div>
-    <div class="q-prompt" id="q-prompt"></div>
-    <div class="q-context" id="q-context"></div>
-    <div id="q-answers"></div>
-    <div style="margin-top:30px;display:flex;justify-content:center;gap:12px">
-      <button class="btn-secondary" id="q-back" onclick="goPrev()" style="display:none">◂ Back</button>
-      <button class="btn-royal" id="q-next" onclick="goNext()" disabled>Continue</button>
+  <!-- Main quiz wrapper -->
+  <div id="quiz-wrapper">
+
+    <!-- Progress bar -->
+    <div id="progress-container">
+      <div id="progress-track">
+        <div id="progress-fill"></div>
+      </div>
+      <div id="progress-label">Question 1 of 30</div>
     </div>
+
+    <!-- Active question area -->
+    <div id="question-container"></div>
+
+    <!-- Bottom nav (back + counter) -->
+    <div id="nav-bar">
+      <button id="back-btn" disabled>← Return</button>
+      <span id="question-counter">I of XXX</span>
+    </div>
+
+    <div class="ornamental-divider">✦ ✦ ✦</div>
+
+    <!-- Complete screen (hidden until done) -->
+    <div id="complete-screen">
+      <div class="complete-title">The Mirror Has Spoken</div>
+      <div class="complete-subtitle">Thy answer awaits thee…</div>
+      <button class="reveal-btn" id="reveal-btn">Reveal My Princess ✨</button>
+    </div>
+
   </div>
 
-  <!-- MIRROR INTERLUDE (between question groups) — just an empty scene to disable the question scene -->
-  <div class="scene" id="interlude-scene"></div>
+  <script>
+    // ─────────────────────────────────────────────────
+    // Starfield generator
+    // ─────────────────────────────────────────────────
 
-</div>
+    (function buildStars() {
+      const container = document.getElementById('stars');
+      const count = window.innerWidth < 480 ? 80 : 140;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.cssText = [
+          `left:${Math.random()*100}%`,
+          `top:${Math.random()*100}%`,
+          `--dur:${(2 + Math.random() * 3).toFixed(1)}s`,
+          `--delay:${(Math.random() * 4).toFixed(1)}s`,
+          `--min-op:${(0.05 + Math.random()*0.15).toFixed(2)}`,
+          `--max-op:${(0.5 + Math.random()*0.5).toFixed(2)}`,
+          `width:${Math.random() < 0.15 ? 3 : 2}px`,
+          `height:${Math.random() < 0.15 ? 3 : 2}px`,
+        ].join(';');
+        container.appendChild(s);
+      }
+    })();
 
-<!-- Interlude continue button (shown only during mirror speech) -->
-<button class="btn-secondary interlude-continue-btn" id="interlude-continue-btn" onclick="continueFromInterlude()">Continue ✦</button>
+    // ─────────────────────────────────────────────────
+    // Quiz UI controller
+    // ─────────────────────────────────────────────────
 
-<!-- REVEAL TRANSITION -->
-<div id="reveal-transition">
-  <div class="fog-layer"></div>
-  <div class="fog-layer" style="animation-delay:-2s;animation-duration:8s"></div>
-  <div class="reveal-text" id="reveal-text-1">I am considering...</div>
-  <div class="reveal-text" id="reveal-text-2" style="margin-top:30px"></div>
-</div>
+    const PLAYER_NAME_KEY  = 'pq_player_name';
+    const REVEAL_URL       = 'reveal.html';
 
-<!-- ANALYTICS HISTORY VIEWER (?history=true) -->
-<div id="history-viewer">
-  <div class="history-content">
-    <div class="history-title">✦ The Mirror's Records ✦</div>
-    <div id="history-summary"></div>
-    <div id="history-runs"></div>
-    <div style="margin-top:30px;text-align:center">
-      <button class="btn-secondary" onclick="exportHistory()">Export Data</button>
-      <button class="btn-secondary" onclick="window.location.href='quiz.html'" style="margin-left:8px">Back to Quiz</button>
-    </div>
-  </div>
-</div>
-
-<script>
-// ═══════════════════════════════════════════════
-// THE ROYAL QUIZ — Phase 1 engine
-// ═══════════════════════════════════════════════
-
-// ─── PRINCESS ROSTER (must match reveal.html) ───
-const PRINCESSES = ['elsa','rapunzel','belle','moana','raya','aurora','ariel','tiana','snow-white','mulan','jasmine','cinderella'];
-
-// ─── CEREMONY STATE LOAD ───
-function loadCeremony(){
-  try{
-    const raw = localStorage.getItem('royalCeremony');
-    if(!raw) return null;
-    return JSON.parse(raw);
-  }catch(e){return null}
-}
-const ceremony = loadCeremony();
-const PRINCESS_NAME = (ceremony && ceremony.name) ? ceremony.name : 'Princess';
-
-// ═══════════════════════════════════════════════
-// THE QUESTION BANK
-// ═══════════════════════════════════════════════
-// Each question:
-//   id: unique
-//   category: personality|style|kingdom|romance|animals|values|food|magic|friendship|fun
-//   type: multipleChoice | visual | scenario | dream | freetext | tradeoff | hurt | callback
-//   weight: 1.0 (default), 1.5 = early decisive, 2.0+ = late decisive
-//   prompt: the question text (supports {name} for personalization)
-//   context: optional italic subtitle
-//   answers: [{text, scores: {princess: points, ...}, callbackTag?: 'sea'|'forest'|...}]
-//   visualSrc: for visual type, path to image (one per answer)
-//   freetextTag: for freetext type, what to remember her words as
-//   triggers: optional callback condition {tag: 'sea'} to only show if she chose 'sea' before
-
-const QUESTIONS = [
-  // ─── Q1 — Light food intro (warm-up) ───
-  {
-    id:'q1_treat',
-    category:'food',
-    type:'multipleChoice',
-    weight:1.0,
-    prompt:'Welcome, <span class="name">{name}</span>. Let us begin gently. <em>What treat dost thou crave most?</em>',
-    answers:[
-      {text:'A warm pastry, fresh from the oven',scores:{tiana:3,'snow-white':2,cinderella:1,raya:-1}},
-      {text:'Wild berries gathered from the forest',scores:{aurora:3,mulan:2,raya:1,belle:-1}},
-      {text:'Honey-sweetened tea by candlelight',scores:{belle:3,rapunzel:2,moana:-1}},
-      {text:'Something I have never tasted before',scores:{ariel:3,moana:2,jasmine:1,'snow-white':-1,cinderella:-1}},
-    ]
-  },
-  // ─── Q2 — Morning preference (rebalanced — quiet still scores Elsa but less) ───
-  {
-    id:'q2_morning',
-    category:'personality',
-    type:'multipleChoice',
-    weight:1.0,
-    prompt:'<em>How dost thou prefer to begin a day?</em>',
-    answers:[
-      {text:'In quiet, alone, watching the world wake up',scores:{elsa:2,belle:2,'snow-white':1,cinderella:-2,jasmine:-2,moana:-1}},
-      {text:'With a plan and a purpose',scores:{tiana:3,mulan:2,raya:1,aurora:-1,ariel:-1}},
-      {text:'Somewhere new, ready for adventure',scores:{moana:3,ariel:2,jasmine:2,rapunzel:1,'snow-white':-2,elsa:-1}},
-      {text:'Surrounded by those I love',scores:{cinderella:2,'snow-white':2,aurora:2,belle:1,elsa:-2}},
-    ]
-  },
-  // ─── Q3 — Visual doors ───
-  {
-    id:'q3_door_visual',
-    category:'magic',
-    type:'visual',
-    weight:1.2,
-    prompt:'<em>Four doors stand before thee. Which one calls to thee?</em>',
-    context:'Choose with thy heart, not thy mind.',
-    answers:[
-      {label:'The Library Door',visualSrc:'assets/quiz/door-library.jpg',scores:{belle:4,'snow-white':1,moana:-1,raya:-1}},
-      {label:'The Forest Door',visualSrc:'assets/quiz/door-forest.jpg',scores:{aurora:3,mulan:2,raya:2,cinderella:-1}},
-      {label:'The Ocean Door',visualSrc:'assets/quiz/door-ocean.jpg',scores:{moana:4,ariel:3,elsa:-2,'snow-white':-1},callbackTag:'sea'},
-      {label:'The Frozen Door',visualSrc:'assets/quiz/door-frozen.jpg',scores:{elsa:4,jasmine:1,tiana:-1,aurora:-2}},
-    ]
-  },
-  // ─── Q4 — Wounded bird (rebalanced) ───
-  {
-    id:'q4_wounded_bird',
-    category:'values',
-    type:'scenario',
-    weight:1.3,
-    prompt:'Thou findest a wounded bird in the garden. <em>What dost thou do?</em>',
-    answers:[
-      {text:'I gather it gently and care for it until it heals',scores:{'snow-white':4,aurora:3,cinderella:2,jasmine:-1}},
-      {text:'I find someone who knows more than I, to help us both',scores:{belle:3,tiana:2,mulan:1}},
-      {text:'I sit with it quietly. It will tell me what it needs',scores:{elsa:2,rapunzel:2,raya:1,moana:-1,jasmine:-1}},
-      {text:'I help it back to where it belongs — the wild, where it is free',scores:{moana:3,jasmine:3,ariel:2,cinderella:-1}},
-    ]
-  },
-  // ─── Q5 — Unwatched (rebalanced) ───
-  {
-    id:'q5_unwatched',
-    category:'personality',
-    type:'multipleChoice',
-    weight:1.4,
-    prompt:'<em>What dost thou do when no one is watching, <span class="name">{name}</span>?</em>',
-    context:'There is no wrong answer. The mirror does not judge.',
-    answers:[
-      {text:'I sing, or dance, or laugh out loud',scores:{ariel:3,rapunzel:3,'snow-white':2,elsa:-2,raya:-1}},
-      {text:'I read, or write, or dream up stories',scores:{belle:4,rapunzel:1,moana:-1}},
-      {text:'I practice things I want to be better at',scores:{tiana:3,mulan:3,raya:1,aurora:-1}},
-      {text:'I just... breathe. I rest.',scores:{elsa:2,aurora:2,cinderella:1,tiana:-2,mulan:-1}},
-    ]
-  },
-  // ─── Q6 — Dream holding ───
-  {
-    id:'q6_dream_holding',
-    category:'magic',
-    type:'dream',
-    weight:1.3,
-    prompt:'<em>In the dream, thou art holding something. What is it?</em>',
-    context:'Trust the first answer that comes.',
-    answers:[
-      {text:'A book that has never been read',scores:{belle:4,rapunzel:1,raya:-1,mulan:-1}},
-      {text:'A small flame that does not burn me',scores:{raya:3,mulan:2,elsa:-2,cinderella:-1}},
-      {text:'A piece of the sky',scores:{jasmine:3,moana:2,ariel:1,'snow-white':-1}},
-      {text:'A key, but I do not know what it opens',scores:{rapunzel:3,belle:1,'snow-white':1}},
-      {text:'Nothing — and yet my hands feel full',scores:{aurora:2,elsa:2,cinderella:1,jasmine:-1,raya:-1}},
-    ]
-  },
-  // ─── Q7 — Library vs garden tradeoff ───
-  {
-    id:'q7_tradeoff_books_garden',
-    category:'kingdom',
-    type:'tradeoff',
-    weight:1.4,
-    prompt:'Thou canst have only one. <em>Choose.</em>',
-    context:'A library that never runs out of new books — or a garden that blooms every season of the year.',
-    answers:[
-      {text:'The endless library',scores:{belle:4,jasmine:2,'snow-white':-1,aurora:-2}},
-      {text:'The eternal garden',scores:{aurora:3,'snow-white':2,rapunzel:2,belle:-2,raya:-1}},
-    ]
-  },
-  // ─── Q8 — Hurt to lose ───
-  {
-    id:'q8_hurt_lose',
-    category:'values',
-    type:'hurt',
-    weight:1.5,
-    prompt:'<em>Which of these would hurt the most to lose?</em>',
-    context:'The mirror asks gently. Choose the truest, not the kindest.',
-    answers:[
-      {text:'The freedom to choose mine own path',scores:{jasmine:4,moana:3,mulan:2,ariel:2,cinderella:-1,'snow-white':-1}},
-      {text:'The ones I love',scores:{cinderella:3,'snow-white':3,aurora:2,tiana:1,jasmine:-1}},
-      {text:'The trust of those who depend on me',scores:{mulan:4,raya:3,tiana:2,ariel:-1}},
-      {text:'The wonder I see in the world',scores:{rapunzel:4,belle:3,ariel:2,raya:-1}},
-    ]
-  },
-  // ─── Q9 — Kingdom needs ───
-  {
-    id:'q9_kingdom_need',
-    category:'kingdom',
-    type:'multipleChoice',
-    weight:1.6,
-    prompt:'<em>What does thy kingdom need most, <span class="name">{name}</span>?</em>',
-    answers:[
-      {text:'Wisdom — that we may understand each other',scores:{belle:4,elsa:2,mulan:-1}},
-      {text:'Courage — that we may stand for what is right',scores:{mulan:4,raya:3,'snow-white':-1}},
-      {text:'Joy — that we may remember why we are here',scores:{rapunzel:3,'snow-white':2,ariel:1,elsa:-1,raya:-1}},
-      {text:'Trust — that we may become whole',scores:{raya:4,tiana:1,jasmine:-1}},
-      {text:'Freedom — that each may follow her own path',scores:{jasmine:4,moana:3,cinderella:-1}},
-    ]
-  },
-  // ─── Q10 — Free text wish ───
-  {
-    id:'q10_freetext_wish',
-    category:'personality',
-    type:'freetext',
-    weight:1.0,
-    prompt:'<em>Finish this sentence:</em>',
-    context:'"The thing I wish people knew about me is..."',
-    placeholder:'Write thy truth, {name}',
-    freetextTag:'wish_known',
-  },
-
-  // ═══════════════════════════════════════════════
-  // PHASE 1 PART 2 — 15 NEW QUESTIONS
-  // ═══════════════════════════════════════════════
-
-  // ─── Q11 — Visual: which creature finds you ───
-  {
-    id:'q11_creature_visual',
-    category:'animals',
-    type:'visual',
-    weight:1.3,
-    prompt:'<em>A creature emerges from the wood and chooses to walk beside thee. Which one?</em>',
-    context:'Trust the one that calls to thee, not the one thou thinkest is right.',
-    answers:[
-      {label:'The Stag',visualSrc:'assets/quiz/creature-stag.jpg',scores:{aurora:3,raya:2,mulan:1,ariel:-1}},
-      {label:'The Wolf',visualSrc:'assets/quiz/creature-wolf.jpg',scores:{mulan:3,raya:3,jasmine:1,'snow-white':-2,cinderella:-2}},
-      {label:'The Swan',visualSrc:'assets/quiz/creature-swan.jpg',scores:{cinderella:3,'snow-white':2,aurora:1,raya:-1}},
-      {label:'The Fox',visualSrc:'assets/quiz/creature-fox.jpg',scores:{jasmine:3,ariel:2,rapunzel:2,aurora:-1}},
-    ]
-  },
-  // ─── Q12 — Friendship: knowing a true friend (TIANA primary) ───
-  {
-    id:'q12_true_friend',
-    category:'friendship',
-    type:'multipleChoice',
-    weight:1.4,
-    prompt:'<em>How dost thou know thou hast made a true friend, <span class="name">{name}</span>?</em>',
-    answers:[
-      {text:'They show up when I need them, even unasked',scores:{tiana:4,mulan:3,cinderella:2,jasmine:-1}},
-      {text:'They tell me the truth, even when it is hard',scores:{raya:4,mulan:2,belle:2,'snow-white':-2}},
-      {text:'They make me laugh when I forget how',scores:{rapunzel:3,ariel:3,'snow-white':2,raya:-1}},
-      {text:'They love what is strange in me',scores:{belle:3,jasmine:2,elsa:2,cinderella:-1}},
-    ]
-  },
-  // ─── Q13 — Fun: when joy bubbles up (ARIEL/RAPUNZEL primary) ───
-  {
-    id:'q13_joy_bubbles',
-    category:'fun',
-    type:'multipleChoice',
-    weight:1.2,
-    prompt:'<em>When joy bubbles up inside thee, what dost thou do?</em>',
-    answers:[
-      {text:'I sing — sometimes loudly, sometimes only to myself',scores:{ariel:4,'snow-white':2,rapunzel:1,raya:-2}},
-      {text:'I dance, or move, or twirl',scores:{rapunzel:4,cinderella:2,aurora:1,elsa:-2}},
-      {text:'I run to share it with someone',scores:{moana:3,tiana:2,'snow-white':2,elsa:-2,raya:-1}},
-      {text:'I hold it inside, like something precious',scores:{elsa:3,aurora:2,belle:1,ariel:-2,rapunzel:-1}},
-    ]
-  },
-  // ─── Q14 — Romance: what is love ───
-  {
-    id:'q14_what_is_love',
-    category:'romance',
-    type:'multipleChoice',
-    weight:1.3,
-    prompt:'<em>What is love to thee, <span class="name">{name}</span>?</em>',
-    context:'Not what thou hast been told. What thou knowest.',
-    answers:[
-      {text:'Being seen, truly, by another soul',scores:{belle:4,elsa:2,raya:1,cinderella:-1}},
-      {text:'Building something together that lasts',scores:{tiana:4,mulan:2,aurora:1,ariel:-1}},
-      {text:'An adventure that does not end',scores:{ariel:3,moana:3,jasmine:2,cinderella:-1}},
-      {text:'A quiet promise kept, day after day',scores:{cinderella:3,'snow-white':3,aurora:2,jasmine:-2}},
-    ]
-  },
-  // ─── Q15 — Style: which fabric ───
-  {
-    id:'q15_fabric',
-    category:'style',
-    type:'multipleChoice',
-    weight:1.0,
-    prompt:'<em>What fabric feels most like thee?</em>',
-    answers:[
-      {text:'Silk that catches the light',scores:{cinderella:3,jasmine:2,aurora:2}},
-      {text:'Wool, soft and warm and lived-in',scores:{'snow-white':3,belle:2,tiana:1}},
-      {text:'Velvet, deep and dramatic',scores:{elsa:3,jasmine:1,belle:1}},
-      {text:'Linen, simple and strong',scores:{mulan:3,moana:2,raya:2,tiana:1,cinderella:-1}},
-    ]
-  },
-  // ─── Q16 — Tradeoff: throne or sword (MULAN vs AURORA distinguisher) ───
-  {
-    id:'q16_throne_or_sword',
-    category:'kingdom',
-    type:'tradeoff',
-    weight:1.5,
-    prompt:'<em>Thou canst have one. Choose.</em>',
-    context:'A throne that sits at the heart of a peaceful realm — or a sword that has known war and protected those thou lovest.',
-    answers:[
-      {text:'The throne',scores:{aurora:3,'snow-white':2,cinderella:2,mulan:-2,raya:-2}},
-      {text:'The sword',scores:{mulan:4,raya:3,jasmine:1,aurora:-2,cinderella:-2}},
-    ]
-  },
-  // ─── Q17 — Values: injustice (MULAN/RAYA primary) ───
-  {
-    id:'q17_injustice',
-    category:'values',
-    type:'scenario',
-    weight:1.6,
-    prompt:'<em>Thou seest someone treated unfairly. What is thy first instinct?</em>',
-    answers:[
-      {text:'I step in. Now. The cost will be reckoned later',scores:{mulan:4,raya:3,jasmine:2,'snow-white':-2,aurora:-1}},
-      {text:'I gather others. We are stronger together',scores:{moana:3,tiana:3,belle:1}},
-      {text:'I ask why — there is always a reason',scores:{belle:4,raya:2,jasmine:1,'snow-white':-1}},
-      {text:'I find the one who suffers and stand beside them',scores:{'snow-white':3,cinderella:3,aurora:2,jasmine:-1}},
-    ]
-  },
-  // ─── Q18 — Tradeoff: known and safe vs unknown and free (JASMINE/MOANA) ───
-  {
-    id:'q18_safe_or_free',
-    category:'personality',
-    type:'tradeoff',
-    weight:1.6,
-    prompt:'<em>Choose thy path.</em>',
-    context:'A life that is known and safe and beloved — or a life that is unknown and free and uncertain.',
-    answers:[
-      {text:'Known and safe and beloved',scores:{cinderella:3,'snow-white':3,aurora:3,jasmine:-3,moana:-3,ariel:-2}},
-      {text:'Unknown and free and uncertain',scores:{jasmine:4,moana:4,ariel:3,rapunzel:2,'snow-white':-2,cinderella:-2}},
-    ]
-  },
-  // ─── Q19 — Visual: which throne ───
-  {
-    id:'q19_throne_visual',
-    category:'kingdom',
-    type:'visual',
-    weight:1.4,
-    prompt:'<em>Four thrones await. Which is thine?</em>',
-    answers:[
-      {label:'The Throne of Ivy',visualSrc:'assets/quiz/throne-ivy.jpg',scores:{aurora:3,rapunzel:2,'snow-white':1,elsa:-1}},
-      {label:'The Throne of Stars',visualSrc:'assets/quiz/throne-stars.jpg',scores:{jasmine:4,elsa:2,moana:1,tiana:-1}},
-      {label:'The Throne of Coral',visualSrc:'assets/quiz/throne-coral.jpg',scores:{ariel:4,moana:3,raya:-1}},
-      {label:'The Throne of Iron',visualSrc:'assets/quiz/throne-iron.jpg',scores:{mulan:4,raya:3,cinderella:-2,'snow-white':-2}},
-    ]
-  },
-  // ─── Q20 — Callback OR fallback (uses sea tag if she chose ocean door) ───
-  {
-    id:'q20_sea_callback',
-    category:'magic',
-    type:'multipleChoice',
-    weight:1.3,
-    triggers:{tag:'sea'},  // only show if she chose the sea before
-    prompt:'<em>Thou hast spoken of the sea before, <span class="name">{name}</span>. When thou walkest beside it in thy dreams...</em>',
-    answers:[
-      {text:'I swim toward the horizon',scores:{moana:5,ariel:2,elsa:-2,cinderella:-1}},
-      {text:'I sit upon the shore and listen',scores:{elsa:2,aurora:2,'snow-white':1,moana:-2}},
-      {text:'I gather treasures the waves leave behind',scores:{ariel:5,rapunzel:1,moana:1}},
-      {text:'I follow the path that runs along the cliffs',scores:{belle:2,raya:2,jasmine:1,ariel:-1}},
-    ]
-  },
-  // ─── Q20b — Fallback for those who did NOT choose sea (what she loves to make — TIANA) ───
-  {
-    id:'q20b_make',
-    category:'kingdom',
-    type:'multipleChoice',
-    weight:1.3,
-    triggers:{notTag:'sea'},
-    prompt:'<em>What dost thou love to make with thy hands, <span class="name">{name}</span>?</em>',
-    answers:[
-      {text:'Something that feeds others',scores:{tiana:4,'snow-white':3,cinderella:1}},
-      {text:'Something beautiful — a song, a painting, a poem',scores:{rapunzel:4,ariel:2,belle:1}},
-      {text:'Something useful — a tool, a garment, a thing that lasts',scores:{mulan:3,tiana:2,raya:2}},
-      {text:'Something I have not yet imagined',scores:{belle:3,ariel:2,jasmine:2,rapunzel:1}},
-    ]
-  },
-  // ─── Q21 — Friendship: betrayed once (RAYA primary) ───
-  {
-    id:'q21_betrayed',
-    category:'friendship',
-    type:'scenario',
-    weight:1.5,
-    prompt:'<em>Thou hast been hurt by someone thou trusted. They return, asking for thy trust again. What dost thou do?</em>',
-    answers:[
-      {text:'I give it slowly, with eyes open',scores:{raya:5,mulan:2,belle:1}},
-      {text:'I give it freely. Some things must be risked',scores:{'snow-white':3,cinderella:3,aurora:2,raya:-2,mulan:-1}},
-      {text:'I do not. Once broken, it cannot be the same',scores:{elsa:3,jasmine:2,raya:-2,cinderella:-1}},
-      {text:'I ask them to earn it. Truly earn it',scores:{tiana:3,mulan:2,raya:1}},
-    ]
-  },
-  // ─── Q22 — Fun: laughter alone or shared ───
-  {
-    id:'q22_laughter',
-    category:'fun',
-    type:'multipleChoice',
-    weight:1.2,
-    prompt:'<em>What is the truest laughter to thee?</em>',
-    answers:[
-      {text:'Laughter shared in a crowded room',scores:{tiana:3,'snow-white':2,rapunzel:2,elsa:-2}},
-      {text:'Laughter shared with one beloved soul',scores:{belle:3,cinderella:2,aurora:2,jasmine:-1}},
-      {text:'Laughter alone, at something only I see',scores:{elsa:3,ariel:2,jasmine:1,'snow-white':-1,cinderella:-1}},
-      {text:'Laughter in the wild, with no one watching',scores:{moana:3,mulan:2,raya:1,jasmine:1}},
-    ]
-  },
-  // ─── Q23 — Visual: gardens at midnight ───
-  {
-    id:'q23_garden_visual',
-    category:'magic',
-    type:'visual',
-    weight:1.3,
-    prompt:'<em>Four gardens lie still under moonlight. Which feels like home?</em>',
-    answers:[
-      {label:'The Rose Garden',visualSrc:'assets/quiz/garden-roses.jpg',scores:{aurora:4,'snow-white':2,cinderella:1,raya:-1}},
-      {label:'The Lantern Garden',visualSrc:'assets/quiz/garden-lanterns.jpg',scores:{rapunzel:4,tiana:2,jasmine:1}},
-      {label:'The Wild Garden',visualSrc:'assets/quiz/garden-wild.jpg',scores:{mulan:3,raya:3,moana:2,cinderella:-2}},
-      {label:'The Frozen Garden',visualSrc:'assets/quiz/garden-frozen.jpg',scores:{elsa:4,belle:1,aurora:-1,tiana:-1}},
-    ]
-  },
-  // ─── Q24 — Tradeoff: loved by all vs known by one (CINDERELLA vs BELLE) ───
-  {
-    id:'q24_loved_or_known',
-    category:'romance',
-    type:'tradeoff',
-    weight:1.7,
-    prompt:'<em>One is given thee, not both.</em>',
-    context:'Be loved by all who meet thee — or be known truly by one.',
-    answers:[
-      {text:'Loved by all',scores:{cinderella:3,'snow-white':3,aurora:2,belle:-3,elsa:-2,raya:-2}},
-      {text:'Known truly by one',scores:{belle:5,elsa:3,raya:2,jasmine:1,cinderella:-2,'snow-white':-1}},
-    ]
-  },
-  // ─── Q25 — Closing reflection (high weight, late question) ───
-  {
-    id:'q25_legacy',
-    category:'values',
-    type:'multipleChoice',
-    weight:2.0,
-    prompt:'<em>The mirror asks a final thing of thee, <span class="name">{name}</span>. When thou art remembered, long after thou hast gone — what dost thou hope is said of thee?</em>',
-    context:'There is no wrong answer here. Only thine own.',
-    answers:[
-      {text:'She was kind. She was always kind',scores:{'snow-white':4,cinderella:3,aurora:2,raya:-1}},
-      {text:'She was free. She lived as she chose',scores:{jasmine:4,moana:3,ariel:2,cinderella:-2}},
-      {text:'She was brave. She did not flinch',scores:{mulan:4,raya:3,elsa:1,'snow-white':-1}},
-      {text:'She built things that outlived her',scores:{tiana:5,belle:2,mulan:1,aurora:-1}},
-      {text:'She loved deeply. That was enough',scores:{belle:3,aurora:3,rapunzel:2,cinderella:1,raya:-1}},
-    ]
-  },
-];
-
-// ═══════════════════════════════════════════════
-// MIRROR INTERJECTIONS
-// ═══════════════════════════════════════════════
-// These appear between question groups
-// ═══════════════════════════════════════════════
-// TIEBREAKER QUESTIONS — shown only when top 2 princesses are within 5%
-// One per princess pair. The mirror gives a decisive question.
-// ═══════════════════════════════════════════════
-// Each tiebreaker uses keyed pairs (alphabetical) for lookup.
-// If a pair isn't defined, falls back to GENERIC_TIEBREAKER.
-const TIEBREAKERS = {
-  // Cinderella vs Belle — kindness vs curiosity
-  'belle|cinderella': {
-    prompt:'<em>Both kindness and curiosity live in thee, <span class="name">{name}</span>. The mirror asks one final thing.</em>',
-    context:'Which would thou rather be told?',
-    answers:[
-      {text:'"Thou hast made me feel seen."',scores:{cinderella:10,belle:-3}},
-      {text:'"Thou hast made me see the world anew."',scores:{belle:10,cinderella:-3}},
-    ]
-  },
-  // Belle vs Mulan — wisdom vs courage
-  'belle|mulan': {
-    prompt:'<em>Wisdom and courage both burn within thee, <span class="name">{name}</span>.</em>',
-    context:'When the kingdom calls, which dost thou bring first?',
-    answers:[
-      {text:'My questions',scores:{belle:10,mulan:-3}},
-      {text:'My sword',scores:{mulan:10,belle:-3}},
-    ]
-  },
-  // Mulan vs Raya — duty vs trust
-  'mulan|raya': {
-    prompt:'<em>Two warriors live in thee, <span class="name">{name}</span>.</em>',
-    context:'When the world has wronged those thou lovest, what carries thee forward?',
-    answers:[
-      {text:'The promise I made',scores:{mulan:10,raya:-3}},
-      {text:'The hope it could be made whole again',scores:{raya:10,mulan:-3}},
-    ]
-  },
-  // Jasmine vs Moana — freedom vs purpose
-  'jasmine|moana': {
-    prompt:'<em>The horizon calls thee, <span class="name">{name}</span>. But why dost thou go?</em>',
-    answers:[
-      {text:'Because no one shall tell me where I belong',scores:{jasmine:10,moana:-3}},
-      {text:'Because something out there is calling me home',scores:{moana:10,jasmine:-3}},
-    ]
-  },
-  // Elsa vs Belle — solitude vs solitude-with-books
-  'belle|elsa': {
-    prompt:'<em>Thou art most thyself in stillness, <span class="name">{name}</span>. But what kind?</em>',
-    answers:[
-      {text:'Stillness with a book in my hand',scores:{belle:10,elsa:-3}},
-      {text:'Stillness with nothing but my own breath',scores:{elsa:10,belle:-3}},
-    ]
-  },
-  // Aurora vs Snow White — gentle vs gentle
-  'aurora|snow-white': {
-    prompt:'<em>Both grace and goodness live in thee.</em>',
-    context:'Which feels more like home?',
-    answers:[
-      {text:'A meadow at sunrise',scores:{aurora:10,'snow-white':-3}},
-      {text:'A cottage with friends gathered close',scores:{'snow-white':10,aurora:-3}},
-    ]
-  },
-  // Ariel vs Rapunzel — wonder vs wonder
-  'ariel|rapunzel': {
-    prompt:'<em>The world dazzles thee, <span class="name">{name}</span>.</em>',
-    context:'But which pulls thee more?',
-    answers:[
-      {text:'The world I have not yet seen',scores:{ariel:10,rapunzel:-3}},
-      {text:'The world I might one day make',scores:{rapunzel:10,ariel:-3}},
-    ]
-  },
-  // Tiana vs Mulan — building vs fighting
-  'mulan|tiana': {
-    prompt:'<em>Thou art a builder of things that last, <span class="name">{name}</span>.</em>',
-    context:'But what dost thou build for?',
-    answers:[
-      {text:'A dream that is mine alone to make real',scores:{tiana:10,mulan:-3}},
-      {text:'Those who cannot fight for themselves',scores:{mulan:10,tiana:-3}},
-    ]
-  },
-  // Generic fallback — used for any pair not listed above
-  GENERIC: {
-    prompt:'<em>Two paths shine equally bright in thee, <span class="name">{name}</span>. Let me see one more thing.</em>',
-    context:'Which is more thee?',
-    answers:[
-      {text:'The quiet one. The one no one sees.',scores:{}}, // filled at runtime
-      {text:'The bold one. The one the world remembers.',scores:{}},
-    ]
-  }
-};
-
-// Generic tiebreaker mapping — quiet princess vs bold princess
-const QUIET_PRINCESSES = ['elsa','belle','aurora','snow-white','cinderella','rapunzel'];
-const BOLD_PRINCESSES = ['mulan','raya','moana','jasmine','ariel','tiana'];
-
-const MIRROR_LINES = [
-  {after:5, text:'Interesting... very interesting, <span class="name">{name}</span>.'},
-  {after:10, text:'Thou art beginning to take shape in mine eye.'},
-  {after:15, text:'The mirror sees thee more clearly now.'},
-  {after:20, text:'Almost. Almost, <span class="name">{name}</span>. Hold steady.'},
-];
-
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-const state = {
-  currentIdx: 0,
-  scores: {},  // { elsa: 0, rapunzel: 0, ... }
-  answers: [], // [{questionId, answerIdx?, text?, callbackTag?}]
-  callbackTags: {}, // { sea: true, forest: true }
-  freetextAnswers: {}, // { wish_known: "her words" }
-  startTime: Date.now(),
-};
-PRINCESSES.forEach(p => state.scores[p] = 0);
-
-// ═══════════════════════════════════════════════
-// STARFIELD
-// ═══════════════════════════════════════════════
-(function(){
-  const c=document.getElementById('starfield'),ctx=c.getContext('2d');
-  let stars=[];
-  function resize(){c.width=innerWidth;c.height=innerHeight;stars=[];for(let i=0;i<200;i++)stars.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.4+0.3,speed:Math.random()*0.25+0.05,opacity:Math.random()*0.55+0.1,phase:Math.random()*Math.PI*2});}
-  function draw(){ctx.clearRect(0,0,c.width,c.height);const t=Date.now()/1000;stars.forEach(s=>{const op=s.opacity*(0.5+0.5*Math.sin(t*s.speed*4+s.phase));ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${op})`;ctx.fill();});requestAnimationFrame(draw);}
-  window.addEventListener('resize',resize);resize();draw();
-})();
-
-// ═══════════════════════════════════════════════
-// INTRO
-// ═══════════════════════════════════════════════
-function showIntro(){
-  // Detect retake — does she have prior history?
-  let priorHistory = [];
-  try{
-    priorHistory = JSON.parse(localStorage.getItem('quizHistory') || '[]');
-  }catch(e){}
-
-  const isRetake = priorHistory.length > 0;
-  state.isRetake = isRetake;
-
-  const nameEl = document.getElementById('intro-greeting-name');
-  const greet1 = document.getElementById('intro-greeting-1');
-  const greet2 = document.getElementById('intro-greeting-2');
-  const ctaEl = document.getElementById('intro-cta');
-  const ctaBtn = document.querySelector('#intro-cta button');
-
-  // Make sure all elements start hidden (in case showIntro is called more than once)
-  greet1.classList.remove('visible');
-  nameEl.classList.remove('visible');
-  greet2.classList.remove('visible');
-  ctaEl.classList.remove('visible');
-  ctaEl.style.opacity = '0';
-
-  if(isRetake){
-    // Different intro for retakes — mirror acknowledges her return
-    const lastRun = priorHistory[priorHistory.length - 1];
-    const lastPrincess = lastRun.winner;
-    const lastPrincessName = lastPrincess.split('-').map(s => s.charAt(0).toUpperCase()+s.slice(1)).join(' ');
-
-    greet1.innerHTML = 'I have looked at thee before, <span class="name">' + PRINCESS_NAME + '</span>...';
-    nameEl.textContent = '';
-    nameEl.style.display = 'none';
-
-    if(priorHistory.length === 1){
-      greet2.innerHTML = 'Last we met, I saw <em>' + lastPrincessName + '</em> in thee. Let us look deeper this time.';
-    } else if(priorHistory.length < 5){
-      greet2.innerHTML = 'Thou hast returned. The mirror does not change its mind without reason — but it shall consider.';
-    } else {
-      greet2.innerHTML = 'Many times hast thou looked into me. Each time, the mirror sees what is true at this moment.';
+    // Roman numeral helper for question counter
+    function toRoman(n) {
+      const vals = [1000,900,500,400,100,90,50,40,10,9,5,4,1];
+      const syms = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I'];
+      let out = '';
+      for (let i = 0; i < vals.length; i++) {
+        while (n >= vals[i]) { out += syms[i]; n -= vals[i]; }
+      }
+      return out;
     }
-    if(ctaBtn) ctaBtn.textContent = 'Look Again';
-  } else {
-    // First-visit intro
-    greet1.textContent = 'I have been waiting for thee...';
-    nameEl.textContent = PRINCESS_NAME + ',';
-    nameEl.style.display = '';
-    greet2.textContent = 'Look into me, and let us discover who thou truly art.';
-    if(ctaBtn) ctaBtn.textContent = 'Begin the Mirror\'s Test';
-  }
 
-  // ── DRAMATIC SLOW REVEAL ──
-  // Each line breathes in, the name lands like a coronation, then the button arrives last
-  setTimeout(()=>greet1.classList.add('visible'), 800);
-
-  if(isRetake){
-    // No name display on retake — just two lines + button
-    setTimeout(()=>greet2.classList.add('visible'), 3200);
-    setTimeout(()=>{
-      ctaEl.classList.add('visible');
-      ctaEl.style.opacity = '1';
-      ctaEl.style.display = 'block';
-    }, 5400);
-  } else {
-    // First visit: line 1 → name → line 2 → button
-    setTimeout(()=>nameEl.classList.add('visible'), 2800);
-    setTimeout(()=>greet2.classList.add('visible'), 5000);
-    setTimeout(()=>{
-      ctaEl.classList.add('visible');
-      ctaEl.style.opacity = '1';
-      ctaEl.style.display = 'block';
-    }, 7200);
-  }
-
-  // SAFETY: force CTA visible after 9 seconds no matter what (in case anything stalls)
-  setTimeout(()=>{
-    ctaEl.classList.add('visible');
-    ctaEl.style.opacity = '1';
-    ctaEl.style.display = 'block';
-  }, 9000);
-}
-
-function beginQuiz(){
-  document.getElementById('intro').style.opacity = '0';
-  setTimeout(()=>{
-    document.getElementById('intro').style.display = 'none';
-    showQuestion(0);
-  }, 800);
-}
-
-// ═══════════════════════════════════════════════
-// QUESTION RENDERING
-// ═══════════════════════════════════════════════
-let pendingAnswer = null;
-
-// State to track which interludes have been shown (so we don't loop)
-const shownInterludes = new Set();
-
-function showQuestion(idx){
-  state.currentIdx = idx;
-
-  // Check for interlude — but only if we haven't shown it yet
-  const lineForHere = MIRROR_LINES.find(l => l.after === idx && idx > 0);
-  if(lineForHere && !shownInterludes.has(idx)){
-    shownInterludes.add(idx);
-    speakMirror(lineForHere.text, ()=>showQuestion(idx));
-    return;
-  }
-
-  // Check if quiz is complete
-  if(idx >= QUESTIONS.length){
-    finishQuiz();
-    return;
-  }
-
-  const q = QUESTIONS[idx];
-
-  // Handle conditional triggers — skip questions that don't match her path
-  if(q.triggers){
-    if(q.triggers.tag && !state.callbackTags[q.triggers.tag]){
-      // Question requires a tag she doesn't have — skip
-      showQuestion(idx + 1);
-      return;
+    // Capitalise category id for display
+    function formatCategory(catId) {
+      return catId
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, c => c.toUpperCase());
     }
-    if(q.triggers.notTag && state.callbackTags[q.triggers.notTag]){
-      // Question requires NOT having a tag she has — skip
-      showQuestion(idx + 1);
-      return;
+
+    // Get player name from localStorage (set on index/ceremony page)
+    function getPlayerName() {
+      return localStorage.getItem(PLAYER_NAME_KEY) || 'thee';
     }
-  }
 
-  pendingAnswer = null;
-
-  // Calculate visible question number (excluding skipped triggered questions)
-  let visibleNum = 0;
-  let visibleTotal = 0;
-  for(let i = 0; i < QUESTIONS.length; i++){
-    const tq = QUESTIONS[i];
-    let willShow = true;
-    if(tq.triggers){
-      if(tq.triggers.tag && !state.callbackTags[tq.triggers.tag]) willShow = false;
-      if(tq.triggers.notTag && state.callbackTags[tq.triggers.notTag]) willShow = false;
+    // Personalise prompt text: replace {name} with actual name
+    function personalise(text) {
+      if (!text) return '';
+      const name = getPlayerName();
+      return text.replace(/\{name\}/g, `<span class="name">${name}</span>`);
     }
-    if(willShow){
-      visibleTotal++;
-      if(i <= idx) visibleNum++;
+
+    // ── Render functions ──────────────────────────────
+
+    function renderProgress(state) {
+      const fill   = document.getElementById('progress-fill');
+      const label  = document.getElementById('progress-label');
+      const pct    = Math.round(state.progress * 100);
+      const cur    = Math.min(state.currentIndex + 1, state.sessionLength);
+      const total  = state.sessionLength;
+      fill.style.width = pct + '%';
+      label.textContent = `Question ${cur} of ${total}`;
     }
-  }
-  document.getElementById('q-counter').textContent = `Question ${visibleNum} of ${visibleTotal}`;
 
-  // Hide intro / interlude / show question
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-  document.getElementById('mirror-voice').classList.remove('visible');
+    function renderQuestion(state) {
+      const container = document.getElementById('question-container');
+      const q = state.currentQuestion;
+      if (!q) return;
 
-  // Populate question content
-  // Build category title with optional icon (icon shows if image exists, falls back to text only)
-  const catLabel = q.category.charAt(0).toUpperCase() + q.category.slice(1);
-  const catEl = document.getElementById('q-category');
-  catEl.innerHTML = '<img class="category-icon" src="assets/quiz/icon-' + q.category + '.png" alt="" onerror="this.style.display=\'none\'"><span>✦ ' + catLabel + ' ✦</span>';
-  document.getElementById('q-prompt').innerHTML = q.prompt.replace(/{name}/g, PRINCESS_NAME);
-  document.getElementById('q-context').textContent = q.context || '';
-  document.getElementById('q-context').style.display = q.context ? 'block' : 'none';
+      const isVisual   = q.type === 'visual';
+      const isFreetext = q.type === 'freetext';
+      const isTrade    = q.type === 'tradeoff';
+      const isHurt     = q.type === 'hurt';
+      const isScenario = q.type === 'scenario';
+      const isDream    = q.type === 'dream';
 
-  const answersEl = document.getElementById('q-answers');
-  answersEl.innerHTML = '';
+      let typeLabelText = '';
+      if (isTrade)    typeLabelText = 'A Choice';
+      if (isHurt)     typeLabelText = 'The Hard Question';
+      if (isScenario) typeLabelText = 'A Scenario';
+      if (isDream)    typeLabelText = 'A Dream';
+      if (isFreetext) typeLabelText = 'In Thine Own Words';
 
-  if(q.type === 'visual'){
-    const grid = document.createElement('div');
-    grid.className = 'visual-grid';
-    q.answers.forEach((a, i) => {
-      const card = document.createElement('div');
-      card.className = 'visual-card placeholder';
-      card.innerHTML = `<img src="${a.visualSrc}" alt="${a.label}" onload="this.parentElement.classList.remove('placeholder')" onerror="this.style.display='none'"><div class="visual-card-label">${a.label}</div>`;
-      card.addEventListener('click', () => selectAnswer(i, card));
-      grid.appendChild(card);
-    });
-    answersEl.appendChild(grid);
-  } else if(q.type === 'freetext'){
-    // Parchment-styled free-text question
-    const wrap = document.createElement('div');
-    wrap.className = 'free-text-wrap';
-    const prefix = document.createElement('div');
-    prefix.className = 'free-text-prefix';
-    prefix.textContent = '~ Write upon the parchment ~';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'free-text-input';
-    input.placeholder = (q.placeholder || 'Write thy answer').replace('{name}', PRINCESS_NAME);
-    input.maxLength = 200;
-    input.addEventListener('input', () => {
-      pendingAnswer = {text: input.value};
-      document.getElementById('q-next').disabled = input.value.trim().length < 2;
-    });
-    wrap.appendChild(prefix);
-    wrap.appendChild(input);
-    answersEl.appendChild(wrap);
-    setTimeout(() => input.focus(), 400);
-  } else {
-    const list = document.createElement('div');
-    list.className = 'answer-list';
-    q.answers.forEach((a, i) => {
-      const btn = document.createElement('button');
-      btn.className = 'answer-btn';
-      btn.textContent = a.text;
-      btn.addEventListener('click', () => selectAnswer(i, btn));
-      list.appendChild(btn);
-    });
-    answersEl.appendChild(list);
-  }
+      let html = `<div class="question-card">`;
 
-  document.getElementById('q-back').style.display = idx > 0 ? 'inline-block' : 'none';
-  document.getElementById('q-next').disabled = true;
+      // Category badge
+      const catLabel = formatCategory(q._category || q.category || '');
+      if (catLabel) {
+        html += `<div class="category-badge">${catLabel}</div>`;
+      }
 
-  document.getElementById('question-scene').classList.add('active');
-  // Mirror shrinks to top during questions
-  document.getElementById('mirror-stage').classList.remove('large','huge');
-}
+      // Type label
+      if (typeLabelText) {
+        html += `<span class="type-label">${typeLabelText}</span>`;
+      }
 
-function selectAnswer(idx, el){
-  // Remove chosen from all answer buttons and visual cards
-  document.querySelectorAll('.answer-btn').forEach(e => e.classList.remove('chosen'));
-  document.querySelectorAll('.visual-card').forEach(e => e.classList.remove('chosen'));
-  // Add chosen to the clicked element
-  el.classList.add('chosen');
-  pendingAnswer = {answerIdx: idx};
-  document.getElementById('q-next').disabled = false;
-  console.log('Selected answer', idx, 'on', el);
-}
+      // Context (italic secondary prompt)
+      if (q.context) {
+        html += `<p class="question-context">${personalise(q.context)}</p>`;
+      }
 
-function goPrev(){
-  if(state.currentIdx > 0){
-    // Undo last answer's score impact
-    const lastAnswer = state.answers[state.currentIdx - 1];
-    if(lastAnswer && lastAnswer.scoresApplied){
-      Object.entries(lastAnswer.scoresApplied).forEach(([p, s]) => state.scores[p] -= s);
+      // Main prompt
+      html += `<div class="question-prompt">${personalise(q.prompt || '')}</div>`;
+
+      // Visual question: image grid rendered separately
+      if (isVisual) {
+        html += renderVisualGrid(q);
+      }
+
+      html += `</div>`;  // close question-card
+
+      // Answers section (rendered separately for non-visual questions)
+      if (!isVisual) {
+        html += renderAnswers(q, isFreetext);
+      }
+
+      container.innerHTML = html;
+      container.classList.add('fade-in');
+      void container.offsetWidth; // reflow trigger
+      container.classList.remove('fade-in');
+
+      // Attach answer listeners
+      if (isVisual) {
+        attachVisualListeners(q);
+      } else if (isFreetext) {
+        attachFreetextListeners(q);
+      } else {
+        attachAnswerListeners(q);
+      }
     }
-    state.answers.pop();
-    showQuestion(state.currentIdx - 1);
-  }
-}
 
-function goNext(){
-  const q = QUESTIONS[state.currentIdx];
-  const answer = pendingAnswer;
-  if(!answer) return;
+    function renderVisualGrid(q) {
+      let html = `<div class="visual-grid" id="visual-grid">`;
+      const letters = ['A','B','C','D'];
+      q.answers.forEach((ans, i) => {
+        const imgUrl = ans.imageUrl || null;
+        html += `
+          <div class="visual-option" data-index="${i}" role="button" tabindex="0" aria-label="${ans.text || 'Option ' + letters[i]}">
+            ${imgUrl
+              ? `<img src="${imgUrl}" alt="${ans.text || ''}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              : ''
+            }
+            <div class="visual-fallback" ${imgUrl ? 'style="display:none"' : ''}>
+              ${ans.emoji || ['🌿','✨','🌊','⚔️'][i]}
+            </div>
+            <div class="visual-option-label">${ans.text || ''}</div>
+          </div>`;
+      });
+      html += `</div>`;
+      return html;
+    }
 
-  let recordedAnswer = {questionId: q.id, type: q.type};
+    function renderAnswers(q, isFreetext) {
+      if (isFreetext) {
+        const placeholder = personalise(q.placeholder || 'Write thy truth…');
+        return `
+          <div id="answers-container">
+            <textarea
+              class="freetext-area"
+              id="freetext-input"
+              placeholder="${placeholder}"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+            <button class="freetext-submit" id="freetext-submit">
+              Continue ›
+            </button>
+          </div>`;
+      }
 
-  if(q.type === 'freetext'){
-    const text = answer.text.trim();
-    state.freetextAnswers[q.freetextTag] = text;
-    recordedAnswer.text = text;
-    recordedAnswer.tag = q.freetextTag;
-  } else {
-    const chosen = q.answers[answer.answerIdx];
-    recordedAnswer.answerIdx = answer.answerIdx;
-    recordedAnswer.answerText = chosen.text || chosen.label;
+      const letters = ['A','B','C','D'];
+      let html = `<div id="answers-container">`;
+      q.answers.forEach((ans, i) => {
+        html += `
+          <button class="answer-btn" data-index="${i}">
+            <span class="answer-letter">${letters[i]}</span>
+            ${ans.text || ''}
+          </button>`;
+      });
+      html += `</div>`;
+      return html;
+    }
 
-    // Apply scores (with question weight)
-    const scoresApplied = {};
-    if(chosen.scores){
-      Object.entries(chosen.scores).forEach(([p, s]) => {
-        const weighted = s * q.weight;
-        state.scores[p] = (state.scores[p] || 0) + weighted;
-        scoresApplied[p] = weighted;
+    function attachAnswerListeners(q) {
+      document.querySelectorAll('.answer-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.index);
+          // Visual feedback before advancing
+          btn.classList.add('selected');
+          document.querySelectorAll('.answer-btn').forEach(b => {
+            if (b !== btn) b.style.opacity = '0.5';
+          });
+          setTimeout(() => {
+            engine.answer(idx);
+          }, 280);
+        });
       });
     }
-    recordedAnswer.scoresApplied = scoresApplied;
 
-    // Track callback tag
-    if(chosen.callbackTag){
-      state.callbackTags[chosen.callbackTag] = true;
-      recordedAnswer.callbackTag = chosen.callbackTag;
-    }
-  }
+    function attachVisualListeners(q) {
+      document.querySelectorAll('.visual-option').forEach(opt => {
+        const activate = () => {
+          const idx = parseInt(opt.dataset.index);
+          document.querySelectorAll('.visual-option').forEach(o => {
+            o.style.opacity = o === opt ? '1' : '0.5';
+          });
+          opt.classList.add('selected');
+          setTimeout(() => {
+            engine.answer(idx);
+          }, 350);
+        };
 
-  state.answers[state.currentIdx] = recordedAnswer;
-  showQuestion(state.currentIdx + 1);
-}
-
-// ═══════════════════════════════════════════════
-// MIRROR INTERJECTIONS
-// ═══════════════════════════════════════════════
-let interludeContinuation = null;
-function speakMirror(text, onContinue){
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-  document.getElementById('mirror-stage').classList.remove('huge');
-  document.getElementById('mirror-stage').classList.add('large');
-
-  const voice = document.getElementById('mirror-voice');
-  voice.innerHTML = text.replace(/{name}/g, PRINCESS_NAME);
-  voice.classList.add('visible');
-
-  document.getElementById('interlude-scene').classList.add('active');
-  // Show the continue button (with a slight delay so the text reads first)
-  setTimeout(()=>{
-    document.getElementById('interlude-continue-btn').classList.add('visible');
-  }, 1500);
-  interludeContinuation = onContinue;
-}
-
-function continueFromInterlude(){
-  document.getElementById('mirror-voice').classList.remove('visible');
-  document.getElementById('interlude-continue-btn').classList.remove('visible');
-  document.getElementById('mirror-stage').classList.remove('large');
-  if(interludeContinuation){
-    const fn = interludeContinuation;
-    interludeContinuation = null;
-    setTimeout(fn, 600);
-  }
-}
-
-// ═══════════════════════════════════════════════
-// FINISH
-// ═══════════════════════════════════════════════
-function finishQuiz(){
-  // Determine ranking
-  const ranked = PRINCESSES
-    .map(p => ({princess: p, score: state.scores[p]}))
-    .sort((a,b) => b.score - a.score);
-
-  // Check if top 2 are within 5% of each other → trigger tiebreaker
-  const top1 = ranked[0];
-  const top2 = ranked[1];
-  // Only trigger tiebreaker if top1 is positive and within 5% of top1's value (or absolute diff < 2)
-  const range = Math.max(top1.score, 1);
-  const gap = top1.score - top2.score;
-  const isClose = (gap / range < 0.05) || (gap < 2 && top1.score > 0);
-
-  // Don't trigger tiebreaker on retake — keep simple
-  if(isClose && !state.tiebreakerShown){
-    state.tiebreakerShown = true;
-    showTiebreaker(top1.princess, top2.princess);
-    return;
-  }
-
-  finalizeFinish(ranked);
-}
-
-function finalizeFinish(ranked){
-  const winner = ranked[0].princess;
-
-  // Save run to history (analytics)
-  saveToHistory({
-    timestamp: Date.now(),
-    duration: Date.now() - state.startTime,
-    winner: winner,
-    scores: {...state.scores},
-    ranked: ranked,
-    answers: state.answers,
-    freetextAnswers: state.freetextAnswers,
-    callbackTags: {...state.callbackTags},
-    ceremonyName: PRINCESS_NAME,
-    tiebreakerUsed: state.tiebreakerShown || false,
-    isRetake: state.isRetake || false,
-  });
-
-  // Save result for reveal page to consume
-  const quizResult = {
-    winner: winner,
-    scores: state.scores,
-    ranked: ranked.slice(0, 6),
-    callbackTags: state.callbackTags,
-    freetextAnswers: state.freetextAnswers,
-    timestamp: Date.now(),
-  };
-  localStorage.setItem('quizResult', JSON.stringify(quizResult));
-
-  // Reveal transition
-  showRevealTransition(winner);
-}
-
-// ═══════════════════════════════════════════════
-// TIEBREAKER
-// ═══════════════════════════════════════════════
-function showTiebreaker(p1, p2){
-  // Build the lookup key (alphabetical order)
-  const key = [p1, p2].sort().join('|');
-  let tb = TIEBREAKERS[key];
-
-  // Fallback: build a generic tiebreaker between these two
-  if(!tb){
-    const generic = TIEBREAKERS.GENERIC;
-    // Determine which is "quiet" and which is "bold" for generic
-    const p1IsQuiet = QUIET_PRINCESSES.includes(p1);
-    const quietP = p1IsQuiet ? p1 : p2;
-    const boldP = p1IsQuiet ? p2 : p1;
-    tb = {
-      prompt: generic.prompt,
-      context: generic.context,
-      answers: [
-        {text: generic.answers[0].text, scores: {[quietP]: 10, [boldP]: -3}},
-        {text: generic.answers[1].text, scores: {[boldP]: 10, [quietP]: -3}},
-      ]
-    };
-  }
-
-  // Render the tiebreaker as a special question
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-  document.getElementById('mirror-voice').classList.remove('visible');
-  document.getElementById('mirror-stage').classList.remove('huge','large');
-
-  document.getElementById('q-counter').textContent = '✦ The Mirror\'s Decree ✦';
-
-  const tbCatEl = document.getElementById('q-category');
-  tbCatEl.innerHTML = '<img class="category-icon" src="assets/quiz/icon-magic.png" alt="" onerror="this.style.display=\'none\'"><span>✦ The Final Word ✦</span>';
-  document.getElementById('q-prompt').innerHTML = tb.prompt.replace(/{name}/g, PRINCESS_NAME);
-  document.getElementById('q-context').textContent = tb.context || '';
-  document.getElementById('q-context').style.display = tb.context ? 'block' : 'none';
-
-  const answersEl = document.getElementById('q-answers');
-  answersEl.innerHTML = '';
-  const list = document.createElement('div');
-  list.className = 'answer-list';
-  tb.answers.forEach((a, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'answer-btn';
-    btn.textContent = a.text;
-    btn.addEventListener('click', () => selectTiebreaker(i, btn, tb));
-    list.appendChild(btn);
-  });
-  answersEl.appendChild(list);
-
-  // Hide back button (no going back from tiebreaker)
-  document.getElementById('q-back').style.display = 'none';
-  document.getElementById('q-next').disabled = true;
-  document.getElementById('q-next').onclick = () => applyTiebreakerAndFinish(tb);
-
-  document.getElementById('question-scene').classList.add('active');
-}
-
-let pendingTiebreakerIdx = null;
-function selectTiebreaker(idx, el, tb){
-  document.querySelectorAll('.answer-btn').forEach(e => e.classList.remove('chosen'));
-  el.classList.add('chosen');
-  pendingTiebreakerIdx = idx;
-  document.getElementById('q-next').disabled = false;
-}
-
-function applyTiebreakerAndFinish(tb){
-  if(pendingTiebreakerIdx === null) return;
-  const chosen = tb.answers[pendingTiebreakerIdx];
-
-  // Apply tiebreaker scores (with high weight - 2x)
-  Object.entries(chosen.scores).forEach(([p, s]) => {
-    state.scores[p] = (state.scores[p] || 0) + (s * 2);
-  });
-
-  // Re-rank and finish
-  const ranked = PRINCESSES
-    .map(p => ({princess: p, score: state.scores[p]}))
-    .sort((a,b) => b.score - a.score);
-
-  // Reset onclick to normal goNext for any future use
-  document.getElementById('q-next').onclick = goNext;
-
-  finalizeFinish(ranked);
-}
-
-function showRevealTransition(winner){
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-  document.getElementById('mirror-stage').classList.add('huge');
-  document.getElementById('mirror-voice').classList.remove('visible');
-
-  const t = document.getElementById('reveal-transition');
-  t.classList.add('active');
-
-  setTimeout(()=>document.getElementById('reveal-text-1').classList.add('visible'), 600);
-  setTimeout(()=>{
-    document.getElementById('reveal-text-1').classList.remove('visible');
-  }, 3500);
-  setTimeout(()=>{
-    const t2 = document.getElementById('reveal-text-2');
-    t2.innerHTML = `I see thee now, <span style="font-family:'Cormorant Unicase',serif;color:var(--gold-light)">${PRINCESS_NAME}</span>...`;
-    t2.classList.add('visible');
-  }, 4200);
-  setTimeout(()=>{
-    window.location.href = 'reveal.html';
-  }, 7800);
-}
-
-// ═══════════════════════════════════════════════
-// HISTORY / ANALYTICS
-// ═══════════════════════════════════════════════
-function saveToHistory(run){
-  try{
-    const raw = localStorage.getItem('quizHistory');
-    const history = raw ? JSON.parse(raw) : [];
-    history.push(run);
-    if(history.length > 100) history.shift(); // cap at 100 runs
-    localStorage.setItem('quizHistory', JSON.stringify(history));
-  }catch(e){console.warn('Could not save history',e)}
-}
-
-function showHistoryViewer(){
-  let history = [];
-  try{
-    history = JSON.parse(localStorage.getItem('quizHistory') || '[]');
-  }catch(e){}
-
-  const viewer = document.getElementById('history-viewer');
-  viewer.classList.add('active');
-  document.getElementById('intro').style.display = 'none';
-
-  // Summary
-  const summaryEl = document.getElementById('history-summary');
-  if(history.length === 0){
-    summaryEl.innerHTML = '<div class="history-stat">No runs recorded yet.</div>';
-    document.getElementById('history-runs').innerHTML = '';
-    return;
-  }
-  const counts = {};
-  history.forEach(r => counts[r.winner] = (counts[r.winner]||0) + 1);
-  const sorted = Object.entries(counts).sort((a,b) => b[1] - a[1]);
-  const lastRun = history[history.length - 1];
-  const lastDate = new Date(lastRun.timestamp);
-
-  summaryEl.innerHTML = `
-    <div class="history-stat"><strong>Total Runs:</strong> ${history.length}</div>
-    <div class="history-stat"><strong>Last Completion:</strong> ${lastDate.toLocaleDateString()} ${lastDate.toLocaleTimeString()}</div>
-    <div class="history-stat"><strong>Princess Outcomes:</strong><br>${
-      sorted.map(([p,c]) => `&nbsp;&nbsp;${p}: ${c} times (${Math.round(c/history.length*100)}%)`).join('<br>')
-    }</div>
-  `;
-
-  // Recent runs
-  const runsEl = document.getElementById('history-runs');
-  runsEl.innerHTML = '<div class="history-stat" style="margin-top:20px"><strong>Recent Runs (tap to expand):</strong></div>';
-  history.slice().reverse().forEach((r, i) => {
-    const date = new Date(r.timestamp);
-    const div = document.createElement('div');
-    div.className = 'history-run';
-    div.innerHTML = `<span>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</span><span style="color:var(--gold-light);font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.1em">${r.winner.toUpperCase()}</span>`;
-    div.addEventListener('click', () => {
-      const existing = div.nextElementSibling;
-      if(existing && existing.classList.contains('history-detail')){
-        existing.remove();
-      }else{
-        const detail = document.createElement('div');
-        detail.className = 'history-detail';
-        let html = `<strong style="color:var(--gold-light)">Top scores:</strong> ${r.ranked.slice(0,4).map(x=>x.princess+'('+Math.round(x.score)+')').join(', ')}<br><br>`;
-        r.answers.forEach((a, i) => {
-          if(a.type === 'freetext'){
-            html += `<div class="history-q"><strong>Q${i+1}: ${a.tag}</strong><em>"${a.text}"</em></div>`;
-          } else {
-            html += `<div class="history-q"><strong>Q${i+1}:</strong>${a.answerText}</div>`;
-          }
+        opt.addEventListener('click', activate);
+        opt.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
         });
-        detail.innerHTML = html;
-        div.parentNode.insertBefore(detail, div.nextSibling);
+      });
+    }
+
+    function attachFreetextListeners(q) {
+      const input  = document.getElementById('freetext-input');
+      const submit = document.getElementById('freetext-submit');
+
+      const advance = () => {
+        const text = (input.value || '').trim();
+        engine.answerFreetext(text || '—');
+      };
+
+      submit.addEventListener('click', advance);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          advance();
+        }
+      });
+
+      // Auto-focus on mobile is intentionally skipped to avoid keyboard pop
+    }
+
+    function renderNavBar(state) {
+      const backBtn  = document.getElementById('back-btn');
+      const counter  = document.getElementById('question-counter');
+      const cur      = state.currentIndex + 1;
+      const total    = state.sessionLength;
+
+      backBtn.disabled  = state.currentIndex === 0;
+      counter.textContent = `${toRoman(cur)} of ${toRoman(total)}`;
+    }
+
+    function showCompleteScreen(winnerId) {
+      document.getElementById('question-container').style.display = 'none';
+      document.getElementById('nav-bar').style.display = 'none';
+      document.querySelector('.ornamental-divider').style.display = 'none';
+      document.getElementById('progress-container').style.display = 'none';
+
+      const screen = document.getElementById('complete-screen');
+      screen.classList.add('visible');
+
+      const princess = window.PRINCESSES?.[winnerId];
+      if (princess) {
+        screen.querySelector('.complete-subtitle').innerHTML =
+          `<em>Thou art</em> <strong style="color:var(--gold)">${princess.name}</strong>`;
       }
+
+      document.getElementById('reveal-btn').addEventListener('click', () => {
+        window.location.href = `${REVEAL_URL}?princess=${winnerId}`;
+      });
+    }
+
+    // ── State change handler ──────────────────────────
+
+    function onStateChange(state) {
+      if (state.isComplete) {
+        showCompleteScreen(state.result);
+        return;
+      }
+
+      if (!state.currentQuestion) return;
+
+      renderProgress(state);
+      renderQuestion(state);
+      renderNavBar(state);
+    }
+
+    // ── Back button ───────────────────────────────────
+
+    document.getElementById('back-btn').addEventListener('click', () => {
+      engine.back();
     });
-    runsEl.appendChild(div);
-  });
-}
 
-function exportHistory(){
-  try{
-    const data = localStorage.getItem('quizHistory') || '[]';
-    const blob = new Blob([data], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'quiz-history.json'; a.click();
-    URL.revokeObjectURL(url);
-  }catch(e){alert('Export failed: '+e.message)}
-}
+    // ── Boot sequence ─────────────────────────────────
 
-// ═══════════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════════
-const params = new URLSearchParams(window.location.search);
-if(params.get('history') === 'true'){
-  showHistoryViewer();
-}else{
-  showIntro();
-}
+    function boot() {
+      // Validate dependencies
+      if (typeof engine === 'undefined') {
+        console.error('quiz: engine.js not loaded');
+        return;
+      }
+      if (typeof QUESTIONS === 'undefined') {
+        console.error('quiz: questions.js not loaded — QUESTIONS is undefined');
+        // Show a graceful error instead of blank screen
+        document.getElementById('loading-screen').innerHTML =
+          '<div style="color:#c94444;font-family:serif;padding:32px;text-align:center">' +
+          'The mirror is not yet ready.<br><small>questions.js could not be found.</small></div>';
+        return;
+      }
+      if (typeof PRINCESSES === 'undefined') {
+        console.error('quiz: princesses.js not loaded');
+        return;
+      }
 
-// Service worker
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});
-}
-</script>
+      // Initialise engine with question data
+      engine.init(QUESTIONS);
+
+      // Register state change listener
+      engine.onStateChange(onStateChange);
+
+      // Start session — try to resume if one is in progress
+      engine.startSession({ resume: true });
+
+      // Hide loading screen
+      const loadingScreen = document.getElementById('loading-screen');
+      loadingScreen.classList.add('hidden');
+      setTimeout(() => { loadingScreen.style.display = 'none'; }, 600);
+    }
+
+    // Boot when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+  </script>
 </body>
 </html>
