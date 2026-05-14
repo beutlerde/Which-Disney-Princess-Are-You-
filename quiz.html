@@ -812,8 +812,10 @@
 
     function renderAnswers(q, isFreetext) {
       if (isFreetext) {
-        var phText = personalise(q.placeholder || 'Write thy truth\u2026');
-        // Build with DOM to avoid Safari backtick/innerHTML template issues
+        // placeholder must be plain text — strip any HTML from personalise output
+        var rawName = getPlayerName();
+        var phText = (q.placeholder || 'Write thy truth\u2026').replace(/\{name\}/g, rawName);
+        // Build with DOM to avoid Safari innerHTML/template issues
         var wrap = document.createElement('div');
         wrap.id = 'answers-container';
         var ta = document.createElement('textarea');
@@ -842,6 +844,8 @@
               + '</button>';
       });
       html += '</div>';
+      return html;
+    }
       return html;
     }
 
@@ -912,41 +916,9 @@
     }
 
     function showCompleteScreen(winnerId) {
-      document.getElementById('question-container').style.display = 'none';
-      document.getElementById('nav-bar').style.display = 'none';
-      document.querySelector('.ornamental-divider').style.display = 'none';
-      document.getElementById('progress-container').style.display = 'none';
-
-      var screen = document.getElementById('complete-screen');
-      screen.classList.add('visible');
-
-      // Store result so reveal.html can read it
+      // Skip the intermediate screen — go straight to reveal
       try { localStorage.setItem('pq_result', winnerId); } catch(e) {}
-
-      // Populate princess name
-      var princess = window.PRINCESSES && window.PRINCESSES[winnerId];
-      var displayName = princess ? princess.name : winnerId;
-      document.getElementById('reveal-name').textContent = displayName;
-
-      // Update voice line if available
-      if (princess && princess.voiceLine) {
-        document.getElementById('complete-subtitle').textContent = princess.voiceLine;
-      }
-
-      // Light the mirror glow after a short pause
-      setTimeout(function() {
-        document.getElementById('mirror-glow').classList.add('lit');
-      }, 800);
-
-      // Show the button after animations complete (style.display already none, CSS handles opacity)
-      var revealBtn = document.getElementById('reveal-btn');
-      revealBtn.style.display = 'block';
-
-      revealBtn.addEventListener('click', function() {
-        // Bug 4 fix: clear previous result so "look again" picks a fresh princess
-        try { localStorage.removeItem('pq_last_session'); } catch(e) {}
-        window.location.href = REVEAL_URL + '?princess=' + winnerId;
-      });
+      window.location.href = REVEAL_URL + '?princess=' + winnerId;
     }
 
     // ── State change handler ──────────────────────────
