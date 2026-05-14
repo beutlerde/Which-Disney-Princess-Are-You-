@@ -2433,11 +2433,11 @@ values: [
   ],
 
   magic: [
-    { id:'magic_v1_wand', category:'magic', type:'visual', weight:1.5, prompt:'<em>Which magical implement would be thine?</em>', answers:[
-      { text:'An ice wand — cold, precise, terrifyingly beautiful', emoji:'❄️', scores:{ elsa:5, aurora:2, raya:2, mulan:1 } },
-      { text:'A paintbrush that makes whatever it touches real', emoji:'🎨', scores:{ rapunzel:5, belle:3, ariel:3, anna:2 } },
-      { text:'A compass that points to what matters most', emoji:'🧭', scores:{ moana:5, pocahontas:4, ariel:3, merida:2 } },
-      { text:'A sword that knows when it is right to be drawn', emoji:'⚔️', scores:{ mulan:5, raya:5, merida:3, jasmine:2 } }
+    { id:'magic_v1_door', category:'magic', type:'visual', weight:1.5, prompt:'<em>Four doors stand before thee. Which one calls to thee?</em>', answers:[
+      { text:'A library door — warm light, the smell of old books', emoji:'📚', scores:{ belle:4, 'snow-white':1, moana:-1, raya:-1, merida:-1 } },
+      { text:'A forest door — ancient wood, moss, something wild beyond', emoji:'🌿', scores:{ aurora:3, mulan:2, raya:2, merida:3, pocahontas:2, cinderella:-1 } },
+      { text:'An ocean door — salt air, the sound of waves, endless horizon', emoji:'🌊', scores:{ moana:4, ariel:3, pocahontas:1, elsa:-2, 'snow-white':-1 } },
+      { text:'A frozen door — ice and silence and something extraordinary beyond', emoji:'❄️', scores:{ elsa:4, jasmine:1, anna:1, tiana:-1, aurora:-2 } }
     ]},
     { id:'magic_v2_spell', category:'magic', type:'visual', weight:1.4, prompt:'<em>What spell wouldst thou cast first?</em>', answers:[
       { text:'A spell of understanding — to know the heart of things', emoji:'💡', scores:{ belle:5, pocahontas:4, elsa:3, aurora:2 } },

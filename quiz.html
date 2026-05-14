@@ -790,23 +790,23 @@
     }
 
     function renderVisualGrid(q) {
-      let html = `<div class="visual-grid" id="visual-grid">`;
-      const letters = ['A','B','C','D'];
-      q.answers.forEach((ans, i) => {
-        const imgUrl = ans.imageUrl || null;
-        html += `
-          <div class="visual-option" data-index="${i}" role="button" tabindex="0" aria-label="${ans.text || 'Option ' + letters[i]}">
-            ${imgUrl
-              ? `<img src="${imgUrl}" alt="${ans.text || ''}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-              : ''
-            }
-            <div class="visual-fallback" ${imgUrl ? 'style="display:none"' : ''}>
-              ${ans.emoji || ['🌿','✨','🌊','⚔️'][i]}
-            </div>
-            <div class="visual-option-label">${ans.text || ''}</div>
-          </div>`;
+      var html = '<div class="visual-grid" id="visual-grid">';
+      var letters = ['A','B','C','D'];
+      q.answers.forEach(function(ans, i) {
+        var imgUrl = ans.imageUrl || null;
+        var fallbackUrl = ans.imageUrlFallback || null;
+        var onerrorHandler = fallbackUrl
+          ? 'this.src=\'' + fallbackUrl + '\';this.onerror=function(){this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'}'
+          : 'this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'';
+        html += '<div class="visual-option" data-index="' + i + '" role="button" tabindex="0" aria-label="' + (ans.text || 'Option ' + letters[i]) + '">'
+          + (imgUrl ? '<img src="' + imgUrl + '" alt="' + (ans.text || '') + '" loading="lazy" onerror="' + onerrorHandler + '">' : '')
+          + '<div class="visual-fallback"' + (imgUrl ? ' style="display:none"' : '') + '>'
+          + (ans.emoji || ['🌿','✨','🌊','⚔️'][i])
+          + '</div>'
+          + '<div class="visual-option-label">' + (ans.text || '') + '</div>'
+          + '</div>';
       });
-      html += `</div>`;
+      html += '</div>';
       return html;
     }
 
@@ -966,12 +966,23 @@
       // Inject image URLs for all visual questions
       (function injectImageUrls() {
         var letters = ['a', 'b', 'c', 'd'];
+        // Map plural category names to their singular fallback (for misnamed image files)
+        var singularFallback = {
+          'fairytales': 'fairytale',
+          'stories': 'story'
+        };
         Object.keys(QUESTIONS).forEach(function(cat) {
           QUESTIONS[cat].forEach(function(q) {
             if (q.type === 'visual') {
               var base = q.id.match(/(\w+_v\d+)/)[1];
+              var singular = singularFallback[cat];
               q.answers.forEach(function(ans, i) {
                 ans.imageUrl = './assets/quiz/' + base + '_' + letters[i] + '.jpg';
+                // Fallback for files saved with singular category name
+                if (singular) {
+                  var singularBase = base.replace(cat, singular);
+                  ans.imageUrlFallback = './assets/quiz/' + singularBase + '_' + letters[i] + '.jpg';
+                }
               });
             }
           });
@@ -982,6 +993,14 @@
       engine.init(QUESTIONS);
 
       // Register state change listener
+      // Read player name from ceremony and save to expected key
+      try {
+        var ceremony = JSON.parse(localStorage.getItem('royalCeremony') || 'null');
+        if (ceremony && ceremony.name) {
+          localStorage.setItem('pq_player_name', ceremony.name);
+        }
+      } catch(e) {}
+
       engine.onStateChange(onStateChange);
 
       // Start session — try to resume if one is in progress
