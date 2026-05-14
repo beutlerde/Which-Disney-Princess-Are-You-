@@ -915,7 +915,10 @@
 
     function showCompleteScreen(winnerId) {
       // Skip the intermediate screen — go straight to reveal
-      try { localStorage.setItem('pq_result', winnerId); } catch(e) {}
+      try {
+        localStorage.setItem('pq_result', winnerId);
+        localStorage.removeItem('pq_scores'); // engine will write fresh scores
+      } catch(e) {}
       window.location.href = REVEAL_URL + '?princess=' + winnerId;
     }
 

@@ -376,6 +376,7 @@ const engine = (() => {
       const finalScores = _calculateScores();
       const winner = _determineWinner(finalScores);
       localStorage.setItem(STORAGE_KEY_LAST_RESULT, winner);
+      localStorage.setItem('pq_scores', JSON.stringify(finalScores));
       _clearSessionFromStorage();
       console.log(`engine: session complete — winner: ${winner}`);
     }
@@ -411,6 +412,7 @@ const engine = (() => {
       const finalScores = _calculateScores();
       const winner = _determineWinner(finalScores);
       localStorage.setItem(STORAGE_KEY_LAST_RESULT, winner);
+      localStorage.setItem('pq_scores', JSON.stringify(finalScores));
       _clearSessionFromStorage();
     }
   }
