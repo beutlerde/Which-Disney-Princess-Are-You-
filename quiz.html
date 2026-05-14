@@ -914,6 +914,21 @@
         return;
       }
 
+      // Inject image URLs for all visual questions
+      (function injectImageUrls() {
+        var letters = ['a', 'b', 'c', 'd'];
+        Object.keys(QUESTIONS).forEach(function(cat) {
+          QUESTIONS[cat].forEach(function(q) {
+            if (q.type === 'visual') {
+              var base = q.id.match(/(\w+_v\d+)/)[1];
+              q.answers.forEach(function(ans, i) {
+                ans.imageUrl = './images/quiz/' + base + '_' + letters[i] + '.jpg';
+              });
+            }
+          });
+        });
+      })();
+
       // Initialise engine with question data
       engine.init(QUESTIONS);
 
