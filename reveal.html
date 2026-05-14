@@ -158,16 +158,17 @@
     position: relative; z-index: 5;
     margin-top: auto; text-align: center;
     padding: 0 20px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
   }
   .you-are {
     font-family: 'Dancing Script', cursive;
     font-style: italic;
     font-size: 30px;
     color: var(--accent);
-    margin-bottom: 8px;
     text-shadow: 0 2px 16px rgba(0,0,0,0.95), 0 0 30px rgba(201, 163, 232, 0.4);
-    opacity: 0;
-    animation: fadeIn 1.5s ease-out 1.2s forwards;
   }
   .princess-name {
     font-family: 'Cormorant Unicase', serif;
@@ -184,23 +185,22 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 4px 20px rgba(212, 175, 55, 0.5));
-    margin-bottom: 12px;
-    opacity: 0;
-    animation: nameReveal 2s ease-out 1.5s forwards;
+    margin-bottom: 4px;
   }
-  @keyframes nameReveal {
-    0%   { opacity: 0; transform: scale(0.92); filter: drop-shadow(0 0 50px rgba(212, 175, 55, 0.9)); }
-    60%  { filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.7)); }
-    100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 4px 20px rgba(212, 175, 55, 0.5)); }
+  .voice-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(14px, 3.5vw, 18px);
+    color: var(--cream);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.5;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.9);
+    padding: 0 12px;
   }
   .scroll-cue {
-    display: block; margin-top: 24px;
+    display: block; margin-top: 8px;
     color: var(--gold); font-size: 28px;
-    opacity: 0; animation: cueFade 2.5s ease-in-out 3s infinite;
-  }
-  @keyframes cueFade {
-    0%, 100% { opacity: 0.3; transform: translateY(0); }
-    50%      { opacity: 0.8; transform: translateY(8px); }
   }
 
   .below {
@@ -364,128 +364,94 @@
 
   .hero { transition: background 0.8s ease; }
 
-  /* ── CEREMONY OVERLAY ─────────────────────────── */
-  #ceremony {
-    position: fixed;
-    inset: 0;
-    z-index: 999;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    pointer-events: all;
-  }
-  #ceremony.done {
-    opacity: 0;
-    transition: opacity 1.2s ease;
-    pointer-events: none;
-  }
+  /* ── REVEAL SEQUENCE ──────────────────────────────
+     Everything is hidden at first via opacity:0
+     CSS animations fire in order driven by delay:
+     0.0s  black screen (the body bg)
+     0.5s  gold rule draws left→right
+     1.4s  title fades up
+     2.0s  "thou art" fades up
+     2.8s  name glows in
+     3.8s  voice line fades up
+     4.8s  second gold rule draws
+     5.8s  portrait emerges from black
+  ────────────────────────────────────────────────── */
 
-  /* Swirling gold smoke canvas sits behind the text */
-  #smoke-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .ceremony-text {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 32px;
-  }
-  .ceremony-label {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 0.4em;
-    color: var(--gold);
-    text-transform: uppercase;
-    opacity: 0;
-    animation: ceremonyFadeIn 1.2s ease 0.4s forwards;
-  }
-  .ceremony-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin: 16px auto;
-    max-width: 260px;
-    opacity: 0;
-    animation: ceremonyFadeIn 1.2s ease 0.8s forwards;
-  }
-  .ceremony-divider-line {
-    flex: 1;
-    height: 1px;
+  /* The two drawing rules */
+  .rule-top, .rule-bottom {
+    position: relative; z-index: 5;
+    width: 0; height: 1px;
     background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto;
+    max-width: 280px;
   }
-  .ceremony-star { color: var(--gold); font-size: 12px; }
-  .ceremony-thinking {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 22px;
-    color: var(--cream);
-    letter-spacing: 0.04em;
+  .rule-top {
+    animation: ruleGrow 1s cubic-bezier(0.4,0,0.2,1) 0.5s forwards;
+  }
+  .rule-bottom {
+    animation: ruleGrow 1s cubic-bezier(0.4,0,0.2,1) 4.8s forwards;
+  }
+  @keyframes ruleGrow {
+    from { width: 0; opacity: 0.3; }
+    to   { width: 280px; opacity: 1; }
+  }
+
+  /* All reveal text blocks start invisible */
+  .preamble-block,
+  .you-are,
+  .princess-name,
+  .voice-line,
+  .portrait-img,
+  .scroll-cue {
     opacity: 0;
-    animation: ceremonyFadeIn 1.5s ease 1.2s forwards;
   }
-  .ceremony-dots {
-    display: inline-block;
-    overflow: hidden;
-    width: 0;
-    animation: dotGrow 2s steps(3, end) 2s infinite;
-    vertical-align: bottom;
+
+  .preamble-block {
+    animation: riseIn 1.2s ease 1.4s forwards;
   }
-  @keyframes dotGrow {
-    0%   { width: 0; }
-    33%  { width: 8px; }
-    66%  { width: 16px; }
-    100% { width: 24px; }
-  }
-  @keyframes ceremonyFadeIn {
-    from { opacity: 0; transform: translateY(6px); }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Gold flash when name is about to reveal */
-  #gold-flash {
-    position: fixed;
-    inset: 0;
-    z-index: 998;
-    background: radial-gradient(ellipse at center, rgba(212,175,55,0.85) 0%, rgba(212,175,55,0.3) 50%, transparent 100%);
-    opacity: 0;
-    pointer-events: none;
+  .you-are {
+    animation: riseIn 1.2s ease 2.0s forwards;
   }
-  #gold-flash.flash {
-    animation: goldFlash 0.8s ease-out forwards;
+
+  .princess-name {
+    animation: nameGlow 2.2s ease 2.8s forwards;
   }
-  @keyframes goldFlash {
+  @keyframes nameGlow {
+    0%   { opacity: 0; transform: translateY(8px) scale(0.96); filter: drop-shadow(0 0 60px rgba(212,175,55,1)); }
+    40%  { opacity: 1; filter: drop-shadow(0 0 40px rgba(212,175,55,0.8)); }
+    100% { opacity: 1; transform: translateY(0) scale(1); filter: drop-shadow(0 4px 20px rgba(212,175,55,0.5)); }
+  }
+
+  .voice-line {
+    animation: riseIn 1.4s ease 3.8s forwards;
+  }
+
+  /* Portrait is the last thing — emerges slowly from black */
+  .portrait-img {
+    animation: portraitEmerge 2.8s ease-out 5.8s forwards;
+  }
+  @keyframes portraitEmerge {
     0%   { opacity: 0; }
-    25%  { opacity: 1; }
-    100% { opacity: 0; }
+    100% { opacity: 1; }
   }
+
+  .scroll-cue {
+    animation: cueFade 2.5s ease-in-out 7s infinite;
+  }
+  @keyframes cueFade {
+    0%, 100% { opacity: 0.3; transform: translateY(0); }
+    50%      { opacity: 0.8; transform: translateY(8px); }
+  }
+
 </style>
 </head>
 <body>
 
-<!-- Ceremony overlay — shown first, then dismissed -->
-<div id="ceremony">
-  <canvas id="smoke-canvas"></canvas>
-  <div class="ceremony-text">
-    <div class="ceremony-label">✦ The Magic Mirror ✦</div>
-    <div class="ceremony-divider">
-      <div class="ceremony-divider-line"></div>
-      <span class="ceremony-star">✦</span>
-      <div class="ceremony-divider-line"></div>
-    </div>
-    <div class="ceremony-thinking">The mirror looks into thee<span class="ceremony-dots">...</span></div>
-  </div>
-</div>
-
-<!-- Gold flash layer -->
-<div id="gold-flash"></div>
 
 <div class="switcher" id="switcher">
   <span class="sw-label">Choose ✦</span>
@@ -498,6 +464,8 @@
   <div class="portrait-overlay"></div>
   <div class="particle-layer" id="particle-layer"></div>
 
+  <div class="rule-top" id="rule-top"></div>
+
   <div class="preamble-block">
     <div class="preamble">✦ The Magic Mirror Speaks ✦</div>
     <div class="flourish">
@@ -508,8 +476,10 @@
   </div>
 
   <div class="name-reveal">
-    <div class="you-are">Guapa, thou art...</div>
+    <div class="you-are" id="you-are">Thou art...</div>
     <h1 class="princess-name" id="princess-name"></h1>
+    <div class="voice-line" id="voice-line"></div>
+    <div class="rule-bottom"></div>
     <div class="scroll-cue">⌄</div>
   </div>
 </section>
@@ -737,15 +707,16 @@ function mockScores(primaryIdx) {
 let currentIdx = 0;
 let particleInterval = null;
 
-function showPrincess(idx, scroll = true) {
+function showPrincess(idx, scroll) {
+  if (scroll === undefined) scroll = true;
   currentIdx = idx;
-  const p = PRINCESSES[idx];
+  var p = PRINCESSES[idx];
 
   // Update switcher
-  document.querySelectorAll('.sw-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  document.querySelectorAll('.sw-btn').forEach(function(b, i) { b.classList.toggle('active', i === idx); });
 
-  // Portrait — try .png → .jpg → .jpeg
-  const img = document.getElementById('portrait-img');
+  // Portrait
+  var img = document.getElementById('portrait-img');
   img.style.animation = 'none';
   img.offsetHeight;
   loadPortraitWithFallback(img, p.id);
@@ -753,36 +724,52 @@ function showPrincess(idx, scroll = true) {
   img.style.animation = '';
 
   // Per-princess theme
-  const hero = document.getElementById('hero');
+  var hero = document.getElementById('hero');
   hero.style.setProperty('--princess-primary', p.primary);
   hero.style.setProperty('--princess-accent', p.accent);
   hero.style.setProperty('--princess-deep', p.deep);
 
   // Name
-  const nameEl = document.getElementById('princess-name');
+  var nameEl = document.getElementById('princess-name');
   nameEl.style.animation = 'none';
   nameEl.offsetHeight;
   nameEl.textContent = p.name;
   nameEl.style.animation = '';
 
+  // Voice line
+  var voiceEl = document.getElementById('voice-line');
+  if (voiceEl) {
+    voiceEl.style.animation = 'none';
+    voiceEl.offsetHeight;
+    voiceEl.textContent = p.voice || '';
+    voiceEl.style.animation = '';
+  }
+
+  // "Thou art" greeting — personalise with quiz name if available
+  var youAreEl = document.getElementById('you-are');
+  if (youAreEl) {
+    var playerName = '';
+    try { playerName = localStorage.getItem('pq_player_name') || ''; } catch(e) {}
+    youAreEl.textContent = playerName ? (playerName + ', thou art\u2026') : 'Thou art\u2026';
+  }
+
   // Below fold
-  document.getElementById('royal-title').textContent = '"' + p.title + '"';
-  const storyEl = document.getElementById('story-body');
-  // Personalize the story with her ceremony name, free-text answer, and quiz choices
-  let personalizedStory = personalizeStory(p.story, p.id);
+  document.getElementById('royal-title').textContent = '\u201c' + p.title + '\u201d';
+  var storyEl = document.getElementById('story-body');
+  var personalizedStory = personalizeStory(p.story, p.id);
   storyEl.innerHTML = '<span class="dropcap">' + personalizedStory[0] + '</span>' + personalizedStory.slice(1);
 
   // Match bars
-  const scores = mockScores(idx);
-  const barsEl = document.getElementById('match-bars');
+  var scores = mockScores(idx);
+  var barsEl = document.getElementById('match-bars');
   barsEl.innerHTML = '';
-  scores.forEach((item, rank) => {
-    const pr = PRINCESSES[item.i];
-    const div = document.createElement('div');
+  scores.forEach(function(item, rank) {
+    var pr = PRINCESSES[item.i];
+    var div = document.createElement('div');
     div.className = 'match' + (rank === 0 ? ' primary' : '');
     div.innerHTML =
       '<div class="match-name">' + pr.name + '</div>' +
-      '<div class="match-bar-wrap"><div class="match-bar" style="width:' + item.s + '%;animation-delay:' + (rank*0.15+0.2) + 's"></div></div>' +
+      '<div class="match-bar-wrap"><div class="match-bar" style="width:' + item.s + '%;animation-delay:' + (rank * 0.15 + 0.2) + 's"></div></div>' +
       '<div class="match-pct">' + item.s + '%</div>';
     barsEl.appendChild(div);
   });
@@ -948,161 +935,6 @@ if(quizResult && quizResult.scores){
 }
 
 showPrincess(initialIdx, false);
-
-// ── CEREMONY ─────────────────────────────────────────
-(function runCeremony() {
-  var canvas = document.getElementById('smoke-canvas');
-  var ctx = canvas.getContext('2d');
-  var W, H;
-  var particles = [];
-  var raf;
-
-  function resize() {
-    W = canvas.width  = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize);
-
-  // Smoke particle factory
-  function makeSmoke() {
-    var angle = Math.random() * Math.PI * 2;
-    var radius = 40 + Math.random() * 80;
-    return {
-      x: W / 2 + Math.cos(angle) * radius * 0.3,
-      y: H / 2 + Math.sin(angle) * radius * 0.3,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: -(0.3 + Math.random() * 0.6),
-      size: 30 + Math.random() * 60,
-      alpha: 0,
-      maxAlpha: 0.12 + Math.random() * 0.18,
-      life: 0,
-      maxLife: 120 + Math.random() * 80,
-      hue: 42 + Math.random() * 16,   // gold hue
-      spin: (Math.random() - 0.5) * 0.02,
-      angle: Math.random() * Math.PI * 2
-    };
-  }
-
-  // Seed initial particles
-  for (var i = 0; i < 60; i++) {
-    var p = makeSmoke();
-    p.life = Math.random() * p.maxLife; // stagger so they don't all appear at once
-    particles.push(p);
-  }
-
-  // Orbiting gold motes
-  var motes = [];
-  for (var m = 0; m < 24; m++) {
-    motes.push({
-      angle: (m / 24) * Math.PI * 2,
-      radius: 60 + Math.random() * 40,
-      speed: 0.003 + Math.random() * 0.005,
-      size: 1.5 + Math.random() * 2.5,
-      alpha: 0.4 + Math.random() * 0.5,
-      phase: Math.random() * Math.PI * 2
-    });
-  }
-
-  var startTime = Date.now();
-
-  function drawFrame() {
-    var elapsed = (Date.now() - startTime) / 1000;
-    ctx.clearRect(0, 0, W, H);
-
-    // Dark vignette
-    var vignette = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, Math.max(W, H) * 0.7);
-    vignette.addColorStop(0, 'rgba(20,10,40,0)');
-    vignette.addColorStop(1, 'rgba(0,0,0,0.85)');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(0, 0, W, H);
-
-    // Smoke
-    particles.forEach(function(p) {
-      p.life++;
-      p.x += p.vx;
-      p.y += p.vy;
-      p.angle += p.spin;
-      p.size += 0.3;
-
-      var progress = p.life / p.maxLife;
-      if (progress < 0.2) {
-        p.alpha = (progress / 0.2) * p.maxAlpha;
-      } else if (progress > 0.7) {
-        p.alpha = ((1 - progress) / 0.3) * p.maxAlpha;
-      } else {
-        p.alpha = p.maxAlpha;
-      }
-
-      if (p.life >= p.maxLife) {
-        // Reset particle
-        var np = makeSmoke();
-        p.x = np.x; p.y = np.y; p.vx = np.vx; p.vy = np.vy;
-        p.size = np.size; p.alpha = 0; p.maxAlpha = np.maxAlpha;
-        p.life = 0; p.maxLife = np.maxLife; p.hue = np.hue;
-        p.spin = np.spin; p.angle = np.angle;
-        return;
-      }
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.angle);
-      var grad = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size);
-      grad.addColorStop(0, 'hsla(' + p.hue + ',70%,60%,' + p.alpha + ')');
-      grad.addColorStop(0.5, 'hsla(' + p.hue + ',50%,40%,' + (p.alpha * 0.5) + ')');
-      grad.addColorStop(1, 'hsla(' + p.hue + ',30%,20%,0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(0, 0, p.size, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    });
-
-    // Central gold glow
-    var glowSize = 80 + Math.sin(elapsed * 1.2) * 20;
-    var glow = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, glowSize);
-    glow.addColorStop(0, 'rgba(212,175,55,0.35)');
-    glow.addColorStop(0.5, 'rgba(212,175,55,0.1)');
-    glow.addColorStop(1, 'rgba(212,175,55,0)');
-    ctx.fillStyle = glow;
-    ctx.fillRect(0, 0, W, H);
-
-    // Orbiting motes
-    motes.forEach(function(mo) {
-      mo.angle += mo.speed;
-      var pulse = 0.5 + 0.5 * Math.sin(elapsed * 2 + mo.phase);
-      var x = W/2 + Math.cos(mo.angle) * mo.radius;
-      var y = H/2 + Math.sin(mo.angle) * mo.radius * 0.6;
-      ctx.globalAlpha = mo.alpha * pulse;
-      ctx.fillStyle = '#d4af37';
-      ctx.beginPath();
-      ctx.arc(x, y, mo.size, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    ctx.globalAlpha = 1;
-
-    raf = requestAnimationFrame(drawFrame);
-  }
-
-  drawFrame();
-
-  // Timing: ceremony runs for 3.8s, then gold flash, then reveal
-  setTimeout(function() {
-    // Gold flash
-    document.getElementById('gold-flash').classList.add('flash');
-
-    setTimeout(function() {
-      // Dismiss ceremony overlay
-      var overlay = document.getElementById('ceremony');
-      overlay.classList.add('done');
-      cancelAnimationFrame(raf);
-
-      setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 1300);
-    }, 400);
-  }, 3800);
-})();
 
 // ── REGISTER SERVICE WORKER ──
 if ('serviceWorker' in navigator) {

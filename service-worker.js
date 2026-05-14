@@ -1,7 +1,7 @@
 // ✦ Royal Cache — The Librarian (v2: ceremony added)
 // Caches all reveal + ceremony assets for offline use.
 
-const CACHE_NAME = 'royal-reveal-v3';
+const CACHE_NAME = 'royal-reveal-v4';
 
 const CORE_ASSETS = [
   './',

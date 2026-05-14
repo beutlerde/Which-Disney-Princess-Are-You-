@@ -914,51 +914,11 @@
     }
 
     function showCompleteScreen(winnerId) {
-      // Save result for reveal.html
       try {
         localStorage.setItem('pq_result', winnerId);
         localStorage.removeItem('pq_scores');
       } catch(e) {}
-
-      // Hide quiz UI
-      document.getElementById('question-container').style.display = 'none';
-      document.getElementById('nav-bar').style.display = 'none';
-      document.querySelector('.ornamental-divider').style.display = 'none';
-      document.getElementById('progress-container').style.display = 'none';
-
-      // Get princess data
-      var princess = window.PRINCESSES && window.PRINCESSES[winnerId];
-      var displayName = princess ? princess.name : winnerId;
-      var voiceLine  = princess ? princess.voice : 'The mirror has spoken.';
-
-      // Populate ceremony elements
-      document.getElementById('reveal-name').textContent = displayName;
-      if (voiceLine) {
-        document.getElementById('complete-subtitle').textContent = voiceLine;
-      }
-
-      // Show the screen — CSS animations handle the staged fade-in sequence:
-      // 0.3s  → "The Mirror Has Spoken" title fades in
-      // 1.2s  → "Thou art / [NAME]" glows in
-      // 2.4s  → voice line fades in
-      // 3.2s  → button fades in
-      var screen = document.getElementById('complete-screen');
-      screen.classList.add('visible');
-
-      // Light the mirror glow
-      setTimeout(function() {
-        document.getElementById('mirror-glow').classList.add('lit');
-      }, 600);
-
-      // Show the button (CSS animation handles opacity, we just need display:block)
-      var btn = document.getElementById('reveal-btn');
-      btn.style.display = 'block';
-
-      // Wire up the button — one click only
-      btn.addEventListener('click', function() {
-        btn.disabled = true;
-        window.location.href = REVEAL_URL + '?princess=' + winnerId;
-      }, { once: true });
+      window.location.href = REVEAL_URL + '?princess=' + winnerId;
     }
 
     // ── State change handler ──────────────────────────
