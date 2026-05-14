@@ -376,9 +376,13 @@ const engine = (() => {
       const finalScores = _calculateScores();
       const winner = _determineWinner(finalScores);
       localStorage.setItem(STORAGE_KEY_LAST_RESULT, winner);
+      // Save full scores AND benched list so reveal.html shows only eligible princesses
       localStorage.setItem('pq_scores', JSON.stringify(finalScores));
+      localStorage.setItem('pq_benched', JSON.stringify(_benchedPrincesses));
+      // Also save in legacy quizResult format so chat.html can read it
+      localStorage.setItem('quizResult', JSON.stringify({ winner: winner, scores: finalScores }));
       _clearSessionFromStorage();
-      console.log(`engine: session complete — winner: ${winner}`);
+      console.log('engine: session complete — winner: ' + winner + ', benched: ' + _benchedPrincesses.join(', '));
     }
   }
 
@@ -413,6 +417,8 @@ const engine = (() => {
       const winner = _determineWinner(finalScores);
       localStorage.setItem(STORAGE_KEY_LAST_RESULT, winner);
       localStorage.setItem('pq_scores', JSON.stringify(finalScores));
+      localStorage.setItem('pq_benched', JSON.stringify(_benchedPrincesses));
+      localStorage.setItem('quizResult', JSON.stringify({ winner: winner, scores: finalScores }));
       _clearSessionFromStorage();
     }
   }

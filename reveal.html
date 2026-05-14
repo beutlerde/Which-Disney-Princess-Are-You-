@@ -505,8 +505,8 @@
   </div>
 
   <div class="cta-group">
-    <button class="btn btn-primary" id="speak-btn" onclick="window.location.href='chat.html'">✦ Speak with <span id="speak-name"></span> ✦</button>
-    <button class="btn" onclick="localStorage.removeItem('pq_result'); localStorage.removeItem('pq_scores'); window.location.href='quiz.html'">✦ Look Into the Mirror Again ✦</button>
+    <button class="btn btn-primary" id="speak-btn" onclick="window.location.href='chat.html?princess=' + (window._revealPrincessId || '')">✦ Speak with <span id="speak-name"></span> ✦</button>
+    <button class="btn" onclick="localStorage.removeItem('pq_result'); localStorage.removeItem('pq_scores'); localStorage.removeItem('pq_benched'); window.location.href='quiz.html'">✦ Look Into the Mirror Again ✦</button>
     <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Return to the Top</button>
   </div>
 </div>
@@ -659,38 +659,55 @@ function personalizeStory(originalStory, princessId) {
 
 // Real match scores from the quiz engine
 function mockScores(primaryIdx) {
-  // Try to load real scores saved by engine.js
   var realScores = null;
+  var benched = [];
   try {
     var raw = localStorage.getItem('pq_scores');
     if (raw) realScores = JSON.parse(raw);
   } catch(e) {}
+  try {
+    var benchRaw = localStorage.getItem('pq_benched');
+    if (benchRaw) benched = JSON.parse(benchRaw);
+  } catch(e) {}
 
   // Also try legacy quizResult format
-  if (!realScores && window._realScores) realScores = window._realScores;
-
-  if (realScores) {
-    var real = PRINCESSES.map(function(p, i) {
-      return { i: i, s: realScores[p.id] || 0 };
-    });
-    // Normalize to 0-100 scale: winner shown as 92-100, lowest as ~15
-    var max = Math.max.apply(null, real.map(function(x) { return x.s; }));
-    var min = Math.min.apply(null, real.map(function(x) { return x.s; }));
-    var range = (max - min) || 1;
-    real.forEach(function(x) {
-      x.s = Math.round(15 + ((x.s - min) / range) * 82);
-    });
-    real.sort(function(a, b) { return b.s - a.s; });
-    // Ensure winner is always first in the list
-    var pIdx = real.findIndex(function(x) { return x.i === primaryIdx; });
-    if (pIdx > 0) {
-      var primary = real.splice(pIdx, 1)[0];
-      real.unshift(primary);
-    }
-    return real.slice(0, 6);
+  if (!realScores) {
+    try {
+      var legacy = JSON.parse(localStorage.getItem('quizResult') || 'null');
+      if (legacy && legacy.scores) realScores = legacy.scores;
+    } catch(e) {}
   }
 
-  // Fallback: random mock (no real quiz data available)
+  if (realScores) {
+    // Only include princesses who were eligible (not benched), except always include winner
+    var winnerPrincess = PRINCESSES[primaryIdx];
+    var eligible = PRINCESSES.map(function(p, i) {
+      return { i: i, id: p.id, s: realScores[p.id] || 0 };
+    }).filter(function(x) {
+      // Always include the winner; exclude benched for everyone else
+      return x.i === primaryIdx || !benched.includes(x.id);
+    });
+
+    // Normalize to 0-100 scale
+    var max = Math.max.apply(null, eligible.map(function(x) { return x.s; }));
+    var min = Math.min.apply(null, eligible.map(function(x) { return x.s; }));
+    var range = (max - min) || 1;
+    eligible.forEach(function(x) {
+      x.s = Math.round(15 + ((x.s - min) / range) * 82);
+    });
+
+    eligible.sort(function(a, b) { return b.s - a.s; });
+
+    // Ensure winner is first
+    var pIdx = eligible.findIndex(function(x) { return x.i === primaryIdx; });
+    if (pIdx > 0) {
+      var primary = eligible.splice(pIdx, 1)[0];
+      eligible.unshift(primary);
+    }
+    return eligible.slice(0, 6);
+  }
+
+  // Fallback: random mock
   var scores = PRINCESSES.map(function(_, i) {
     return i === primaryIdx
       ? 88 + Math.floor(Math.random() * 10)
@@ -711,6 +728,7 @@ function showPrincess(idx, scroll) {
   if (scroll === undefined) scroll = true;
   currentIdx = idx;
   var p = PRINCESSES[idx];
+  window._revealPrincessId = p.id; // used by the Speak With button
 
   // Update switcher
   document.querySelectorAll('.sw-btn').forEach(function(b, i) { b.classList.toggle('active', i === idx); });

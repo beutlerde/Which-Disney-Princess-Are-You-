@@ -521,6 +521,13 @@ function loadCeremony(){
   try{return JSON.parse(localStorage.getItem('royalCeremony') || 'null')}catch(e){return null}
 }
 function loadQuizResult(){
+  // Try new engine format first (plain winner string + separate scores)
+  try {
+    var winner = localStorage.getItem('pq_result');
+    var scores = JSON.parse(localStorage.getItem('pq_scores') || 'null');
+    if (winner) return { winner: winner, scores: scores || {} };
+  } catch(e) {}
+  // Fall back to legacy quizResult JSON object
   try{return JSON.parse(localStorage.getItem('quizResult') || 'null')}catch(e){return null}
 }
 
@@ -539,7 +546,7 @@ const FREETEXT_WISH = (quizResult && quizResult.freetextAnswers && quizResult.fr
 const CHOSE_SEA = !!(quizResult && quizResult.callbackTags && quizResult.callbackTags.sea);
 // Allow forcing a specific princess via URL: ?force=belle (for testing)
 const urlParams = new URLSearchParams(window.location.search);
-const FORCED_PRINCESS = urlParams.get('force');
+const FORCED_PRINCESS = urlParams.get('force') || urlParams.get('princess');
 
 const PRINCESS_ID = FORCED_PRINCESS || (quizResult ? quizResult.winner : null);
 
