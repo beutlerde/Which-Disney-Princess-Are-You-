@@ -372,9 +372,9 @@
      1.4s  title fades up
      2.0s  "thou art" fades up
      2.8s  name glows in
+     2.8s  portrait emerges from black (alongside name)
      3.8s  voice line fades up
      4.8s  second gold rule draws
-     5.8s  portrait emerges from black
   ────────────────────────────────────────────────── */
 
   /* The two drawing rules */
@@ -433,7 +433,7 @@
 
   /* Portrait is the last thing — emerges slowly from black */
   .portrait-img {
-    animation: portraitEmerge 2.8s ease-out 5.8s forwards;
+    animation: portraitEmerge 3.0s ease-out 2.8s forwards;
   }
   @keyframes portraitEmerge {
     0%   { opacity: 0; }
@@ -441,7 +441,7 @@
   }
 
   .scroll-cue {
-    animation: cueFade 2.5s ease-in-out 7s infinite;
+    animation: cueFade 2.5s ease-in-out 5.4s infinite;
   }
   @keyframes cueFade {
     0%, 100% { opacity: 0.3; transform: translateY(0); }

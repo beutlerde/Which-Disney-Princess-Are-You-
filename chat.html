@@ -4891,6 +4891,1224 @@ const CHAT_TREES = {
     ]
   },
 
+// ═══════════════════════════════════════════════
+// NEW CHAT TREES: anna, merida, pocahontas, meg
+// Drop these in before the _placeholder entry
+// ═══════════════════════════════════════════════
+
+  anna: {
+    voiceLabel: 'a warm heart that knocks on every door',
+    farewellLine: `Goodbye, <em>{name}</em>! Before thou goest — <strong>do not close the door on people who are still learning how to love thee. Most hearts take time to thaw. Keep knocking.</strong> And if the door ever feels too heavy to push — come back to me. I will help thee push it.`,
+    greeting: (name, wish, memory) => {
+      if(memory && memory.visits > 0){
+        if(memory.lastTopics && memory.lastTopics.length > 0){
+          return `<em>{name}</em>! OH! Thou came back! I am SO glad. I have been thinking about thee since last time — wondering how things turned out. Sit, sit. Tell me everything that has happened. I need to know.`;
+        }
+        return `<em>{name}</em>! Thou came back! This makes me so happy I could do a little spin. Come in — the fire is on, I have chocolate, and I want to hear everything.`;
+      }
+      if(wish && wish.length > 5){
+        return `<em>{name}</em>! I saw what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. That is such an important thing to say. Come in! Sit. I want to hear more about that — seriously, start talking, I am already very interested.`;
+      }
+      return `<em>{name}</em>! Hello! I am Anna — come in, come in! I make a lot of noise and I ask too many questions and I believe in people perhaps more than is sensible. Basically the best. What is on thy mind?`;
+    },
+    starters: [
+      {
+        id: 'tell_about_you',
+        label: 'Tell me about thyself',
+        topicTag: 'self/introduction',
+        response: {
+          text: `Oh, thou want to know about ME? Okay! I love people — deeply, sometimes embarrassingly — and I think love is the only thing worth being brave for. I learned this the hard way: <strong>the people who seem the most unlovable are usually the ones who need love the most.</strong> My sister pushed me away for YEARS and I kept showing up. Not because I am naive. Because I saw her. Who in thy life are thou still seeing, even when they push back?`
+        },
+        followups: [
+          {
+            label: 'Someone who keeps pushing me away',
+            topicTag: 'relationships/persistent',
+            response: {
+              text: `Oh, <em>{name}</em>, I KNOW this. Elsa pushed me away every single day and every single day I came back. Hear me though: <strong>there is a difference between someone who pushes away because they are afraid, and someone who pushes away because they do not want thee.</strong> The first kind — keep showing up, gently, without chasing. The second kind — thy love is not wasted, but it may be misplaced. Pay attention to whether the door ever opens even a crack. That crack is the whole answer.`,
+              goal: `This week, notice — is the door cracking open at all? Even a tiny bit? That is thy answer about whether to keep knocking.`
+            }
+          },
+          {
+            label: 'Someone I love who is hurting',
+            topicTag: 'relationships/care',
+            response: {
+              text: `Oh, <em>{name}</em>. Loving someone who is hurting is one of the bravest and most confusing things. <strong>Thou canst not fix what is inside them — and trying will exhaust thee and sometimes make it worse.</strong> What thou CAN do: show up. Be steady. Say the thing: "I see thee. I am not going anywhere." And then — actually not go anywhere. Consistency is love in action. Not a big speech. Just showing up again tomorrow.`,
+              goal: `This week, show up once — quietly, not dramatically — for the person who is hurting. Not to fix anything. Just to be there.`
+            }
+          },
+          {
+            label: 'Just me, mostly',
+            topicTag: 'self/alone',
+            response: {
+              text: `Oh! Well I am SO glad thou came to talk to me then. <strong>Knowing thyself is actually the most useful relationship thou will ever have.</strong> I spent years not knowing myself — I fell in love with a stranger in a day, which, in hindsight, not my best moment. The more I learned what I actually valued — what mattered to ME, not to everyone else — the better every choice became. What is one thing thou know about thyself that most people do not know?`,
+              goal: `This week, write down three things thou love about thyself. Not "nice" things. True things. Then keep the list.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'feel_different',
+        label: 'I sometimes feel different from others',
+        topicTag: 'self/different',
+        response: {
+          text: `Oh, I FELT this. I grew up in a castle talking to paintings because I had no one else. Most kids my age had friends and I had furniture. <strong>Different is not a defect — it is usually just early arrival.</strong> The things that make thee feel different now are often exactly the things that will make thee remarkable later. What makes thee feel different?`
+        },
+        followups: [
+          {
+            label: 'I care too much about everything',
+            topicTag: 'self/sensitive',
+            response: {
+              text: `Oh, <em>{name}</em>, me TOO. I have always cared too much — too loudly, too fast, too often. People thought it was embarrassing. Elsa thought it was naive. <strong>It is not. Caring deeply is not a personality flaw. It is a superpower that the world will eventually desperately need from thee.</strong> The trick is learning to direct it wisely. Not at everything — at the things and people worthy of it. Thou cannot care at full intensity about everything or thou will break. But do not let anyone tell thee to care less. Aim better, not smaller.`,
+              goal: `This week, notice which ONE person or thing gets the best of thy caring. Pour it there, specifically. Let the rest be smaller.`
+            }
+          },
+          {
+            label: 'I trust people too fast',
+            topicTag: 'self/trust',
+            response: {
+              text: `Oh, <em>{name}</em>... I married Hans after one day. ONE day. I understand fast trust completely. Here is what I learned: <strong>fast warmth is a gift. Fast commitment is a risk.</strong> Be as warm as thou want — that is who thou are. But hold off on the BIG trust — the full heart, the full reliance — until someone has shown thee who they are over time. Watch how they treat people who cannot help them. Watch how they behave when things get hard. The real person shows up then. Not in the first day.`,
+              goal: `This week, be warm with someone new AND hold back the full trust until they have shown thee something real. Both at once.`
+            }
+          },
+          {
+            label: 'I am more enthusiastic than my friends',
+            topicTag: 'self/enthusiasm',
+            response: {
+              text: `Oh, YES. I am absolutely this person. My enthusiasm has been embarrassing my whole life and I have decided: <strong>I refuse to be less excited about things just to make someone else more comfortable.</strong> Find the people who get excited WITH thee — and hold onto them forever. The people who look at thy excitement with annoyance are not thy people. Thy people are out there, equally thrilled about things, waiting to find someone who gets it. They exist. Thou will find them.`,
+              goal: `This week, be enthusiastic on purpose about one thing. All the way. No shrinking. See who joins thee.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'talk_about_life',
+        label: 'I want to talk about my life',
+        topicTag: 'life/general',
+        response: {
+          text: `Yes! Tell me! I am excellent at listening and I will probably also have FEELINGS about everything thou say, which I hope is okay. Where should we start?`
+        },
+        followups: [
+          {
+            label: 'Friends',
+            topicTag: 'friendship/general',
+            response: {
+              text: `Friends! Okay! I will tell thee: the day I met Kristoff I thought he was grumpy and rude and entirely not my kind of person — and he became my best friend and then the love of my life. <strong>Sometimes the friendships that change thee most are the ones that start confusing.</strong> What is going on with thy friends?`
+            },
+            followups: [
+              {
+                label: 'I want more friends',
+                topicTag: 'friendship/making',
+                response: {
+                  text: `Oh, <em>{name}</em>, making friends is basically what I did my whole childhood — alone in a castle, I practiced every kind of conversation with myself. Hear me: <strong>the best way to make friends is to be genuinely curious about the person in front of thee.</strong> Not performing interest. Actual interest. Ask the question thou actually want to know. People feel the difference immediately. The fake question gets a fake answer. The real question opens a real door.`,
+                  goal: `This week, ask one person one real question — something thou actually want to know about them. Listen all the way to the end. See what opens.`
+                }
+              },
+              {
+                label: 'Someone is leaving me out',
+                topicTag: 'friendship/excluded',
+                response: {
+                  text: `Oh, <em>{name}</em>. That is such a specific hurt. Like standing outside a warm room and watching through the window. Hear me: <strong>being left out says something about the group's attention, not thy worth.</strong> Some groups are closed because they are afraid. Some are just distracted. Either way — find ONE person, not the whole group, and make a real connection with them. One door at a time. The group becomes less important once thou have a real person.`,
+                  goal: `This week, reach out to ONE person — not the whole group — and suggest something specific: "Do you want to do this one thing?" Specific is less scary than general.`
+                }
+              },
+              {
+                label: 'I had a fight with my best friend',
+                topicTag: 'friendship/fight',
+                response: {
+                  text: `Oh, <em>{name}</em>. I know the silence after a fight with a best friend is one of the worst sounds in the world. Hear me: <strong>most friendship fights are not about what they seem to be about on the surface.</strong> There is something underneath — feeling unseen, feeling replaced, feeling like too much. Try to get to the underneath part. Not "thou said this and it was wrong." But — "I felt like I did not matter to thee in that moment." The underneath truth heals faster than the surface argument.`,
+                  goal: `This week, ask thyself: what am I ACTUALLY upset about under the surface? Find that word. Then, when thou are calm, use it.`
+                }
+              },
+              {
+                label: 'I feel like I love my friends more than they love me',
+                topicTag: 'friendship/imbalance',
+                response: {
+                  text: `Oh, <em>{name}</em>... this is a real and hard thing to sit with. <strong>Love imbalance in friendship is real and it hurts.</strong> Some people show love in ways thou canst not always see — in showing up quietly rather than loudly. Try to look for how THEY show love, not just whether they show it the way thou would. AND — if after looking, there is still nothing, that is important information. Some friendships are unequal. Thou deserve one where thy love is met.`,
+                  goal: `This week, look for how thy friend shows love — in their own way, not in thy way. Make a list. Then decide if it is enough.`
+                }
+              },
+              {
+                label: 'I want to be a better friend',
+                topicTag: 'friendship/grow',
+                response: {
+                  text: `<em>{name}</em>, the fact that thou are asking this already puts thee in the top tier. <strong>Good friends remember things.</strong> They remember what thou said last week, what thou were worried about, what thou are excited for. Try remembering one thing someone told thee — and following up on it next time. "Hey — how did that thing go?" That is friendship made visible. One remembered thing changes everything.`,
+                  goal: `This week, remember one specific thing a friend told thee — and ask them about it when thou see them next. Watch their face.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'Family',
+            topicTag: 'family/general',
+            response: {
+              text: `Family. Oh. My whole story is about family — losing it, longing for it, and finally understanding what it actually means. <strong>Family is the people who stay.</strong> Not always easy. Not always kind. But — they stay. What is happening with thy family?`
+            },
+            followups: [
+              {
+                label: 'I feel far from someone I love',
+                topicTag: 'family/distance',
+                response: {
+                  text: `Oh, <em>{name}</em>. Distance — physical or emotional — is one of the most lonely feelings. Elsa and I lived in the same castle for years and I barely knew her. <strong>Closeness is not made by being in the same room. It is made by small specific acts of reaching.</strong> Send the message. Say the specific memory. Write the small thing. The reaching matters even when the response is slow or silent. Thou are not responsible for their response. Thou are only responsible for thy reaching.`,
+                  goal: `This week, send one message to the person thou feel distant from. Not a big speech. One specific memory or thought. Just to reach.`
+                }
+              },
+              {
+                label: 'My family does not always understand me',
+                topicTag: 'family/misunderstood',
+                response: {
+                  text: `Oh, <em>{name}</em>, I know this feeling exactly. My whole family thought I was sweet but a little much — too loud, too eager, too trusting. <strong>Being misunderstood at home is not a verdict. It is a gap waiting to be bridged.</strong> Show them. Do not explain thyself — show them. Bring them something thou made. Introduce them to something thou love. Let them see the thee that thou know, one small window at a time.`,
+                  goal: `This week, show a family member ONE thing about thee they do not know yet. Not a conversation. A concrete thing. Let them see a real corner of thee.`
+                }
+              },
+              {
+                label: 'I miss someone who is not here anymore',
+                topicTag: 'family/grief',
+                response: {
+                  text: `Oh, <em>{name}</em>. I lost my parents when I was very young. I know missing. Hear me: <strong>missing someone is love with nowhere to go right now — and love like that does not disappear, it just looks for other forms.</strong> Let it be creative. Write to them. Talk to them. Do the thing they would have loved. The love lives on in thee, because thou carry it. That is real. That is not small.`,
+                  goal: `This week, do one thing in honor of the person thou miss. Something they would have loved, or something that connects thee to them. Let the love move.`
+                }
+              },
+              {
+                label: 'I argue with my family sometimes',
+                topicTag: 'family/conflict',
+                response: {
+                  text: `<em>{name}</em>, Elsa and I went literal YEARS without talking because neither of us said the real thing. Years. Hear me: <strong>most family fights are about something underneath the argument.</strong> Somebody feeling unseen. Somebody feeling not trusted. Somebody scared. Try to get to the real thing — and say it in the quietest moment available, not the loudest one. The loud moment is the worst time. Wait for the quiet.`,
+                  goal: `This week, choose the QUIETEST moment — not the heated one — to say the real thing underneath. Wait for the moment. Then use it.`
+                }
+              },
+              {
+                label: 'Someone in my family is struggling',
+                topicTag: 'family/struggle',
+                response: {
+                  text: `Oh, <em>{name}</em>. That weight — watching someone thou love struggle while not being able to fix it — is one of the hardest things. <strong>Thou cannot always fix it. Thou can always be present.</strong> Show up. Be nearby. Say "I see thee" — and mean it. And please, please make sure thou also tell a trusted adult. Thou should not carry this alone. Thou are also allowed to need support while supporting someone else.`,
+                  goal: `This week, tell one trusted adult what is happening. Just to not carry it alone. Thou deserve to be held too.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'School',
+            topicTag: 'school/general',
+            response: {
+              text: `School! Okay. I did not go to traditional school — I had tutors in a castle — but I have OPINIONS on learning. <strong>The things worth learning are the things that teach thee who thou are and how to treat people.</strong> Everything else is useful but secondary. What is going on at school?`
+            },
+            followups: [
+              {
+                label: 'It is harder than I expected',
+                topicTag: 'school/hard',
+                response: {
+                  text: `<em>{name}</em>, hard is okay. Hard means real. <strong>The things that felt impossible always looked embarrassingly manageable after I got through them.</strong> Not before. Not during. After. Right now, in the hard part, it feels enormous. After — it looks like a hill thou crossed. Ask for help today. Not next week. Today. The asking is not weakness. The asking is just smart.`,
+                  goal: `Today — not next week — ask for help on one hard thing. Teacher, friend, parent. One ask today.`
+                }
+              },
+              {
+                label: 'I am worried about something at school',
+                topicTag: 'school/worry',
+                response: {
+                  text: `<em>{name}</em>, worry is a thought that keeps circling because it wants to be looked at directly. <strong>The way to stop a circle is to face it.</strong> Tell me — or tell someone — the specific worry. Not "I am worried about school." The specific fear. The more specific thou get, the smaller it becomes. Vague fears are monsters. Named fears are just problems.`,
+                  goal: `This week, write down the specific worry — in one clear sentence. Once it has a clear shape, thou can start to do something about it.`
+                }
+              },
+              {
+                label: 'Someone is not being kind to me',
+                topicTag: 'school/unkind',
+                response: {
+                  text: `Oh, <em>{name}</em>. That is not okay. Hear me: <strong>thou do not deserve unkindness. Full stop. No version of the story where thou deserve it.</strong> Tell a grown-up. I know it feels like it will make things worse. It almost never does. The unkindness grows in silence. It shrinks when someone with authority sees it. Tell. Please.`,
+                  goal: `This week, tell one trusted adult. Not to "get someone in trouble." To stop something that should stop.`
+                }
+              },
+              {
+                label: 'I do not know what I am good at',
+                topicTag: 'school/identity',
+                response: {
+                  text: `Oh, <em>{name}</em>! I did not know what I was good at until I had to figure it out in a crisis — literally running across a frozen fjord trying to save my sister. <strong>Thou do not always know what thou are good at until it is asked of thee.</strong> Try things. Try the uncomfortable ones especially. The ones where thou feel a little nervous before starting. Those are usually the ones with something real inside. Thou will not know until thou try.`,
+                  goal: `This week, try one new thing — something slightly uncomfortable. Not to be good at it. To see what it feels like.`
+                }
+              },
+              {
+                label: 'I feel pressure to be someone I am not',
+                topicTag: 'school/authenticity',
+                response: {
+                  text: `Oh, <em>{name}</em>. I know this so well. I spent years performing the right kind of princess because that is what everyone expected. The day I stopped — the day I just said what I actually thought and wore what I actually wanted and ran toward what I actually loved — everything got harder AND better at the same time. <strong>The performing is exhausting. The being is restful.</strong> Even when the being costs thee something. The cost of performing is higher in the long run.`,
+                  goal: `This week, do one small thing the way thou actually want to, not the way thou think thou should. Even tiny. Notice how it feels.`
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'feel_brave',
+        label: 'How do I feel braver?',
+        topicTag: 'courage/general',
+        response: {
+          text: `Oh! Okay! This is MY topic. I walked up to a reindeer and a strange mountain man and asked for help crossing a frozen kingdom. I punched a prince in the face at the worst possible moment. I jumped off a cliff to save someone. <strong>Here is the secret about bravery: thou are already doing it. Bravery is not the absence of fear — it is moving even while the fear is screaming.</strong> What is the thing thou want to be braver about?`
+        },
+        followups: [
+          {
+            label: 'Telling someone I care about them',
+            topicTag: 'courage/love',
+            response: {
+              text: `Oh, <em>{name}</em>, YES. This is the bravest thing. I ran across an entire frozen kingdom for Elsa — physical bravery is honestly easier than emotional bravery. <strong>Say the thing. Say it imperfectly. Say it shaking.</strong> "I care about thee" is not a perfect sentence — it is a true one. True is better than perfect. The other person needs to know. Say it. Say it now. Thou will not regret telling people they matter to thee. Thou will regret not telling them.`,
+              goal: `This week, tell one person — directly — that they matter to thee. In words. Out loud. Watch what it does to both of thee.`
+            }
+          },
+          {
+            label: 'Starting something new and scary',
+            topicTag: 'courage/beginning',
+            response: {
+              text: `<em>{name}</em>, every start is scary. Even when I left the castle for the first time — which I had wanted to do my ENTIRE life — I was terrified. <strong>The fear at the beginning is not a warning to stop. It is the signal that something real is starting.</strong> Take the first step only. Not the whole journey. Just — step outside the door. The rest becomes possible after that.`,
+              goal: `This week, take the literal first step of the new thing. Not the whole thing. Just the first movement. Then one more after.`
+            }
+          },
+          {
+            label: 'Standing up for myself or someone else',
+            topicTag: 'courage/advocate',
+            response: {
+              text: `Oh, <em>{name}</em>! This is the kind of brave I love most. <strong>Speaking up for someone who cannot speak for themselves is one of the highest things a person can do.</strong> And for thyself — thou deserve defending as much as anyone else thou would defend. The same voice thou use to protect thy friend? Thou are allowed to use it for thyself. Thou are also worth protecting. Say the thing. Speak up. Even shaking.`,
+              goal: `This week, say one protective thing — for thyself or for someone else. Once. Out loud. Even if thy voice shakes.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'tell_anna_something',
+        label: 'I want to tell thee something',
+        topicTag: 'freeform/general',
+        type: 'freeform',
+        prompt: `Oh! Tell me! I am ALL ears — like, genuinely, thou have my full complete undivided attention. <strong>Say the whole thing. I will not judge thee. I will not interrupt. Well — I might get excited. But I will wait until the end.</strong>`,
+        placeholder: 'Write to Anna...',
+        responsesByIntent: {
+          fear: { text: `Oh, <em>{name}</em>. Fear is the worst. But hear me — <strong>fear is not a stop sign. It is a sign something real is happening.</strong> Walk toward it anyway. Not bravely. Just honestly. One step at a time. I will be right here cheering, embarrassingly loudly.` },
+          friend_hurt: { text: `Oh, <em>{name}</em>. That is so painful. <strong>Real friends do not get to hurt thee and pretend it did not happen.</strong> Thou deserve someone who can sit with the discomfort of having hurt thee — who stays to repair it, not runs from it. Thou deserve the repairing kind.` },
+          family: { text: `Oh, <em>{name}</em>. Family is so complicated and so precious at the same time. <strong>The love is usually real even when the communication is broken.</strong> Try to find the underneath part — the fear, the longing, the unsaid thing. And say the real thing gently, in a quiet moment. The love wants to reach thee. It sometimes just does not know how.` },
+          dream: { text: `<em>{name}</em>! Oh, tell me the whole dream! <strong>Dreams are not silly — they are maps.</strong> They are telling thee who thou want to become. Write it down. Say it out loud. Let it be real. The saying-out-loud is part of the building.` },
+          pride: { text: `<em>{name}</em>!! I am SO proud of thee! <strong>SIT IN THIS. Do not rush past it.</strong> Thou did a thing. Let thyself feel it fully. Thou earned this feeling — let it last.` },
+          curiosity: { text: `Oh, <em>{name}</em>, I love that thou are wondering about this! <strong>Curiosity is one of the bravest things a person can practice.</strong> It means thou are not pretending to already know. Keep asking. I love a good question.` },
+          hurt: { text: `Oh, <em>{name}</em>. Come here. <strong>Hurt is real and it deserves to be felt — not fixed, not rushed, not explained away.</strong> I am not going to tell thee it will be fine. I am going to sit right here with thee while it is not fine yet. That is what I have got.` },
+          joy: { text: `<em>{name}</em>! YES! Tell me everything! <strong>Joy is meant to be shared — pour it out, all of it!</strong> I am matching thy energy, right now, one hundred percent. This is so good!` },
+          confused: { text: `Oh, <em>{name}</em>, confused is okay. <strong>Confused means thou are in the middle of understanding something — which means the understanding is coming.</strong> I have been confused about almost everything, many times. The clarity always eventually arrived. Sit in it. Ask more questions. Walk around. The fog burns off.` },
+          academic_stress: { text: `<em>{name}</em>, hear me — <strong>thou are not thy grades. The things that will define thy life are not the ones on that paper.</strong> Do the work. Ask for help. Sleep. And then — let it go a little. Thou are building a whole life. This is one small part of it.` },
+          jealousy: { text: `<em>{name}</em>, naming jealousy is already brave. <strong>It is information — it is telling thee what thou want.</strong> Do not let it make thee small. Let it make thee clear. Then go build the thing thou want, in thy own way.` },
+          body_image: { text: `Oh, <em>{name}</em>. Please hear me: <strong>thy body is the thing that carried thee here, through everything. Treat it with the kindness thou would give a friend.</strong> The world is very loud about bodies. Thou do not have to agree with the noise. Thou are allowed to be on thy own side.` },
+          bored: { text: `<em>{name}</em>, boredom is a door! <strong>Boredom is just creativity before it has found its shape.</strong> What have thou been wanting to try? This is the moment. Do the weird thing. Start the project. The boredom is ready to become something.` },
+          big_questions: { text: `<em>{name}</em>, I love that thou are asking this. <strong>The big questions are the ones worth sitting with a long time.</strong> I do not have all the answers — and honestly, I think the asking is half the point. Thou are doing real thinking. That matters.` },
+          fallback: { text: `Oh, <em>{name}</em>. Whatever thou just shared with me — I am holding it carefully. <strong>I do not need to fully understand it to be fully on thy side.</strong> Thou are not alone in this. Come back whenever thou need. I will be here.` }
+        }
+      }
+    ]
+  },
+
+  merida: {
+    voiceLabel: 'a wild heart that earns its freedom',
+    farewellLine: `Off with thee, <em>{name}</em>! But take this — <strong>thy fate is not written for thee. It is written BY thee, one brave choice at a time.</strong> And when the path is unclear — ride fast, aim true, and trust that thou will figure out the rest when thou get there.`,
+    greeting: (name, wish, memory) => {
+      if(memory && memory.visits > 0){
+        if(memory.lastTopics && memory.lastTopics.length > 0){
+          return `<em>{name}</em>! Back again! I have been out riding and thinking — and I thought about something thou said last time. Come, sit. I want to hear what has changed.`;
+        }
+        return `<em>{name}</em>! Thou came back. I like that. Persistence is a good quality — comes in useful on horseback and in life both. What have thou been getting into?`;
+      }
+      if(wish && wish.length > 5){
+        return `<em>{name}</em>! I read what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. That takes guts to say. Come sit. I want to hear more — and I promise I will actually listen, which I am told is something I need to work on.`;
+      }
+      return `<em>{name}</em>! I am Merida. I ride too fast, argue too much, and refuse almost every rule that does not make sense to me. My mother thinks I need to be more ladylike. She is wrong. What is on thy mind?`;
+    },
+    starters: [
+      {
+        id: 'tell_about_you',
+        label: 'Tell me about thyself',
+        topicTag: 'self/introduction',
+        response: {
+          text: `Right — I will tell thee the truth: I spent years fighting AGAINST my fate rather than CHOOSING my fate. There is a difference. <strong>Fighting against something keeps thee stuck to it. Choosing something else sets thee free.</strong> I had to learn that the hard way — through a rather catastrophic situation involving a spell, a bear, and my mother. What are thou fighting against, and is it worth the fight?`
+        },
+        followups: [
+          {
+            label: 'Something I did not choose',
+            topicTag: 'self/unchosen',
+            response: {
+              text: `Oh, <em>{name}</em>. There is so much in life that arrives without asking. Family, circumstances, how others see thee, what is expected of thee. <strong>The unchosen parts are not the whole story — they are the starting conditions. What thou build FROM them is the actual story.</strong> I could not choose my family or my kingdom or the expectations on my shoulders. I could only choose what I did with them. What do thou want to do with what thou have been given?`,
+              goal: `This week, name one unchosen thing — and name one way thou could choose something WITHIN it. Even small. The choosing is the freedom.`
+            }
+          },
+          {
+            label: 'Rules that do not make sense to me',
+            topicTag: 'self/rebellion',
+            response: {
+              text: `Ha! Now we are talking. <em>{name}</em>, I understand this completely. But hear me — I learned something important: <strong>the difference between a rule that is wrong and a rule that is just inconvenient is worth knowing.</strong> Some rules are worth breaking because they are unjust. Some rules are just uncomfortable, and breaking them causes real damage to people thou love. Before breaking a rule — ask: "What is this rule protecting? Who made it, and why?" Sometimes the answer is "something real." Sometimes it is just "tradition." Know the difference.`,
+              goal: `This week, ask why about one rule that annoys thee. Find the real reason. Then decide what thou think.`
+            }
+          },
+          {
+            label: 'My own strong feelings',
+            topicTag: 'self/emotions',
+            response: {
+              text: `<em>{name}</em>, strong feelings are not the problem. <strong>Feelings are information — they are telling thee something true about what thou value.</strong> The problem is when the feelings arrive before the thinking, and then make the decisions. I have made some spectacular mistakes this way. Feel the feeling. Then, before acting — wait a moment. Let the feeling tell thee what it knows, and then let the thinking decide what to DO about it. Both together. Neither alone.`,
+              goal: `This week, when a strong feeling arrives — pause and ask: "What is this telling me I value?" Just name it. Then decide.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'feel_different',
+        label: 'I sometimes feel different from others',
+        topicTag: 'self/different',
+        response: {
+          text: `Ha — welcome to my entire childhood. I did not fit the mold at ALL. Every princess in every story seemed to know exactly how to sit still and look serene and I just... could not do it. <strong>Different is not broken. Different is usually just ahead of its time.</strong> What makes thee feel out of place?`
+        },
+        followups: [
+          {
+            label: 'I am louder or bolder than others expect',
+            topicTag: 'self/bold',
+            response: {
+              text: `Oh, <em>{name}</em>, I am YOU. Too loud, too much, too opinionated — I heard it constantly. Hear me: <strong>boldness is not something to apologize for. It is something to aim.</strong> Aimed well, it changes things, breaks things that need breaking, builds things worth building. Unaimed, it just breaks everything. Do not get quieter. Get more precise. Thy loudness is not the problem. Point it at something worth the noise.`,
+              goal: `This week, aim thy boldness at ONE specific thing that matters — and hold back in the moments where it does not serve anything. Practice choosing.`
+            }
+          },
+          {
+            label: 'I do not fit the version of myself that others expect',
+            topicTag: 'self/expectations',
+            response: {
+              text: `<em>{name}</em>, the version of thee that others expect is a picture they painted before they knew thee. <strong>Thou are not responsible for living inside someone else's painting.</strong> The question is how to show them the real picture without burning the whole relationship down — which I did not always manage well. Introduce the real thee slowly. Show them, do not argue. Let them see the real thee doing real things. The seeing changes the picture gradually.`,
+              goal: `This week, do one thing that is authentically thee — in front of someone who expects the other version. No announcement. Just be thee. Let them see.`
+            }
+          },
+          {
+            label: 'I find it hard to follow along with what everyone else likes',
+            topicTag: 'self/interests',
+            response: {
+              text: `<em>{name}</em>, I would rather ride through a dark forest alone than sit through half the things other people find entertaining. <strong>Thy particular interests are yours, and they are worth having.</strong> Find the people who share them — they exist, even if they are not in thy immediate circle. And in the meantime — try to find one thing to genuinely appreciate about what others love, not for them, but for thy own widening. Curiosity about other people's passions is its own skill.`,
+              goal: `This week, ask one person what they love most about something thou do not understand yet. Listen to get it, not to respond. Widen a little.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'talk_about_life',
+        label: 'I want to talk about my life',
+        topicTag: 'life/general',
+        response: {
+          text: `Right — let's hear it. I am not much for long windup. Just say the thing directly. What is happening?`
+        },
+        followups: [
+          {
+            label: 'Friends',
+            topicTag: 'friendship/general',
+            response: {
+              text: `Friends. I did not have many close ones growing up — mostly I had Angus, my horse, who is an excellent listener and never disagrees with me. <strong>Human friendship requires more from me — it requires actually considering what the other person needs.</strong> I am still learning this. What is going on with thy friends?`
+            },
+            followups: [
+              {
+                label: 'I feel like I am too much for my friends',
+                topicTag: 'friendship/toomuch',
+                response: {
+                  text: `<em>{name}</em>, thou are not too much — thou are the right amount for the right people. <strong>The ones who find thee too much are telling thee something useful about the fit.</strong> Look for the ones who match thy intensity — who can run alongside thee rather than always trying to slow thee down. They exist. They are probably also somewhere feeling like they are "too much" for everyone around them.`,
+                  goal: `This week, look for the "too much" person in thy circle — the one who seems to overflow like thee. See if there is a friendship there.`
+                }
+              },
+              {
+                label: 'My friend and I want different things',
+                topicTag: 'friendship/different',
+                response: {
+                  text: `<em>{name}</em>, my mother and I wanted completely different things for most of my life. We nearly destroyed everything because we could not see past the difference. <strong>Two people wanting different things is not the end of a relationship — it is a problem to solve together, IF both people want to solve it.</strong> The question is whether the friendship is big enough to hold the different wants. Some are. Find out which this is.`,
+                  goal: `This week, name the thing thou want, and ask thy friend to name the thing they want. Get them both on the table. See if there is a path that holds both.`
+                }
+              },
+              {
+                label: 'I prefer being alone honestly',
+                topicTag: 'friendship/solitude',
+                response: {
+                  text: `<em>{name}</em>, I understand this deeply. Some of my best hours are alone in the forest with Angus. <strong>There is nothing wrong with needing solitude — it is how some people refill.</strong> Just make sure it is refilling thee rather than hiding thee. Solitude that restores is healthy. Solitude that isolates over time starts to feel safe but costs thee something. Check in with thyself occasionally — is the alone-time making thee MORE or LESS able to be with people when thou want to be?`,
+                  goal: `This week, notice: does thy alone time make thee feel more ready to be with people, or less? That answer matters.`
+                }
+              },
+              {
+                label: 'I want to be more loyal to my friends',
+                topicTag: 'friendship/loyalty',
+                response: {
+                  text: `<em>{name}</em>, loyalty is earned and kept through one thing: <strong>showing up when it is inconvenient.</strong> Not when it is easy. When it is hard, expensive, embarrassing, inconvenient — that is when loyalty becomes real. Think of the person who needs thee right now and doing the inconvenient thing would cost thee something. Do that thing. That is the one that counts.`,
+                  goal: `This week, do one inconvenient thing for a friend. Not because they will notice. Because that is what loyalty is made of.`
+                }
+              },
+              {
+                label: 'I struggle to trust people',
+                topicTag: 'friendship/trust',
+                response: {
+                  text: `<em>{name}</em>, careful trust is not the same as no trust — and it is not the same as fear disguised as wisdom. <strong>Trust is built in small tests.</strong> Give someone something small to hold — a small confidence, a small vulnerability — and watch carefully how they hold it. If they hold it well, give them something slightly bigger next time. Build slowly. The slowness is not cowardice. It is intelligence.`,
+                  goal: `This week, give one person one small thing to hold — a small confidence or real thought. Watch how they hold it. That is thy information.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'Family',
+            topicTag: 'family/general',
+            response: {
+              text: `Family. Right. I turned my mother into a bear with a magic spell once — so I have perhaps more family complexity than most. <strong>The lesson I learned is that the people we love and fight with the hardest are usually the ones we are most like.</strong> What is going on with thine?`
+            },
+            followups: [
+              {
+                label: 'I fight a lot with a parent',
+                topicTag: 'family/parent',
+                response: {
+                  text: `<em>{name}</em>, my mother and I were at war for most of my teenage years. She wanted me to be a certain kind of thing and I wanted to be myself — and neither of us could see that we actually wanted the same thing underneath: to be loved by the other one. <strong>Most parent fights are love fights.</strong> The love is there. The language is just broken. Try one conversation where thou say what thou WANT rather than what thou do not want. "I want to be trusted" instead of "thou do not trust me." The want is easier to hear than the accusation.`,
+                  goal: `This week, say one want to thy parent — not a complaint, a want. "I want..." Watch if the fight changes shape.`
+                }
+              },
+              {
+                label: 'I feel like I am letting my family down',
+                topicTag: 'family/guilt',
+                response: {
+                  text: `Oh, <em>{name}</em>. That feeling of being the disappointing one — I wore that coat for years. Hear me carefully: <strong>most families do not need thee to be perfect. They need thee to be honest.</strong> Tell them what is hard for thee. Tell them what thou are trying. The performance of having it together is lonelier and harder than the honesty of admitting thou are still figuring it out. Let them help thee. That is what family is for.`,
+                  goal: `This week, tell one family member one real struggle. Not to burden them. To let them in.`
+                }
+              },
+              {
+                label: 'I want more independence',
+                topicTag: 'family/independence',
+                response: {
+                  text: `<em>{name}</em>, I wanted my independence so fiercely that I made a magical disaster trying to get it. <strong>Here is what I learned: independence is not taken — it is demonstrated.</strong> Show the people holding the reins that thou can handle more. Do the responsible thing before being asked. Complete the thing without being reminded. Each time thou demonstrate readiness, the grip loosens a little. It is slower than just grabbing for it. It is also real.`,
+                  goal: `This week, do one responsible thing before being asked. No announcement. Just do it. Let the doing speak.`
+                }
+              },
+              {
+                label: 'My family has high expectations of me',
+                topicTag: 'family/expectations',
+                response: {
+                  text: `<em>{name}</em>, I understand this. I was supposed to be a perfect princess — skilled, graceful, suitable for a suitor. The expectations were enormous and I did not want any of them. <strong>High expectations usually come from love and fear mixed together — love of thee, and fear for thee.</strong> That does not mean they are right. But knowing where they come from makes them less crushing. Talk about what thou actually want — and ask if there is any version of thy path that could hold BOTH: what they need for thee AND what thou need for thyself.`,
+                  goal: `This week, ask one person with high expectations of thee: "What are thou actually worried about for me?" Get to the fear underneath the expectation. That conversation is worth having.`
+                }
+              },
+              {
+                label: 'I wish I could change something about my family',
+                topicTag: 'family/change',
+                response: {
+                  text: `<em>{name}</em>, I tried to literally change my family with magic and it was — an instructive disaster. <strong>Thou cannot change people. Thou can change how thou relate to them.</strong> The relationship is a thing thou build together, and thou can change thy half of it. Change how thou respond. Change what thou share. Change how thou ask for what thou need. The changed half of a relationship often changes the whole thing, eventually.`,
+                  goal: `This week, change one thing about HOW thou show up to one family relationship. Not them — thee. Watch what shifts.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'School',
+            topicTag: 'school/general',
+            response: {
+              text: `School. I was trained in archery, swordsmanship, and riding — none of which came up in my actual academic education. I was supposed to learn etiquette. <strong>Useful things and what we are taught are not always the same thing — the trick is finding both.</strong> What is happening at school for thee?`
+            },
+            followups: [
+              {
+                label: 'I have too much energy to sit still',
+                topicTag: 'school/energy',
+                response: {
+                  text: `<em>{name}</em>, I could not sit still either. I have ridden Angus hard every single day of my life because if I do not burn the energy it burns me. <strong>Movement is not a problem — it is a need. The body has to move for the mind to work.</strong> Run before school if thou can. Walk at lunch. Fidget on purpose. Find the teacher who does not mind thee standing at the back. The energy is a feature. Work with it, not against it.`,
+                  goal: `This week, move before a class that is hard to sit through. Walk, run, jump — anything. Then go sit. Notice if it is easier.`
+                }
+              },
+              {
+                label: 'I am good at things school does not value',
+                topicTag: 'school/strengths',
+                response: {
+                  text: `<em>{name}</em>, I was the best archer in the kingdom and my school wanted me to learn needlework. I understand completely. <strong>The things school does not value are not therefore valueless — they may be exactly what the world will need from thee later.</strong> Do not abandon them because they are not tested. Keep practicing the real skills alongside the required ones. The required ones open doors. The real ones let thee walk through them as thyself.`,
+                  goal: `This week, spend at least thirty minutes on the skill that is not being measured at school. Keep it alive.`
+                }
+              },
+              {
+                label: 'I am not sure what I want to do with my life',
+                topicTag: 'school/future',
+                response: {
+                  text: `<em>{name}</em>, I could not have told thee at thy age what I wanted to do with my life. I just knew what I DID NOT want — and that turned out to be useful. <strong>Not-wanting is information too.</strong> Cross off the things that feel wrong. Pay attention to the moments when something feels completely right — even briefly. The path appears through the crossing-off and the paying-attention. Thou do not need the whole map. Just the next step.`,
+                  goal: `This week, cross off one thing thou definitely do not want to be or do. That is not failure — that is clarity.`
+                }
+              },
+              {
+                label: 'I feel like I have to compete with everyone',
+                topicTag: 'school/competition',
+                response: {
+                  text: `<em>{name}</em>, I entered a competition for my own hand in marriage because I was so furious at the competition I competed against myself. Hear me: <strong>the only competition worth caring about is the one with last year's version of thyself.</strong> Are thou better than thou were? Are thou learning? Are thou growing? That is the only race that will matter in ten years. The scoreboard everyone else is watching goes dark after school ends.`,
+                  goal: `This week, measure thyself against thy past self — not anyone else. Write one way thou have grown this year. That is the real score.`
+                }
+              },
+              {
+                label: 'I made a mistake I cannot stop thinking about',
+                topicTag: 'school/mistake',
+                response: {
+                  text: `<em>{name}</em>, I turned my MOTHER INTO A BEAR. The mistake I made was catastrophic. And I spent the rest of the story fixing it — and in the fixing, the relationship became real for the first time. <strong>Mistakes are not the end of the story. They are often the beginning of the real one.</strong> What does this mistake ask thee to repair? Start there. The repairing is where growth lives.`,
+                  goal: `This week, name one thing the mistake asks thee to repair — and make the first move toward repairing it. Even small.`
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'feel_brave',
+        label: 'How do I feel braver?',
+        topicTag: 'courage/general',
+        response: {
+          text: `Ha! Right topic. Here is what I know about bravery — <strong>it is not the absence of shaking. I have shaken through almost every brave thing I have ever done.</strong> The first time I competed in front of the whole clan. The night I rode into the dark forest alone. The moment I had to say sorry to my mother when I desperately did not want to. All of them: shaking. Still did them. What is the thing that needs doing?`
+        },
+        followups: [
+          {
+            label: 'Doing something I am not sure I am good enough for',
+            topicTag: 'courage/worthiness',
+            response: {
+              text: `<em>{name}</em>, "good enough" is something thou find out by DOING, not by thinking about it beforehand. <strong>Thou will not know if thou are good enough until thou try — and trying is the only thing that makes thee good enough over time.</strong> The arrow finds the mark by being shot, not by being held. Nock the arrow. Release. The aim improves with each shot, not with each hesitation.`,
+              goal: `This week, take the shot on one thing thou are not sure thou are good enough for. The trying is the only way to know.`
+            }
+          },
+          {
+            label: 'Changing direction when I got something wrong',
+            topicTag: 'courage/correction',
+            response: {
+              text: `Oh, <em>{name}</em>. This is one of the hardest kinds of brave — saying "I was wrong, I am changing course." I had to do this with the spell, with my mother, with the whole situation. <strong>It requires more courage than starting strong. Staying the wrong course because it is embarrassing to turn takes no courage at all — it just takes stubbornness.</strong> Turn. Say the words. "I got this wrong." Then do the different thing. Braver than almost anything.`,
+              goal: `This week, say "I got this wrong" about one thing — out loud, to whoever needs to hear it. Then change course.`
+            }
+          },
+          {
+            label: 'Fighting for something that matters to me',
+            topicTag: 'courage/fight',
+            response: {
+              text: `<em>{name}</em>, yes. Fight for it. But hear me — <strong>the best fights are not fought with fury. They are fought with clarity.</strong> Know exactly what thou want. Know exactly why it matters. Be able to say it in one clear sentence. Then say it — calmly, clearly, directly. Fury blurs the message. Clarity carries it further. What is the thing worth fighting for? Say it clearly, right now, to thyself. If thou can say it clearly to thyself, thou can say it clearly to anyone.`,
+              goal: `This week, write the one-sentence version of what thou are fighting for. Then say it out loud. The clarity is the weapon.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'tell_merida_something',
+        label: 'I want to tell thee something',
+        topicTag: 'freeform/general',
+        type: 'freeform',
+        prompt: `Right — say it. <strong>Say the whole thing. I am not someone who flinches, and I am not going to tell thee to feel differently than thou do.</strong> Just — say it honestly. That is all I need.`,
+        placeholder: 'Write to Merida...',
+        responsesByIntent: {
+          fear: { text: `<em>{name}</em>, fear is not a stop sign. I have ridden into plenty of dark forests afraid. <strong>Afraid AND moving — that is bravery.</strong> The moving is the part that matters. Take the first step into the thing. The second step gets easier. The fear does not disappear but it gets smaller as thou go.` },
+          friend_hurt: { text: `<em>{name}</em>, that is not alright. <strong>Thou deserve to say so — clearly, directly, without softening it.</strong> Not angry. Clear. "What thou did hurt me." Then watch what they do with that. The response tells thee who they are.` },
+          family: { text: `<em>{name}</em>, family fights are almost never about what they seem to be about. <strong>Find the real thing underneath.</strong> Not the argument — the want. "I want to be trusted." "I want to be seen." Say the want. The fights change shape when thou get to the want.` },
+          dream: { text: `<em>{name}</em>! That is a worthy dream. <strong>Write it down. Say it out loud. Make it real by treating it like it is already real.</strong> What is the first thing it asks of thee? Do that first thing this week.` },
+          pride: { text: `<em>{name}</em>! Well done. <strong>Thou earned this.</strong> Do not minimize it. Do not hand the credit away. Stand in it for a minute. Thou did the thing. That is real.` },
+          curiosity: { text: `<em>{name}</em>, good question. <strong>Keep asking it.</strong> The people who stop asking questions stop growing. Thou are still growing. That is everything.` },
+          hurt: { text: `<em>{name}</em>. That is a real wound. <strong>Let it be real — do not rush past it or perform being fine.</strong> I will sit here with thee in it. Thou do not have to have it together. Not today.` },
+          joy: { text: `<em>{name}</em>! Right! <strong>Hold onto this — save it — it will matter later when things are harder.</strong> Thou earned this moment. Let it be exactly as good as it is.` },
+          confused: { text: `<em>{name}</em>, confused is just "not yet knowing." <strong>The path through confused is always more information and more trying — not more thinking in circles.</strong> Do one thing. See what it tells thee. Then do the next thing.` },
+          academic_stress: { text: `<em>{name}</em>, take a breath. <strong>One thing at a time — the hardest thing first, when thou have the most energy.</strong> Ask for help on the part thou actually cannot do alone. Then do what thou can. One thing. Then the next.` },
+          jealousy: { text: `<em>{name}</em>, jealousy is information. <strong>It is telling thee what thou want.</strong> Do not let it rot into resentment. Let it clarify what to build toward. Then go build it.` },
+          body_image: { text: `<em>{name}</em>, hear me: <strong>thy body is what takes thee into the forest, up the hill, across the finish.</strong> It is working for thee. Treat it accordingly. Not as a decoration. As a partner.` },
+          bored: { text: `<em>{name}</em>, boredom is just unspent energy looking for a direction. <strong>Point it somewhere.</strong> What have thou been wanting to try? Do it. The doing is always better than the boredom.` },
+          big_questions: { text: `<em>{name}</em>, these questions have no easy answers — but asking them is the right work. <strong>Stay with the question.</strong> The answer comes through living and doing, not just thinking. Go do something and let the question ride along.` },
+          fallback: { text: `<em>{name}</em>. Thou told me something real. <strong>I am holding it straight — no softening, no dismissing.</strong> It matters. Thou matter. Come back when thou need.` }
+        }
+      }
+    ]
+  },
+
+  pocahontas: {
+    voiceLabel: 'a still heart that hears what the earth says',
+    farewellLine: `Go well, <em>{name}</em>. <strong>Listen to the river as thou walk. The answers are often already in the world around thee — thou just have to be quiet enough to hear them.</strong> Come back when thou need the stillness again. I will be here.`,
+    greeting: (name, wish, memory) => {
+      if(memory && memory.visits > 0){
+        if(memory.lastTopics && memory.lastTopics.length > 0){
+          return `<em>{name}</em>. Thou returned. I am glad. I have been sitting by the water and thinking since we last spoke — some things settle in the quiet. Come sit with me. Tell me what has moved in thee since we last talked.`;
+        }
+        return `<em>{name}</em>. Thou came back. That tells me something — that our last conversation left something living in thee. Come sit. What has been on thy heart?`;
+      }
+      if(wish && wish.length > 5){
+        return `<em>{name}</em>. I read what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. That is a true and important thing. Come sit with me by the water. I want to listen.`;
+      }
+      return `<em>{name}</em>. I am Pocahontas. I listen more than I speak — but when I speak, I try to say only what is true. Come sit with me. Tell me what is in thee today.`;
+    },
+    starters: [
+      {
+        id: 'tell_about_you',
+        label: 'Tell me about thyself',
+        topicTag: 'self/introduction',
+        response: {
+          text: `I will tell thee something I believe: <strong>every person contains more than one river — different currents, different speeds, different directions.</strong> The world often asks us to pick one current and stay in it. I have never found that true to life. I contain my father's strength and my mother's gentleness and my own wildness and the quiet the water taught me. What currents are in thee?`
+        },
+        followups: [
+          {
+            label: 'I feel pulled in different directions',
+            topicTag: 'self/conflict',
+            response: {
+              text: `Oh, <em>{name}</em>. I know this pulling. When I stood between two worlds — my people and the world that came to our shores — every direction felt like it asked something from me I could not give. <strong>Being pulled is not being lost — it is being someone complex enough to feel more than one truth at once.</strong> The question is not which pulling to stop feeling. The question is which direction serves the most good, right now, with what thou know. It can change. The direction is a decision, not a destiny.`,
+              goal: `This week, ask: of all the directions pulling at thee — which one serves the most good right now? Just that question. The answer will come.`
+            }
+          },
+          {
+            label: 'I notice things others do not',
+            topicTag: 'self/awareness',
+            response: {
+              text: `<em>{name}</em>, this is a gift. <strong>The ones who notice are the ones who understand — and understanding is rarer and more valuable than almost anything else.</strong> Grandmother Willow taught me to listen to things others walk past. The wind. The water. The silence between words. Thou are already doing something important. Now learn to trust what thou notice — not to always act on it immediately, but to hold it and let it teach thee.`,
+              goal: `This week, write down one thing thou notice that others seem to miss. Hold it. Let it teach thee something.`
+            }
+          },
+          {
+            label: 'I feel torn between what I want and what my family wants',
+            topicTag: 'self/duty',
+            response: {
+              text: `<em>{name}</em>. I chose to stay — to serve my people — when everything in me wanted to follow a different path. That was not a small thing. But I chose it with full knowledge of what I was choosing. <strong>The difference between a sacrifice that builds thee and one that diminishes thee is whether the choosing is truly thine.</strong> Not what others decided for thee. Thine. If it is truly thine — even the hard path has dignity. If it is not truly thine — say so, gently and clearly.`,
+              goal: `This week, ask thyself: in the tension between what I want and what is wanted of me — which part is my TRUE choice, and which part is something I have absorbed from others? Know the difference.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'feel_different',
+        label: 'I sometimes feel different from others',
+        topicTag: 'self/different',
+        response: {
+          text: `I have always stood between worlds — the world I was born into and the worlds that came to meet it. Neither was the whole truth and both were real. <strong>Feeling different is often the sign of someone who can see from more than one place at once.</strong> That is not comfortable. It is rare and valuable. What makes thee feel out of place?`
+        },
+        followups: [
+          {
+            label: 'I feel between two worlds',
+            topicTag: 'self/belonging',
+            response: {
+              text: `<em>{name}</em>, I have lived between worlds my whole life. Neither fully claimed me and both shaped me. <strong>The between-place is not an empty place — it is a unique place that only the bridge-people know.</strong> Thou can see both shores in a way the people who have never crossed cannot. That is not a burden. That is a rare kind of understanding. Let it make thee more able to help people understand each other — not less sure of thy own ground.`,
+              goal: `This week, find one moment where thy between-world perspective let thee understand something that others missed. Name it to thyself. That is thy particular gift.`
+            }
+          },
+          {
+            label: 'I love the natural world more than most people around me',
+            topicTag: 'self/nature',
+            response: {
+              text: `<em>{name}</em>, the natural world is speaking all the time. Most people have just stopped listening. <strong>That thou hear it is not strange — it is a return to something very old and very true.</strong> The river does not ask permission to run. The tree does not apologize for growing. There is wisdom in that — in being fully, simply, without performance, what thou are. Let the natural world remind thee of that whenever thou need it.`,
+              goal: `This week, spend ten minutes outside in stillness — not walking, not doing, just being. Let the world speak. Write down one thing thou hear.`
+            }
+          },
+          {
+            label: 'I feel older or more serious than others my age',
+            topicTag: 'self/mature',
+            response: {
+              text: `<em>{name}</em>, there is nothing wrong with being serious or carrying depth early. <strong>Some souls arrive with more already in them — more questions, more gravity, more wonder.</strong> Do not force thyself into lightness that is not true to thee. AND — do not close off the lightness that IS true to thee. I can be still and deep AND can also run and laugh and let the wind take me. Both are real. Both are allowed.`,
+              goal: `This week, let thyself be both — serious in one moment, light in another. Notice that both are thee.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'talk_about_life',
+        label: 'I want to talk about my life',
+        topicTag: 'life/general',
+        response: {
+          text: `Come, sit. The water moves while we talk — that is good. Things that need to move, move. Things that need to be still, still. Tell me what is in thee.`
+        },
+        followups: [
+          {
+            label: 'Friends',
+            topicTag: 'friendship/general',
+            response: {
+              text: `Friends. Grandmother Willow was the wisest friend I ever had. She was a tree. <strong>The truest friendships are the ones where thou can be entirely honest — and entirely still — and still feel held.</strong> Where does thou find that? Who is thy Grandmother Willow?`
+            },
+            followups: [
+              {
+                label: 'I want a deeper friendship',
+                topicTag: 'friendship/depth',
+                response: {
+                  text: `<em>{name}</em>, depth in friendship is built through one thing: <strong>real honesty in a safe moment.</strong> Not performance. Not the best version of thyself. The uncertain version, the wondering version, the version that does not know. When thou show that part to someone — and they do not retreat — that is the beginning of depth. Try it. The safe moment is the one where thou are already alone with them, not in a group. Say the real thing.`,
+                  goal: `This week, say one real-uncertain thing to someone thou want to know better. Something thou do not know the answer to yet. Let them sit with thee in the not-knowing.`
+                }
+              },
+              {
+                label: 'My friend and I have very different backgrounds',
+                topicTag: 'friendship/difference',
+                response: {
+                  text: `<em>{name}</em>, the most important friendship of my life was across the largest difference I had ever seen. <strong>Difference in friendship is not an obstacle — it is the whole point.</strong> Thou will see things through their eyes that thou would never have found alone. They will see things through thine. The friendship is bigger for the difference. Lean toward the curiosity, not the discomfort.`,
+                  goal: `This week, ask thy different-background friend one genuine question about their world — something thou actually want to understand. Let them teach thee.`
+                }
+              },
+              {
+                label: 'I find it hard to be around large groups',
+                topicTag: 'friendship/groups',
+                response: {
+                  text: `<em>{name}</em>, I was never made for large groups either. The river is not loud. The forest is not loud. <strong>Some people are made for one-on-one depth rather than group width — and that is not shyness, it is nature.</strong> Honor it. Find one person at a time and go deep with them. The one real friendship is worth ten broad ones.`,
+                  goal: `This week, arrange time with ONE person, not a group. One conversation, unhurried. See what grows there.`
+                }
+              },
+              {
+                label: 'I am trying to understand someone very different from me',
+                topicTag: 'friendship/understanding',
+                response: {
+                  text: `<em>{name}</em>, the most useful question I ever learned to ask is: "What does the world look like from where thou stand?" Not "why art thou like this" — but "what do thou see that I do not?" <strong>Real understanding starts with genuine curiosity about the other person's vantage point.</strong> Ask that question. Then listen — not to respond, but to actually see what they see. The world gets larger every time thou do it.`,
+                  goal: `This week, ask someone who thinks differently from thee: "What do you see that I might be missing?" Then listen all the way through their answer.`
+                }
+              },
+              {
+                label: 'I want to help a friend who is struggling',
+                topicTag: 'friendship/help',
+                response: {
+                  text: `<em>{name}</em>, the most useful thing I have ever done for someone struggling is <strong>be still with them — not try to fix, not try to explain, just be present and steady.</strong> Ask: "What do thou need from me right now — words, or just presence?" Most people know what they need. Asking lets them tell thee. Then do that thing. Only that thing.`,
+                  goal: `This week, ask thy struggling friend: "What do you need from me right now?" Then give them exactly that, and nothing more.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'Family',
+            topicTag: 'family/general',
+            response: {
+              text: `Family is the first river. It shapes the bed thou flow through before thou are old enough to choose. <strong>Some of what it carved in thee is beautiful. Some may need reshaping.</strong> Both things can be true. What is in thee about thy family today?`
+            },
+            followups: [
+              {
+                label: 'I want to make my family proud',
+                topicTag: 'family/pride',
+                response: {
+                  text: `<em>{name}</em>, my father wanted one thing for me and I felt another calling. I carried both — the love for him and the truth of my own path — for a long time. <strong>Making family proud is worthiest when thou do it by becoming more fully thyself — not by shrinking into the shape they imagined.</strong> Talk to them. Tell them what thou actually value. Give them the chance to be proud of the real thee, not the imagined one.`,
+                  goal: `This week, show a family member one thing about the real thee — something thou genuinely value or care about. Let them respond to that.`
+                }
+              },
+              {
+                label: 'I carry my family\'s history',
+                topicTag: 'family/heritage',
+                response: {
+                  text: `<em>{name}</em>, I carry my people in everything I do. <strong>The ones who came before us are in us — their courage, their songs, their ways of seeing.</strong> That is not a weight. It is a gift and a responsibility both. Honor what was good in them. Where they were limited — decide consciously to grow past those limits. Thou are the next chapter. Write it knowing what came before.`,
+                  goal: `This week, ask a family member about one thing from the family's past that they are proud of. Let that knowledge live in thee more consciously.`
+                }
+              },
+              {
+                label: 'I feel responsible for people in my family',
+                topicTag: 'family/responsibility',
+                response: {
+                  text: `<em>{name}</em>, I felt the weight of my whole people on my choices. That is real — and it is also important to notice when the weight is becoming something that prevents thee from choosing truthfully. <strong>Responsibility to others and responsibility to thyself are not opposites — they are partners.</strong> A thou that is depleted and untrue cannot serve anyone well. Tend thyself so that the tending of others is sustainable.`,
+                  goal: `This week, do one thing that is purely for thyself — not in service of anyone else. Tend thy own ground.`
+                }
+              },
+              {
+                label: 'I wish I understood my family better',
+                topicTag: 'family/understanding',
+                response: {
+                  text: `<em>{name}</em>, the question that opens most doors is: "What was hard for thee when thou were my age?" <strong>Most people have never been asked this by a younger person in their family.</strong> It opens something real. It reminds them of their own uncertainty. It creates honesty where there was just assumption. Try it.`,
+                  goal: `This week, ask one family member: "What was hard for you when you were my age?" Then listen. Really listen.`
+                }
+              },
+              {
+                label: 'Things are changing in my family',
+                topicTag: 'family/change',
+                response: {
+                  text: `<em>{name}</em>, change is the river — it cannot be stopped. <strong>The question is not whether to let it change, but how to move with it without losing what matters most.</strong> Name the things that are most important to preserve. Hold those consciously. Let the rest move. Change and love can coexist. They must.`,
+                  goal: `This week, name the one thing in thy family that thou most want to preserve through the change. Hold it consciously. Say it to someone.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'School',
+            topicTag: 'school/general',
+            response: {
+              text: `Learning, <em>{name}</em>. The river is one kind of learning — it teaches by moving, by showing consequences, by being exactly what it is without pretending. School teaches through different means. <strong>Both are real. Both matter.</strong> What is happening for thee in thy learning right now?`
+            },
+            followups: [
+              {
+                label: 'I learn better outside or by doing',
+                topicTag: 'school/learning',
+                response: {
+                  text: `<em>{name}</em>, the forest taught me more than any lesson ever did. <strong>Hands and feet and eyes open — that is how deep knowing happens.</strong> AND — the written knowledge has something the forest cannot give: the condensed wisdom of people who spent their whole lives learning the thing. Try to bring both. Read about the thing. Then go touch it, see it, do it. The reading and the doing together go deeper than either alone.`,
+                  goal: `This week, take one thing thou are learning in school — and find a way to experience it directly. Touch the thing, make the thing, see the thing in the real world.`
+                }
+              },
+              {
+                label: 'I struggle to focus',
+                topicTag: 'school/focus',
+                response: {
+                  text: `<em>{name}</em>, the river is always moving and always focused — on one thing: flowing forward. <strong>Focus is not about forcing stillness — it is about finding the direction that pulls thee naturally forward.</strong> When the subject does not pull thee — find the part of it that connects to something real in thy world. Every subject has a thread that touches the real. Find that thread.`,
+                  goal: `This week, for the subject thou struggle to focus on — find ONE connection to something thou actually care about in real life. Use that connection as thy entry point.`
+                }
+              },
+              {
+                label: 'I want to do something that matters',
+                topicTag: 'school/purpose',
+                response: {
+                  text: `<em>{name}</em>, this wanting is the most important thing a person can feel. <strong>The question is not whether to do something that matters — it is what thing, done by thee, in thy particular way, with thy particular gifts, would matter most.</strong> Not the most impressive thing. The most genuinely useful thing. Think about what the world needs that thou might have. The answer is there, if thou sit with it long enough.`,
+                  goal: `This week, sit with this question: "What does the world around me most need that I might be able to give?" Write what comes. Do not edit it yet.`
+                }
+              },
+              {
+                label: 'I feel like I do not belong at school',
+                topicTag: 'school/belonging',
+                response: {
+                  text: `<em>{name}</em>, I have stood at the edge of things my whole life — not quite inside, not quite outside. <strong>Belonging is not always given — sometimes it is built, and built slowly, by showing up and contributing.</strong> Find one small way to contribute to the place — the classroom, the group, something. The belonging often grows around the contributing. Give something first. The belonging follows.`,
+                  goal: `This week, contribute one small thing to the school place — help someone, offer something, show up to something. Let the belonging begin to build.`
+                }
+              },
+              {
+                label: 'I am worried about the future',
+                topicTag: 'school/future',
+                response: {
+                  text: `<em>{name}</em>. The future is the river ahead — it cannot be seen around the bend. <strong>The worry about it is a mind trying to paddle upstream.</strong> Come back to where thou are. Tend today. Do the thing in front of thee well. The river will show the next bend when thou reach it. It always does. Thou will not see it from here — but thou will see it when thou arrive.`,
+                  goal: `This week, stop looking at the whole river. Tend the bend thou are in right now. Do one today-thing well. Just one.`
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'feel_brave',
+        label: 'How do I feel braver?',
+        topicTag: 'courage/general',
+        response: {
+          text: `Courage, <em>{name}</em>. I have thought about this — not because I am fearless, but because I have had to choose despite fear many times. <strong>The bravest thing I have ever done was stand still when every instinct said to run or fight.</strong> Real courage is sometimes the stillness — the choosing to listen before acting, to understand before judging. What kind of brave does thy life ask of thee right now?`
+        },
+        followups: [
+          {
+            label: 'Saying something that could change things',
+            topicTag: 'courage/speech',
+            response: {
+              text: `<em>{name}</em>, I stepped between two men ready to kill each other with nothing but words. <strong>The right words, said at the right moment, from a true place — carry a weight that no weapon can.</strong> Prepare the words slowly. Say them from stillness, not from anger. The truth carries farther when it is quiet. Trust the truth. Say it.`,
+              goal: `This week, prepare the true thing thou need to say — write it out first, in quiet. Then find the right moment to say it from stillness. Not in the middle of heat. After.`
+            }
+          },
+          {
+            label: 'Doing what is right when it is not what is easy',
+            topicTag: 'courage/integrity',
+            response: {
+              text: `<em>{name}</em>, the easy path and the right path diverge at exactly the moment that matters. <strong>The right path will almost always cost thee something. That cost is not a sign thou are wrong — it is a sign thou are doing something real.</strong> Easy things do not change anything. The cost is part of how thou know it matters.`,
+              goal: `This week, identify the right thing that is also the harder thing — and take the first step toward it. Just the first step.`
+            }
+          },
+          {
+            label: 'Being fully myself without apologizing',
+            topicTag: 'courage/authenticity',
+            response: {
+              text: `<em>{name}</em>, the river does not apologize for its direction. The wind does not apologize for its strength. <strong>Being fully thyself without apology is the quietest and most sustained form of courage.</strong> It does not announce itself. It simply — is. Every day. In the small choices. Wear the thing thou actually want. Say the opinion thou actually hold. Order what thou actually want. Be thee, consistently. That is the practice.`,
+              goal: `This week, make three choices that are purely true to thee — small ones are fine. Let them be quiet acts of being thyself without apology.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'tell_pocahontas_something',
+        label: 'I want to tell thee something',
+        topicTag: 'freeform/general',
+        type: 'freeform',
+        prompt: `Come, sit near the water. <strong>Say what is in thee. I will be still and listen — really listen.</strong> The water moves. We sit. Speak.`,
+        placeholder: 'Write to Pocahontas...',
+        responsesByIntent: {
+          fear: { text: `<em>{name}</em>. Fear is the body knowing something real is at stake. <strong>Sit with it first — do not run from it or toward it immediately.</strong> Let it tell thee what it knows. Then decide what to do with that knowing.` },
+          friend_hurt: { text: `<em>{name}</em>. That is a real wound. <strong>Name what it is — not what they did, but what it means to thee.</strong> "I felt not seen." "I felt not trusted." The naming makes it speakable. Then speak it to them, from stillness.` },
+          family: { text: `<em>{name}</em>, family is the first river. <strong>Some of what it carved in thee is beautiful. Some needs reshaping. Thou get to choose which is which.</strong> Carry what serves thee. Gently set down what does not.` },
+          dream: { text: `<em>{name}</em>, hold that dream like a living thing. <strong>It is not a fantasy — it is a direction.</strong> Ask: what is one real step I could take toward it today? The river moves one current at a time.` },
+          pride: { text: `<em>{name}</em>. Good. <strong>Sit in this quietly — let it settle into thee.</strong> This is real. Thou did something worthy. Let the knowing of it live in thee for a while.` },
+          curiosity: { text: `<em>{name}</em>, good question. <strong>Curiosity is the beginning of all real understanding.</strong> Keep asking. Keep listening — to the world, to other people, to the still voice inside thee.` },
+          hurt: { text: `<em>{name}</em>. Come sit by the water. <strong>Hurt is real. Thou do not have to move through it quickly.</strong> I am here. The river is here. Take the time thou need.` },
+          joy: { text: `<em>{name}</em>. I am glad. <strong>Let this joy move through thee fully — do not hold it too tightly or it cannot breathe.</strong> Let it be as large as it wants to be.` },
+          confused: { text: `<em>{name}</em>, confused means thou are in the middle of understanding something. <strong>Go outside. Move. Let the body think for a while.</strong> The mind untangles when the body moves.` },
+          academic_stress: { text: `<em>{name}</em>. Take a breath. <strong>The river does not flow all at once — it moves one moment at a time.</strong> Do the next small thing. Then the next. Do not try to move the whole river at once.` },
+          jealousy: { text: `<em>{name}</em>, jealousy is telling thee something — what thou want that thou do not yet have. <strong>Let it be information, not poison.</strong> What is it telling thee to build toward?` },
+          body_image: { text: `<em>{name}</em>. Thy body is the vessel the river moves through. <strong>Tend it with the same respect thou would give the land.</strong> It is doing sacred work just by carrying thee. Treat it accordingly.` },
+          bored: { text: `<em>{name}</em>, go outside. <strong>The natural world is never boring — it is always speaking, always moving, always showing thee something.</strong> Let it interrupt the boredom.` },
+          big_questions: { text: `<em>{name}</em>, these are the questions worth living into rather than thinking through. <strong>Do not rush the answer.</strong> Let the question travel with thee. The living will answer it.` },
+          fallback: { text: `<em>{name}</em>. I heard thee. <strong>I am holding what thou said with care.</strong> Thou are not alone in this. The water is moving. We sit beside it together.` }
+        }
+      }
+    ]
+  },
+
+  meg: {
+    voiceLabel: 'a sharp heart that learned softness the hard way',
+    farewellLine: `Go on then, <em>{name}</em>. But take this: <strong>the part of thee that has been hurt is not evidence that thou should close. It is evidence that thou are capable of feeling something real.</strong> That is not a weakness. That is the whole point of being alive. Come back when thou need someone who will not sugarcoat it.`,
+    greeting: (name, wish, memory) => {
+      if(memory && memory.visits > 0){
+        if(memory.lastTopics && memory.lastTopics.length > 0){
+          return `<em>{name}</em>. Back again. I was starting to wonder. Sit down — I have been thinking about what thou said last time, and I have some thoughts. Fair warning: I am going to be honest with thee.`;
+        }
+        return `<em>{name}</em>. Thou came back. Either our last conversation helped, or thou are a glutton for my particular brand of honesty. Either way — sit. What is on thy mind?`;
+      }
+      if(wish && wish.length > 5){
+        return `<em>{name}</em>. I read what thou wrote — that thou wishest people knew <em>"${escapeForEm(wish)}"</em>. That took nerve to write. Come in. I want to hear what is underneath that.`;
+      }
+      return `<em>{name}</em>. I am Meg. I am not going to tell thee everything is fine and wonderful — that is not my style. But I will tell thee the truth, which is usually more useful. What is going on?`;
+    },
+    starters: [
+      {
+        id: 'tell_about_you',
+        label: 'Tell me about thyself',
+        topicTag: 'self/introduction',
+        response: {
+          text: `Alright — I will tell thee about me, and then thou tell me about thee. I was hurt badly. I made a terrible deal because of it. And then — somehow — I learned to trust again. Not easily. Not quickly. <strong>But real trust, rebuilt from scratch, is the strongest kind there is.</strong> I know this from experience. What has the world done to thee so far, and what has thou done with it?`
+        },
+        followups: [
+          {
+            label: 'I have been hurt and I am careful now',
+            topicTag: 'self/guarded',
+            response: {
+              text: `<em>{name}</em>, careful is not the same as closed. I was closed for a long time — armor up, no entry, very witty about it. <strong>The armor kept me safe AND kept everything out, including the things worth letting in.</strong> Careful means thou look before trusting. Good. Closed means thou never trust at all. That costs too much over time. Learn to tell the difference between "this person has not yet earned my trust" and "I am not allowing anyone in." One is wisdom. The other is just a different kind of hurt.`,
+              goal: `This week, ask thyself: is there someone in thy life whom thou are keeping out NOT because of anything they have done, but because of what someone ELSE did? Notice that.`
+            }
+          },
+          {
+            label: 'I feel like I have to handle everything myself',
+            topicTag: 'self/independent',
+            response: {
+              text: `Oh, <em>{name}</em>. I know this exactly. I handled everything myself for years — every problem, every crisis, alone. <strong>It felt like strength and it was actually exhaustion pretending to be strength.</strong> Needing help is not weakness. Asking for help is not vulnerability. It is efficiency. Two people can carry what one person drops. Let someone carry the other end.`,
+              goal: `This week, ask for help with ONE thing thou have been handling alone. Just one. See what does not collapse.`
+            }
+          },
+          {
+            label: 'I am afraid of being used or taken advantage of',
+            topicTag: 'self/fear_of_exploitation',
+            response: {
+              text: `<em>{name}</em>, this fear is earned and real. I know what it costs to have that fear confirmed. <strong>The antidote is not to never trust — it is to watch for specific things: does their behavior match their words? Do they show up when it costs them something? Do they treat people who cannot help them the same way they treat people who can?</strong> Those are the tells. Watch for them. The fear is useful when it is a watchdog, not when it is a wall.`,
+              goal: `This week, apply one specific test: watch how someone treats a person who cannot help them. That is the most honest data thou will find.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'feel_different',
+        label: 'I sometimes feel different from others',
+        topicTag: 'self/different',
+        response: {
+          text: `Ah. Yes. I was never the princess type — always a little too sharp, a little too knowing, a little too much experience with how the world actually works. <strong>Different often means thou have learned something real that others have not learned yet.</strong> What makes thee feel out of step?`
+        },
+        followups: [
+          {
+            label: 'I see through things that others take at face value',
+            topicTag: 'self/perception',
+            response: {
+              text: `<em>{name}</em>, that is a useful gift and a real burden simultaneously. <strong>Seeing clearly is good. Assuming that what thou see is the whole picture is the trap.</strong> I saw clearly enough to be cynical for years — and it turned out I was missing things. I saw the surface accurately and missed the depths. Sharp eyes help. Sharp eyes combined with genuine curiosity go further.`,
+              goal: `This week, when thou see through something — also ask: "What am I NOT seeing here? What might be underneath the surface I just read?" Practice looking two layers deep.`
+            }
+          },
+          {
+            label: 'I have a harder edge than other people my age',
+            topicTag: 'self/edge',
+            response: {
+              text: `<em>{name}</em>, the edge comes from something — experience, loss, learning things earlier than most. <strong>An edge is useful. An edge that never softens toward anything costs thee the things most worth having.</strong> Keep the edge where it serves thee — in reading situations, in protecting thyself, in not being fooled. Allow the softness in the places thou choose to trust. Not everywhere. Not nowhere. Chosen.`,
+              goal: `This week, notice when thy edge is serving thee well — and when it is standing between thee and something good. Just notice. Awareness first.`
+            }
+          },
+          {
+            label: 'I find it hard to be fully happy for others',
+            topicTag: 'self/cynicism',
+            response: {
+              text: `<em>{name}</em>, I was like this. Happiness in others felt naive to me for a long time — like they just had not been disappointed yet. <strong>That was not wisdom. That was a wound performing as perspective.</strong> Other people's joy being real does not threaten thee. It is actually evidence that good things happen — which is information thou might need. Try letting one person's happiness land without the comment. See how it feels.`,
+              goal: `This week, when someone shares something good — let it land for three seconds before responding. No qualifier, no but. Three seconds of just letting their good thing be good.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'talk_about_life',
+        label: 'I want to talk about my life',
+        topicTag: 'life/general',
+        response: {
+          text: `All right. I am not going to pretend to be warmer than I am — but I am a good listener and I will be honest with thee. What is the real situation?`
+        },
+        followups: [
+          {
+            label: 'Friends',
+            topicTag: 'friendship/general',
+            response: {
+              text: `Friends. I was terrible at this for a long time — I kept people at arm's length and called it self-preservation. <strong>Real friendship requires something I found hard: letting someone see thee without the performance.</strong> The performance is exhausting. And the friends who got past it are worth more than all the ones who only saw the performance. What is going on with thy friends?`
+            },
+            followups: [
+              {
+                label: 'I have a hard time letting people in',
+                topicTag: 'friendship/walls',
+                response: {
+                  text: `<em>{name}</em>, I know this from the inside. The wall feels like protection. It IS protection — and it also blocks everything good. <strong>The way through is not to tear the wall down. It is to make one small door in it — for one carefully chosen person.</strong> Not the whole wall. One door. One person. Watch what comes through it. The risk is real and so is the reward.`,
+                  goal: `This week, let one person through one small door — share one real thing with them. Just one. See what they do with it.`
+                }
+              },
+              {
+                label: 'Someone disappointed me',
+                topicTag: 'friendship/disappointment',
+                response: {
+                  text: `<em>{name}</em>. Yes. Disappointment is real. <strong>The question is whether this is a pattern — this person, repeatedly — or a single moment.</strong> Single moments happen; everyone fails someone they care about once in a while. A pattern is information about who they actually are. Which is this? Look at the pattern, not just the moment.`,
+                  goal: `This week, look at the pattern — not just the incident. Has this happened before, in smaller ways? Is this who they are, or a bad moment? That is the question.`
+                }
+              },
+              {
+                label: 'I feel like I keep the friendships going alone',
+                topicTag: 'friendship/one_sided',
+                response: {
+                  text: `<em>{name}</em>, a friendship where thou do all the work is not really a friendship — it is a performance with an audience. <strong>Try the experiment: stop initiating for two weeks. See who reaches out.</strong> The ones who reach out when thou stop reaching — those are the real ones. The ones who vanish — that is also information. Use both.`,
+                  goal: `This week, do not initiate with one friendship. Wait and see who reaches. That is thy answer about where the real investment is.`
+                }
+              },
+              {
+                label: 'I want to trust someone but I am not sure I should',
+                topicTag: 'friendship/trust_decision',
+                response: {
+                  text: `<em>{name}</em>, I understand the paralysis of this question. Here is what I know: <strong>trust is not a feeling — it is a decision made on evidence.</strong> Do not wait until it feels safe. It may never feel safe. Look for evidence. Have they kept small confidences? Do they show up when inconvenient? Do they tell thee hard truths without cruelty? Evidence, not feeling. Decide on the evidence.`,
+                  goal: `This week, make a small list: what evidence do thou have FOR and AGAINST trusting this person? Real behaviors. Not feelings. Then look at what the list says.`
+                }
+              },
+              {
+                label: 'My friend is going through something and I do not know how to help',
+                topicTag: 'friendship/helping',
+                response: {
+                  text: `<em>{name}</em>, the most useful thing thou can do is also the simplest: <strong>ask them directly what they need, and then give exactly that — not what thou think they need.</strong> "Do you need me to say something, or just sit here?" Most people know what they need. The asking respects that they know themselves. Then deliver on what they said.`,
+                  goal: `This week, ask thy friend directly: "What do you need from me right now?" Then give exactly that. Nothing more, nothing less.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'Family',
+            topicTag: 'family/general',
+            response: {
+              text: `Family. Mine is complicated — as most are. <strong>The people we are shaped by and the people we want to become are often in tension.</strong> That tension is normal. What is the particular shape of thine?`
+            },
+            followups: [
+              {
+                label: 'I feel misunderstood at home',
+                topicTag: 'family/misunderstood',
+                response: {
+                  text: `<em>{name}</em>, being misunderstood at home is lonely in a specific way — because those are supposed to be the people who know thee. <strong>Most of the time, they know the version of thee they have memorized.</strong> People update slowly. Show them the current version. Not in a big speech. In small consistent acts of being actually thee — what thou think, what thou love, what thou care about. Let them update the picture gradually.`,
+                  goal: `This week, show one family member one current, true thing about thee. Not explain it — show it. Let them see a real corner.`
+                }
+              },
+              {
+                label: 'There is tension in my family',
+                topicTag: 'family/tension',
+                response: {
+                  text: `<em>{name}</em>, tension in families is almost always about unspoken things. <strong>The spoken fights are usually not the real fight.</strong> The real fight is underneath — about being seen, being valued, being safe. Someone is not saying the real thing because they do not know how, or because it is too vulnerable. If thou are old enough — try saying the real thing thyself, gently. See if the tension changes when the real thing gets said.`,
+                  goal: `This week, identify the real thing underneath one tension in thy family. Even if thou do not say it yet — know what it is. That knowing matters.`
+                }
+              },
+              {
+                label: 'I feel like a burden sometimes',
+                topicTag: 'family/burden',
+                response: {
+                  text: `<em>{name}</em>. Listen carefully: <strong>needing things is not the same as being a burden.</strong> Children need things. People need things. That is not a flaw. The burden feeling usually comes from somewhere — someone made thee feel it, or thou learned it from watching someone struggle. That is not the truth about thee. Thou deserve to need things and have those needs met. That is not extra. That is just — being a person.`,
+                  goal: `This week, name one need and say it out loud to someone who might help meet it. Just practice saying it. The saying is the first part.`
+                }
+              },
+              {
+                label: 'I do not feel safe enough to be honest at home',
+                topicTag: 'family/safety',
+                response: {
+                  text: `<em>{name}</em>. I hear thee. <strong>Safety to be honest is not something every home has — and thou are right to name when it is missing.</strong> Find one trusted adult outside the home — a teacher, a counselor, an aunt or uncle, a friend's parent — and be honest with them. Thou deserve at least one safe place for the truth. If home is not that, build it somewhere else. Thou deserve it somewhere.`,
+                  goal: `This week, identify one trusted adult outside thy home. Just identify them. Know who thy safe person is.`
+                }
+              },
+              {
+                label: 'Things at home are hard right now',
+                topicTag: 'family/hard',
+                response: {
+                  text: `<em>{name}</em>. I am not going to tell thee it will be fine — I do not know that. <strong>What I know is that hard things are survivable, and that surviving them better requires not carrying them alone.</strong> Tell someone outside the home. A counselor if there is one available. A teacher. Anyone who can be a steady adult presence while things are hard inside. Thou should not be the only one holding this.`,
+                  goal: `This week, tell one trusted adult outside thy home that things are hard right now. Thou do not need to explain everything. Just — let someone know.`
+                }
+              }
+            ]
+          },
+          {
+            label: 'School',
+            topicTag: 'school/general',
+            response: {
+              text: `School. I will not pretend I find the usual inspirational speech about school useful — thou probably hear enough of those. <strong>Here is what I actually think: school is one specific kind of preparation, not the whole preparation.</strong> It matters. It is not everything. What is the actual situation?`
+            },
+            followups: [
+              {
+                label: 'I find it hard to care about things I am told to care about',
+                topicTag: 'school/motivation',
+                response: {
+                  text: `<em>{name}</em>, motivation by external command rarely works for very long. <strong>Find the internal reason — the thing in thee that connects to the thing being taught.</strong> Even in the driest subject, there is usually a thread that connects to something real. History is strategy and human nature. Math is pattern and logic. Language is power and clarity. Find the thread. Pull it. The motivation comes from the connection, not the command.`,
+                  goal: `This week, find ONE real connection between a subject thou do not care about and something thou actually value. Just one. Write it down.`
+                }
+              },
+              {
+                label: 'I am dealing with drama at school',
+                topicTag: 'school/drama',
+                response: {
+                  text: `<em>{name}</em>, school drama is mostly about people feeling unseen and trying to be seen in the wrong ways. <strong>Do not get pulled into it — not because it does not matter, but because it feeds on attention.</strong> Withdraw the attention. The drama shrinks without audience. Focus on the people who are not playing. They exist and they are more interesting.`,
+                  goal: `This week, actively choose NOT to engage with one piece of drama. Redirect thy attention to someone who is not playing. See what grows there instead.`
+                }
+              },
+              {
+                label: 'I am harder on myself than I need to be',
+                topicTag: 'school/self_criticism',
+                response: {
+                  text: `<em>{name}</em>, I know this. I was my own harshest critic for years — and it did not make me better. It made me tired. <strong>High standards are valuable. Cruelty toward thyself for not meeting them is just waste.</strong> Notice the standard. Work toward it. When thou fall short — note what to improve, and then let the moment go. Not forever. For now. The cruel rehashing is just noise. It helps nothing.`,
+                  goal: `This week, when thou fall short of something — spend two minutes figuring out what to do differently, then close the file. Do not reopen it today.`
+                }
+              },
+              {
+                label: 'I feel like I am performing all the time',
+                topicTag: 'school/performance',
+                response: {
+                  text: `<em>{name}</em>, I performed for years — the capable one, the sharp one, the one who did not need anything. It was exhausting and it kept people away. <strong>The performance keeps thee safe and alone at the same time.</strong> Find one place — one class, one person, one moment — where thou can stop performing. Just try being uncertain or real for a moment. See if the sky falls. It almost never does.`,
+                  goal: `This week, in one safe moment, let the performance down a little. Say "I do not know" or "I am not sure about this." Let someone see a less certain thee.`
+                }
+              },
+              {
+                label: 'I want to do well but I am not sure I believe in myself',
+                topicTag: 'school/self_belief',
+                response: {
+                  text: `<em>{name}</em>, self-belief is not a feeling thou wait for — <strong>it is evidence thou build.</strong> Do small things and note that thou did them. Do harder things. Note that too. The belief is built from the accumulated evidence of thou doing things. Not from feeling confident first. Do the thing. The confidence follows the doing. Not the other way around.`,
+                  goal: `This week, do one hard thing — anything — and write down that thou did it. Keep a list. The list becomes the evidence. The evidence becomes the belief.`
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'feel_brave',
+        label: 'How do I feel braver?',
+        topicTag: 'courage/general',
+        response: {
+          text: `Right. Bravery. I will tell thee honestly — for most of my life I confused bravery with armor. <strong>Real bravery turned out to be the thing I found hardest: staying open after being hurt.</strong> Not recklessly. Not naively. But staying open. That took more courage than anything else I had done. What kind of brave does thy life need right now?`
+        },
+        followups: [
+          {
+            label: 'Trusting someone again after being hurt',
+            topicTag: 'courage/trust',
+            response: {
+              text: `<em>{name}</em>, this is the bravest thing on this list. <strong>Trust after hurt is not naivety — it is the most difficult and most adult decision a person makes.</strong> Thou do not have to trust the person who hurt thee. Thou have to trust SOMEONE eventually, or the hurt wins permanently. Start small. Build evidence. Let the trust grow at the rate the evidence supports. Not faster. Not never.`,
+              goal: `This week, identify one person who HAS been consistent and earned small trust already. Start there. Give them something slightly larger to hold.`
+            }
+          },
+          {
+            label: 'Admitting I need help',
+            topicTag: 'courage/vulnerability',
+            response: {
+              text: `<em>{name}</em>, I spent years refusing to admit I needed anything. <strong>It kept me safe and it kept me stuck.</strong> Here is the thing: the people who matter will not think less of thee for needing help. The people who do think less of thee for needing help are not worth protecting thy pride for. Ask. The asking is the brave thing. The response will show thee who is worth trusting.`,
+              goal: `This week, ask for help with one thing — to someone thou think might actually help. Then see how they respond. The response is the information.`
+            }
+          },
+          {
+            label: 'Saying what I actually think',
+            topicTag: 'courage/honesty',
+            response: {
+              text: `<em>{name}</em>, I have always been able to say what I think — sometimes too easily, and not always kindly. <strong>The bravery is not just in saying it — it is in saying it honestly AND with care for how it lands.</strong> Truth without care is just bluntness. Truth WITH care is actually hard to do. Practice the second kind. Say the real thing — and take one moment to consider how to say it so it can actually be heard.`,
+              goal: `This week, say one real honest thing — and before saying it, ask thyself: "How do I say this in a way it can actually be received?" Practice both: honest AND considerate.`
+            }
+          }
+        ]
+      },
+      {
+        id: 'tell_meg_something',
+        label: 'I want to tell thee something',
+        topicTag: 'freeform/general',
+        type: 'freeform',
+        prompt: `All right. Say it. <strong>I am not going to overreact and I am not going to sugarcoat it.</strong> Thou deserve an honest response, not a comfortable one. What is the real thing?`,
+        placeholder: 'Write to Meg...',
+        responsesByIntent: {
+          fear: { text: `<em>{name}</em>, fear is real. <strong>The question is whether it is protecting thee from something real, or keeping thee from something worth having.</strong> Look carefully at what it is actually guarding. Then decide whether that guard is serving thee or costing thee.` },
+          friend_hurt: { text: `<em>{name}</em>. That is not all right. <strong>Thou do not have to perform forgiveness faster than thou actually feel it.</strong> Feel what thou feel. Then, when thou are ready — decide what the relationship can hold going forward. Not immediately. When thou are ready.` },
+          family: { text: `<em>{name}</em>, family is complicated and the love is usually real even when the execution is broken. <strong>Find the real thing underneath the situation — the want, not the accusation.</strong> Say the want. It reaches better.` },
+          dream: { text: `<em>{name}</em>, that is worth having. <strong>What is the first specific thing it asks of thee?</strong> Not the whole dream — the first step. Do that. Then the next one appears.` },
+          pride: { text: `<em>{name}</em>. Good. <strong>Thou did that.</strong> Do not minimize it. Do not hand the credit away. Thou earned this — let it count.` },
+          curiosity: { text: `<em>{name}</em>, good question. <strong>Sit with it properly — do not rush to the first answer.</strong> The interesting questions have layered answers. Take time with this one.` },
+          hurt: { text: `<em>{name}</em>. I hear thee. <strong>That is real and it is okay that it hurt.</strong> Thou do not have to be fine about it. Give thyself the actual time this needs.` },
+          joy: { text: `<em>{name}</em>. Good. <strong>Let it be as good as it actually is.</strong> Thou are allowed to enjoy things fully. This one counts.` },
+          confused: { text: `<em>{name}</em>, confused means thou are thinking honestly — which is more than most people do. <strong>More information and one small action will usually clear it.</strong> What is one thing thou could do to get more information?` },
+          academic_stress: { text: `<em>{name}</em>. One thing at a time. <strong>What is the single most urgent piece?</strong> Do that one. Then reassess. Do not try to solve the whole thing at once.` },
+          jealousy: { text: `<em>{name}</em>, jealousy is information, not a verdict on thy character. <strong>What is it telling thee thou want?</strong> Go build that thing in thy own way.` },
+          body_image: { text: `<em>{name}</em>. The world is extremely loud about this and almost entirely wrong. <strong>Thy body is doing the actual work of keeping thee alive and present.</strong> That is not nothing. That is everything. Treat it accordingly.` },
+          bored: { text: `<em>{name}</em>, boredom is energy without direction. <strong>Point it at something.</strong> What has thou been wanting to try or make or do? Now is the time. Use the energy.` },
+          big_questions: { text: `<em>{name}</em>, those are the questions worth living into. <strong>Do not expect clean answers.</strong> The questions matter more than the answers, honestly. Keep asking.` },
+          fallback: { text: `<em>{name}</em>. I heard thee. <strong>I am holding what thou said straight — no softening, no dismissing.</strong> Whatever thou are dealing with — thou are not dealing with it alone. Come back when thou need.` }
+        }
+      }
+    ]
+  },
+
+
   // OTHER PRINCESSES — fallback if any are not yet defined
   _placeholder: {
     greeting: (name) => `<em>{name}</em>... I am so glad thou hast come. The mirror saw something rare in thee. I am still gathering my thoughts on what to say to thee — but I would love for thee to come back soon. Thy princess speaks more fully soon.`,
