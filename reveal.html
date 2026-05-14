@@ -416,7 +416,7 @@
 
   <div class="cta-group">
     <button class="btn btn-primary" id="speak-btn" onclick="window.location.href='chat.html'">✦ Speak with <span id="speak-name"></span> ✦</button>
-    <button class="btn" onclick="window.location.href='quiz.html'">✦ Look Into the Mirror Again ✦</button>
+    <button class="btn" onclick="localStorage.removeItem('pq_result'); window.location.href='quiz.html'">✦ Look Into the Mirror Again ✦</button>
     <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Return to the Top</button>
   </div>
 </div>
@@ -771,9 +771,10 @@ if(ceremony && ceremony.name){
 }
 
 // Determine which princess to show
-// Allow URL override for testing: ?force=jasmine
+// URL param ?princess= wins (set by new quiz.html engine)
+// ?force= also works for testing
 const urlParams = new URLSearchParams(window.location.search);
-const FORCED_PRINCESS = urlParams.get('force');
+const FORCED_PRINCESS = urlParams.get('princess') || urlParams.get('force');
 
 let initialIdx = 0;
 if(FORCED_PRINCESS){
@@ -782,6 +783,15 @@ if(FORCED_PRINCESS){
 } else if(quizResult && quizResult.winner){
   const winnerIdx = PRINCESSES.findIndex(p => p.id === quizResult.winner);
   if(winnerIdx >= 0) initialIdx = winnerIdx;
+} else {
+  // Fallback: try plain string saved by new quiz engine
+  try {
+    var plainId = localStorage.getItem('pq_result');
+    if(plainId) {
+      var plainIdx = PRINCESSES.findIndex(p => p.id === plainId);
+      if(plainIdx >= 0) initialIdx = plainIdx;
+    }
+  } catch(e) {}
 }
 
 // Override mockScores with real scores from the quiz if available

@@ -487,24 +487,72 @@
       justify-content: center;
       min-height: 80dvh;
       text-align: center;
-      gap: 16px;
+      gap: 20px;
       padding: 40px 16px;
+      position: relative;
     }
 
     #complete-screen.visible { display: flex; }
 
+    .mirror-glow {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+    .mirror-glow.lit { opacity: 1; }
+
     .complete-title {
       font-family: 'Cinzel', serif;
-      font-size: 24px;
+      font-size: 13px;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease 0.3s forwards;
+    }
+
+    .complete-reveal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease 1.2s forwards;
+    }
+
+    .reveal-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--cream-dim);
+      letter-spacing: 0.05em;
+    }
+
+    .reveal-name {
+      font-family: 'Cinzel', serif;
+      font-size: 38px;
       color: var(--gold);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
+      text-shadow: 0 0 40px rgba(201,168,76,0.6), 0 0 80px rgba(201,168,76,0.3);
+      line-height: 1.1;
     }
 
     .complete-subtitle {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
+      font-size: 16px;
       font-style: italic;
       color: var(--cream-dim);
+      opacity: 0;
+      animation: fadeIn 1s ease 2.4s forwards;
+      max-width: 280px;
     }
 
     .reveal-btn {
@@ -522,6 +570,8 @@
       transition: var(--transition);
       box-shadow: 0 4px 24px rgba(201,168,76,0.3);
       min-height: 44px;
+      opacity: 0;
+      animation: fadeIn 1s ease 3.2s forwards;
     }
 
     .reveal-btn:hover {
@@ -586,9 +636,14 @@
 
     <!-- Complete screen (hidden until done) -->
     <div id="complete-screen">
-      <div class="complete-title">The Mirror Has Spoken</div>
-      <div class="complete-subtitle">Thy answer awaits thee…</div>
-      <button class="reveal-btn" id="reveal-btn">Reveal My Princess ✨</button>
+      <div class="mirror-glow" id="mirror-glow"></div>
+      <div class="complete-title" id="complete-title">The Mirror Has Spoken</div>
+      <div class="complete-reveal" id="complete-reveal">
+        <div class="reveal-label">Thou art</div>
+        <div class="reveal-name" id="reveal-name">…</div>
+      </div>
+      <div class="complete-subtitle" id="complete-subtitle">The mirror knows thy heart.</div>
+      <button class="reveal-btn" id="reveal-btn" style="display:none">Enter Thy Kingdom ✦</button>
     </div>
 
   </div>
@@ -757,32 +812,36 @@
 
     function renderAnswers(q, isFreetext) {
       if (isFreetext) {
-        const placeholder = personalise(q.placeholder || 'Write thy truth…');
-        return `
-          <div id="answers-container">
-            <textarea
-              class="freetext-area"
-              id="freetext-input"
-              placeholder="${placeholder}"
-              rows="4"
-              maxlength="500"
-            ></textarea>
-            <button class="freetext-submit" id="freetext-submit">
-              Continue ›
-            </button>
-          </div>`;
+        var phText = personalise(q.placeholder || 'Write thy truth\u2026');
+        // Build with DOM to avoid Safari backtick/innerHTML template issues
+        var wrap = document.createElement('div');
+        wrap.id = 'answers-container';
+        var ta = document.createElement('textarea');
+        ta.className = 'freetext-area';
+        ta.id = 'freetext-input';
+        ta.setAttribute('placeholder', phText);
+        ta.rows = 4;
+        ta.maxLength = 500;
+        var btn = document.createElement('button');
+        btn.className = 'freetext-submit';
+        btn.id = 'freetext-submit';
+        btn.textContent = 'Continue \u203a';
+        wrap.appendChild(ta);
+        wrap.appendChild(btn);
+        var tmp = document.createElement('div');
+        tmp.appendChild(wrap);
+        return tmp.innerHTML;
       }
 
-      const letters = ['A','B','C','D'];
-      let html = `<div id="answers-container">`;
-      q.answers.forEach((ans, i) => {
-        html += `
-          <button class="answer-btn" data-index="${i}">
-            <span class="answer-letter">${letters[i]}</span>
-            ${ans.text || ''}
-          </button>`;
+      var letters = ['A','B','C','D'];
+      var html = '<div id="answers-container">';
+      q.answers.forEach(function(ans, i) {
+        html += '<button class="answer-btn" data-index="' + i + '">'
+              + '<span class="answer-letter">' + letters[i] + '</span>'
+              + (ans.text || '')
+              + '</button>';
       });
-      html += `</div>`;
+      html += '</div>';
       return html;
     }
 
@@ -858,17 +917,35 @@
       document.querySelector('.ornamental-divider').style.display = 'none';
       document.getElementById('progress-container').style.display = 'none';
 
-      const screen = document.getElementById('complete-screen');
+      var screen = document.getElementById('complete-screen');
       screen.classList.add('visible');
 
-      const princess = window.PRINCESSES?.[winnerId];
-      if (princess) {
-        screen.querySelector('.complete-subtitle').innerHTML =
-          `<em>Thou art</em> <strong style="color:var(--gold)">${princess.name}</strong>`;
+      // Store result so reveal.html can read it
+      try { localStorage.setItem('pq_result', winnerId); } catch(e) {}
+
+      // Populate princess name
+      var princess = window.PRINCESSES && window.PRINCESSES[winnerId];
+      var displayName = princess ? princess.name : winnerId;
+      document.getElementById('reveal-name').textContent = displayName;
+
+      // Update voice line if available
+      if (princess && princess.voiceLine) {
+        document.getElementById('complete-subtitle').textContent = princess.voiceLine;
       }
 
-      document.getElementById('reveal-btn').addEventListener('click', () => {
-        window.location.href = `${REVEAL_URL}?princess=${winnerId}`;
+      // Light the mirror glow after a short pause
+      setTimeout(function() {
+        document.getElementById('mirror-glow').classList.add('lit');
+      }, 800);
+
+      // Show the button after animations complete (style.display already none, CSS handles opacity)
+      var revealBtn = document.getElementById('reveal-btn');
+      revealBtn.style.display = 'block';
+
+      revealBtn.addEventListener('click', function() {
+        // Bug 4 fix: clear previous result so "look again" picks a fresh princess
+        try { localStorage.removeItem('pq_last_session'); } catch(e) {}
+        window.location.href = REVEAL_URL + '?princess=' + winnerId;
       });
     }
 
