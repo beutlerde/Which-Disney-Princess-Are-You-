@@ -7,9 +7,7 @@ const CORE_ASSETS = [
   './',
   './reveal.html',
   './ceremony.html',
-  './quiz.html',
   './manifest.json',
-  ./chat.html',
 
   // Princess portraits
   './assets/princesses/elsa.png',
