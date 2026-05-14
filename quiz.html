@@ -922,7 +922,7 @@
             if (q.type === 'visual') {
               var base = q.id.match(/(\w+_v\d+)/)[1];
               q.answers.forEach(function(ans, i) {
-                ans.imageUrl = './images/quiz/' + base + '_' + letters[i] + '.jpg';
+                ans.imageUrl = './assets/quiz/' + base + '_' + letters[i] + '.jpg';
               });
             }
           });
