@@ -570,6 +570,10 @@ const PRINCESS_DATA = {
   'snow-white':  {name:'Snow White',  img:'assets/chat/speaking-snow-white.jpg'},
   'jasmine':     {name:'Jasmine',     img:'assets/chat/speaking-jasmine.jpg'},
   'cinderella':  {name:'Cinderella',  img:'assets/chat/speaking-cinderella.jpg'},
+  'anna':        {name:'Anna',        img:'assets/chat/speaking-anna.jpg'},
+  'merida':      {name:'Merida',      img:'assets/chat/speaking-merida.jpg'},
+  'pocahontas':  {name:'Pocahontas',  img:'assets/chat/speaking-pocahontas.jpg'},
+  'meg':         {name:'Meg',         img:'assets/chat/speaking-meg.jpg'},
 };
 
 // ═══════════════════════════════════════════════
@@ -6171,7 +6175,7 @@ function substitute(template){
 if(PRINCESS_ID){
   // Get the tree (or fall back to placeholder)
   const tree = CHAT_TREES[PRINCESS_ID] || CHAT_TREES._placeholder;
-  const data = PRINCESS_DATA[PRINCESS_ID];
+  const data = PRINCESS_DATA[PRINCESS_ID] || {name: PRINCESS_ID, img: 'assets/chat/speaking-' + PRINCESS_ID + '.jpg'};
 
   // Set up header with case-insensitive extension fallback
   const portraitImg = document.getElementById('princess-img');
@@ -6367,7 +6371,7 @@ const sessionGoals = [];
 
 function speakAsPrincess(textOrResponse, onComplete){
   const conversation = document.getElementById('conversation');
-  const data = PRINCESS_DATA[PRINCESS_ID];
+  const data = PRINCESS_DATA[PRINCESS_ID] || {name: PRINCESS_ID, img: 'assets/chat/speaking-' + PRINCESS_ID + '.jpg'};
   const msg = document.createElement('div');
   msg.className = 'message princess';
   msg.innerHTML = `<span class="speaker">${data.name}</span><span class="body"></span>`;
