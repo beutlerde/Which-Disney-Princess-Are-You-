@@ -325,6 +325,8 @@ const engine = (() => {
         _notify();
         return;
       }
+      // Session was complete or invalid — clear it and start fresh
+      _clearSessionFromStorage();
     }
 
     // Fresh session

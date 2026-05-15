@@ -993,6 +993,15 @@
       engine.init(QUESTIONS);
 
       // Register state change listener
+      // Clear any stale completed session so we never auto-redirect on load
+      try {
+        var savedSession = JSON.parse(localStorage.getItem('pq_session') || 'null');
+        if (savedSession && savedSession.index >= (savedSession.session || []).length) {
+          localStorage.removeItem('pq_session');
+          localStorage.removeItem('pq_answers');
+        }
+      } catch(e) {}
+
       // Read player name from ceremony and save to expected key
       try {
         var ceremony = JSON.parse(localStorage.getItem('royalCeremony') || 'null');
