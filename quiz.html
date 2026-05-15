@@ -999,6 +999,10 @@
         if (ceremony && ceremony.name) {
           localStorage.setItem('pq_player_name', ceremony.name);
         }
+        // Apply ceremony scores as starting weights if present
+        if (ceremony && ceremony.scores) {
+          engine.setCeremonyScores(ceremony.scores);
+        }
       } catch(e) {}
 
       engine.onStateChange(onStateChange);

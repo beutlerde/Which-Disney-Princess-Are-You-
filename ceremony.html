@@ -258,9 +258,159 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--purple-deep);f
 <script>
 const EMBLEMS=[{name:'The Swan',meaning:'Grace & Nobility',src:'assets/emblems/swan.png'},{name:'The Dove',meaning:'Peace & Kindness',src:'assets/emblems/dove.png'},{name:'The Moon',meaning:'Mystery & Dreams',src:'assets/emblems/moon.png'},{name:'The Key',meaning:'Wisdom & Secrets',src:'assets/emblems/key.png'},{name:'The Harp',meaning:'Music & Joy',src:'assets/emblems/harp.png'},{name:'The Star',meaning:'Light & Guidance',src:'assets/emblems/star.png'},{name:'The Flame',meaning:'Courage & Passion',src:'assets/emblems/flame.png'},{name:'The Leaf',meaning:'Nature & Growth',src:'assets/emblems/leaf.png'},{name:'The Crown',meaning:'Power & Honor',src:'assets/emblems/crown.png'},{name:'The Wave',meaning:'Adventure & Flow',src:'assets/emblems/wave.png'},{name:'The Rose',meaning:'Beauty & Love',src:'assets/emblems/rose.png'}];
 const CHAMBERS=[{name:'The Lavender Garden',src:'assets/chambers/lavender-garden.jpg'},{name:"The Scholar's Library",src:'assets/chambers/scholars-library.jpg'},{name:'The Rose Gold Palace',src:'assets/chambers/rose-gold-palace.jpg'},{name:'The Ice Palace',src:'assets/chambers/ice-palace.jpg'},{name:'The Twilight Chamber',src:'assets/chambers/twilight-chamber.jpg'},{name:'The Coastal Chamber',src:'assets/chambers/coastal-chamber.jpg'},{name:'The Ocean Palace',src:'assets/chambers/ocean-palace.jpg'},{name:'The Stargazer Chamber',src:'assets/chambers/stargazer-chamber.jpg'}];
-const DRESSES=Array.from({length:11},(_,i)=>({src:`assets/dresses/dress-${String(i+1).padStart(2,'0')}.png`}));
-const TIARAS=Array.from({length:12},(_,i)=>({src:`assets/tiaras/tiara-${String(i+1).padStart(2,'0')}.png`}));
-const SHOES=Array.from({length:12},(_,i)=>({src:`assets/shoes/shoes-${String(i+1).padStart(2,'0')}.png`}));
+
+// Named dresses with princess scoring
+const DRESSES = [
+  { src:'assets/dresses/snow-white.png',   princess:'snow-white',  scores:{'snow-white':5, aurora:2, cinderella:1} },
+  { src:'assets/dresses/raya.png',         princess:'raya',        scores:{raya:5, mulan:3, merida:2} },
+  { src:'assets/dresses/mulan.png',        princess:'mulan',       scores:{mulan:5, raya:2, pocahontas:2} },
+  { src:'assets/dresses/belle.png',        princess:'belle',       scores:{belle:5, aurora:2, cinderella:1} },
+  { src:'assets/dresses/cinderella.png',   princess:'cinderella',  scores:{cinderella:5, aurora:3, belle:1} },
+  { src:'assets/dresses/elsa.png',         princess:'elsa',        scores:{elsa:5, aurora:2, anna:2} },
+  { src:'assets/dresses/tiana.png',        princess:'tiana',       scores:{tiana:5, belle:2, jasmine:1} },
+  { src:'assets/dresses/ariel.png',        princess:'ariel',       scores:{ariel:5, moana:2, jasmine:1} },
+  { src:'assets/dresses/moana.png',        princess:'moana',       scores:{moana:5, ariel:2, pocahontas:2} },
+  { src:'assets/dresses/aurora.png',       princess:'aurora',      scores:{aurora:5, cinderella:2, 'snow-white':2} },
+  { src:'assets/dresses/jasmine.png',      princess:'jasmine',     scores:{jasmine:5, ariel:2, tiana:1} }
+];
+
+// Named tiaras with princess scoring
+const TIARAS = [
+  { src:'assets/tiaras/elsa.png',       princess:'elsa',        scores:{elsa:5, aurora:2, anna:1} },
+  { src:'assets/tiaras/mulan.png',      princess:'mulan',       scores:{mulan:5, raya:2, pocahontas:1} },
+  { src:'assets/tiaras/raya.png',       princess:'raya',        scores:{raya:5, mulan:3, merida:2} },
+  { src:'assets/tiaras/aurora.png',     princess:'aurora',      scores:{aurora:5, cinderella:2, 'snow-white':2} },
+  { src:'assets/tiaras/snow-white.png', princess:'snow-white',  scores:{'snow-white':5, aurora:2, cinderella:2} },
+  { src:'assets/tiaras/rapunzel.png',   princess:'rapunzel',    scores:{rapunzel:5, aurora:2, belle:2} },
+  { src:'assets/tiaras/jasmine.png',    princess:'jasmine',     scores:{jasmine:5, ariel:2, tiana:1} },
+  { src:'assets/tiaras/belle.png',      princess:'belle',       scores:{belle:5, aurora:2, cinderella:1} },
+  { src:'assets/tiaras/cinderella.png', princess:'cinderella',  scores:{cinderella:5, aurora:2, 'snow-white':1} },
+  { src:'assets/tiaras/tiana.png',      princess:'tiana',       scores:{tiana:5, jasmine:2, belle:1} },
+  { src:'assets/tiaras/moana.png',      princess:'moana',       scores:{moana:5, ariel:2, pocahontas:2} },
+  { src:'assets/tiaras/ariel.png',      princess:'ariel',       scores:{ariel:5, moana:2, jasmine:2} }
+];
+
+// Named shoes with princess scoring
+const SHOES = [
+  { src:'assets/shoes/Brown Boots.png',              name:'Brown Boots',           scores:{merida:5, mulan:4, pocahontas:3, raya:3} },
+  { src:'assets/shoes/Dark Blue Heels.png',          name:'Dark Blue Heels',       scores:{cinderella:3, elsa:3, ariel:2} },
+  { src:'assets/shoes/Deep Green and Gold Heels.png',name:'Deep Green and Gold Heels', scores:{tiana:4, belle:2, jasmine:2} },
+  { src:'assets/shoes/Glass Slippers.png',           name:'Glass Slippers',        scores:{cinderella:5, aurora:2, 'snow-white':1} },
+  { src:'assets/shoes/Light Pink Slippers.png',      name:'Light Pink Slippers',   scores:{aurora:4, 'snow-white':3, cinderella:2} },
+  { src:'assets/shoes/Peach Gold Heels.png',         name:'Peach Gold Heels',      scores:{aurora:5, cinderella:3, belle:1} },
+  { src:'assets/shoes/Purple High Heels.png',        name:'Purple High Heels',     scores:{rapunzel:4, elsa:3, meg:2} },
+  { src:'assets/shoes/Teal Slippers.png',            name:'Teal Slippers',         scores:{jasmine:5, ariel:2, moana:2} },
+  { src:'assets/shoes/White and Gold Shoes.png',     name:'White and Gold Shoes',  scores:{belle:3, jasmine:3, anna:3} },
+  { src:'assets/shoes/White Snow High Heels.png',    name:'White Snow High Heels', scores:{elsa:4, aurora:2, 'snow-white':2} }
+];
+
+// ── CEREMONY SCORING MAPS ─────────────────────────────
+// Each choice adds points before the quiz begins (nudge only — quiz dominates)
+
+const COLOR_SCORES = {
+  '#9B59B6': {elsa:3, rapunzel:3, meg:2},                          // Amethyst
+  '#2980B9': {cinderella:3, elsa:3, ariel:2},                      // Sapphire
+  '#C0392B': {merida:3, jasmine:3, mulan:2},                       // Ruby
+  '#27AE60': {tiana:3, pocahontas:3, merida:2},                    // Emerald
+  '#E67E22': {belle:3, rapunzel:3, anna:2},                        // Topaz
+  '#E91E63': {aurora:3, 'snow-white':3, cinderella:2},             // Rose
+  '#00BCD4': {ariel:3, moana:3, jasmine:2, elsa:2},                // Aquamarine
+  '#F9A825': {jasmine:3, moana:3, tiana:2}                         // Sunstone
+};
+
+const EMBLEM_SCORES = {
+  'The Swan':   {aurora:4, cinderella:3},
+  'The Dove':   {'snow-white':4, anna:3},
+  'The Moon':   {elsa:4, rapunzel:3},
+  'The Key':    {belle:4, jasmine:3},
+  'The Harp':   {aurora:4, ariel:3},
+  'The Star':   {rapunzel:4, moana:3},
+  'The Flame':  {merida:4, mulan:3, raya:3},
+  'The Leaf':   {pocahontas:4, moana:3, tiana:2},
+  'The Crown':  {cinderella:4, jasmine:3},
+  'The Wave':   {ariel:4, moana:4},
+  'The Rose':   {belle:4, aurora:3, 'snow-white':2}
+};
+
+const MOTTO_SCORES = {
+  'Courage above all, kindness within':       {mulan:4, anna:4, tiana:3},
+  'By grace and wonder shall we prevail':     {aurora:4, rapunzel:3, cinderella:3},
+  'Light in the darkness, hope in the storm': {elsa:4, moana:3, raya:3},
+  'In love and truth our kingdom endures':    {'snow-white':4, anna:4, belle:3},
+  'Adventurous of heart, fierce of spirit':   {merida:4, jasmine:4, ariel:3}
+};
+
+const CHAMBER_SCORES = {
+  0: {aurora:4, 'snow-white':3},           // Lavender Garden
+  1: {belle:5},                             // Scholar's Library
+  2: {cinderella:4, rapunzel:3},            // Rose Gold Palace
+  3: {elsa:5},                              // Ice Palace
+  4: {elsa:3, meg:3},                       // Twilight Chamber
+  5: {ariel:4, moana:3},                    // Coastal Chamber
+  6: {moana:4, ariel:3, pocahontas:3},      // Ocean Palace
+  7: {rapunzel:4, jasmine:3}                // Stargazer Chamber
+};
+
+// Build ceremony scores from all choices
+function buildCeremonyScores(ceremony) {
+  var scores = {};
+  var all16 = ['belle','cinderella','aurora','snow-white','ariel','jasmine','mulan','tiana','rapunzel','elsa','moana','raya','anna','merida','pocahontas','meg'];
+  all16.forEach(function(p) { scores[p] = 0; });
+
+  function add(map) {
+    if (!map) return;
+    Object.keys(map).forEach(function(p) { if (scores[p] !== undefined) scores[p] += map[p]; });
+  }
+
+  // Colors (up to 2 chosen)
+  (ceremony.colors || []).forEach(function(color) { add(COLOR_SCORES[color]); });
+
+  // Emblem
+  if (ceremony.emblemName) add(EMBLEM_SCORES[ceremony.emblemName]);
+
+  // Motto
+  if (ceremony.motto) add(MOTTO_SCORES[ceremony.motto]);
+
+  // Chamber
+  add(CHAMBER_SCORES[ceremony.chamberIdx]);
+
+  // Dress
+  if (ceremony.placed && ceremony.placed.dress !== null) {
+    var d = DRESSES[ceremony.placed.dress];
+    if (d) add(d.scores);
+  }
+
+  // Tiara
+  if (ceremony.placed && ceremony.placed.tiara !== null) {
+    var t = TIARAS[ceremony.placed.tiara];
+    if (t) add(t.scores);
+  }
+
+  // Shoes
+  if (ceremony.placed && ceremony.placed.shoes !== null) {
+    var s = SHOES[ceremony.placed.shoes];
+    if (s) add(s.scores);
+  }
+
+  return scores;
+}
+
+function finishCeremony(){
+  var ceremony = {
+    name: state.name,
+    colors: state.colors,
+    colorNames: state.colorNames,
+    emblem: state.emblem ? {name:state.emblem.name, meaning:state.emblem.meaning, src:state.emblem.src} : null,
+    emblemName: state.emblemName,
+    motto: state.motto,
+    chamberIdx: state.chamberIdx,
+    placed: state.placed
+  };
+  // Build and save ceremony scores so quiz engine can apply them
+  ceremony.scores = buildCeremonyScores(ceremony);
+  localStorage.setItem('royalCeremony', JSON.stringify(ceremony));
+  window.location.href = 'quiz.html';
+}
 
 // CALIBRATED ZONES: dress bigger and on form, tiara nudged to pillow
 const ZONES={
@@ -314,8 +464,6 @@ function makeDraggable(el){let drag=false,ox=0,oy=0;function start(cx,cy){drag=t
 
 function buildCoronation(){const n=state.name||'Guapa',c=state.colorNames.length?state.colorNames.join(' and '):'Royal';document.getElementById('full-title-display').innerHTML='Her Royal Highness<br>'+n+'<br>Princess of the '+c+' Realm<br>Bearer of '+(state.emblemName||'the Royal Seal');document.getElementById('coronation-voice').innerHTML='"Thou hast chosen thy colors, thy symbol, and thy words. Thy chamber awaiteth. The realm is thine, Princess '+n+'. Go forth — let the mirror reveal thy true nature."';}
 function buildTransition(){document.getElementById('s8-name').textContent='Princess '+(state.name||'Guapa')+' of the Royal Realm';}
-
-function finishCeremony(){const ceremony={name:state.name,colors:state.colors,colorNames:state.colorNames,emblem:state.emblem?{name:state.emblem.name,meaning:state.emblem.meaning,src:state.emblem.src}:null,emblemName:state.emblemName,motto:state.motto,chamberIdx:state.chamberIdx,placed:state.placed};localStorage.setItem('royalCeremony',JSON.stringify(ceremony));window.location.href='quiz.html';}
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').catch(e=>console.log(e));});}
 </script>

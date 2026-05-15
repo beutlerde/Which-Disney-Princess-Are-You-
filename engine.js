@@ -153,6 +153,9 @@ const engine = (() => {
   // Scoring engine
   // ─────────────────────────────────────────────
 
+  // Ceremony scores — set before quiz starts, applied as starting offset
+  let _ceremonyScores = {};
+
   /**
    * Calculate cumulative scores for all princesses from answered questions.
    * Returns {princessId: totalScore} for all princesses.
@@ -166,6 +169,11 @@ const engine = (() => {
     const allIds = window.PRINCESS_IDS || Object.keys(window.PRINCESSES || {});
     for (const id of allIds) {
       totals[id] = 0;
+    }
+
+    // Apply ceremony scores as starting offset
+    for (const [id, score] of Object.entries(_ceremonyScores)) {
+      if (totals[id] !== undefined) totals[id] += score;
     }
 
     for (const answer of _answers) {
@@ -550,6 +558,7 @@ const engine = (() => {
     getFreetextResponses,
     onStateChange,
     reset,
+    setCeremonyScores: function(scores) { _ceremonyScores = scores || {}; },
     resetBench,
     getDebugInfo,
   };
