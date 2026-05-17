@@ -598,7 +598,11 @@ function buildGrid(earned, newlyEarned){
         '<div class="frame-border"></div>' +
         '<div class="portrait-img-wrap">' +
           '<img class="portrait-img" src="' + imgSrc + '" alt="' + p.name + '" ' +
-            'onerror="this.src=this.src.replace(\'.png\',\'.jpg\');this.onerror=function(){this.src=this.src.replace(\'.jpg\',\'.jpeg\');this.onerror=null}">' +
+            'onerror="var s=this.src;' +
+            'if(s.indexOf(\'.png\')>-1&&s.indexOf(\'.PNG\')<0){this.src=s.replace(\'.png\',\'.PNG\');}' +
+            'else if(s.indexOf(\'.PNG\')>-1){this.src=s.replace(\'.PNG\',\'.jpg\');}' +
+            'else if(s.indexOf(\'.jpg\')>-1){this.src=s.replace(\'.jpg\',\'.JPG\');}' +
+            'else{this.onerror=null;this.style.opacity=\'0\';}">' +
         '</div>' +
         '<div class="portrait-veil"></div>' +
         (isEarned ? '' : '<div class="portrait-shimmer"></div>') +
