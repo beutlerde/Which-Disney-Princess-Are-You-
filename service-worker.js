@@ -23,7 +23,7 @@ const CORE_ASSETS = [
   './assets/chat/speaking-anna.jpg', './assets/chat/speaking-merida.jpg',
   './assets/chat/speaking-pocahontas.jpg', './assets/chat/speaking-meg.jpg',
   './assets/landing/door-reflection.jpg', './assets/landing/door-chest.jpg',
-  './assets/landing/door-hall.jpg', './assets/landing/door-kingdom.jpg',
+  './assets/landing/door-hall.png', './assets/landing/door-kingdom.jpg',
   './assets/chambers/lavender-garden.jpg', './assets/chambers/scholars-library.jpg',
   './assets/chambers/rose-gold-palace.jpg', './assets/chambers/ice-palace.jpg',
   './assets/chambers/twilight-chamber.jpg', './assets/chambers/coastal-chamber.jpg',
