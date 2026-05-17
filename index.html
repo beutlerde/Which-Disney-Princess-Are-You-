@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D0818">
 <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-title" content="Royal Realm">
+  <link rel="apple-touch-icon" href="assets/icons/icon-512.png">
+
 <title>The Royal Realm ✦ Welcome</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+Unicase:wght@300;400;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -70,7 +73,7 @@ html,body{
 
 .welcome-line{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(22px,4vw,32px);color:var(--gold);
+  font-size:clamp(27px, 4.4vw, 39px);color:var(--gold);
   text-align:center;line-height:1.5;max-width:700px;
   opacity:0;letter-spacing:0.02em;
   text-shadow:0 0 30px rgba(201,168,76,0.5);
@@ -82,7 +85,7 @@ html,body{
 .welcome-name{
   font-family:'Cormorant Unicase',serif;
   font-weight:700;
-  font-size:clamp(40px,8vw,64px);
+  font-size:clamp(49px, 8.8vw, 78px);
   margin:24px 0;opacity:0;
   background:linear-gradient(180deg,var(--gold-edge) 0%,var(--gold-light) 35%,var(--gold) 60%,#a68122 100%);
   -webkit-background-clip:text;background-clip:text;
@@ -95,7 +98,7 @@ html,body{
 
 #welcome-tap{
   position:absolute;bottom:60px;left:50%;transform:translateX(-50%);
-  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.3em;
+  font-family:'Cinzel',serif;font-size: 24px;letter-spacing:0.3em;
   color:var(--gold-dim);text-transform:uppercase;opacity:0;
   cursor:pointer;
 }
@@ -110,7 +113,7 @@ html,body{
 .realm-header.visible{opacity:1}
 .realm-title{
   font-family:'Cormorant Unicase',serif;font-weight:700;
-  font-size:clamp(36px,6.5vw,56px);
+  font-size:clamp(44px, 7.2vw, 68px);
   background:linear-gradient(180deg,var(--gold-edge) 0%,var(--gold-light) 40%,var(--gold) 70%,#a68122 100%);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;
@@ -119,7 +122,7 @@ html,body{
 }
 .realm-subtitle{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(15px,2.5vw,20px);color:var(--cream-dim);
+  font-size:clamp(18px, 2.8vw, 24px);color:var(--cream-dim);
   max-width:600px;margin:0 auto;line-height:1.5;
 }
 .realm-divider{
@@ -130,7 +133,7 @@ html,body{
   flex:1;height:1px;
   background:linear-gradient(90deg,transparent,var(--gold),transparent);
 }
-.realm-divider-star{color:var(--gold);font-size:14px}
+.realm-divider-star{color:var(--gold);font-size: 24px}
 
 /* === DOORS GRID === */
 .doors-section{
@@ -182,7 +185,7 @@ html,body{
   content:'✦';font-size:64px;opacity:0.4;
 }
 .door-image-placeholder span{
-  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.2em;
+  font-family:'Cinzel',serif;font-size: 26px;letter-spacing:0.2em;
   color:var(--gold-dim);text-transform:uppercase;margin-top:12px;
 }
 /* Hide placeholder when actual image loads */
@@ -202,7 +205,7 @@ html,body{
 
 .door-label{
   font-family:'Cormorant Unicase',serif;font-weight:600;
-  font-size:clamp(18px,2.5vw,24px);
+  font-size:clamp(22px, 2.8vw, 29px);
   color:var(--gold-light);
   text-align:center;line-height:1.2;
   margin-bottom:6px;
@@ -213,7 +216,7 @@ html,body{
 
 .door-description{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(13px,1.8vw,16px);
+  font-size:clamp(16px, 2.0vw, 20px);
   color:var(--cream-dim);
   text-align:center;line-height:1.4;
   max-width:240px;margin:0 auto;
@@ -223,7 +226,7 @@ html,body{
 .returning-greeting{
   margin-top:30px;text-align:center;
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(13px,2vw,16px);color:var(--gold-dim);
+  font-size:clamp(16px, 2.2vw, 20px);color:var(--gold-dim);
   max-width:600px;
   opacity:0;transition:opacity 1.5s ease 1.5s;
 }
@@ -236,7 +239,7 @@ html,body{
 /* === FOOTER === */
 .realm-footer{
   margin-top:auto;padding-top:40px;text-align:center;
-  font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.3em;
+  font-family:'Cinzel',serif;font-size: 24px;letter-spacing:0.3em;
   color:var(--gold-dim);opacity:0.6;
   text-transform:uppercase;
 }
@@ -295,6 +298,17 @@ html,body{
       </div>
       <div class="door-label">The Royal Chest</div>
       <div class="door-description">Where letters of magic await thee</div>
+    </a>
+
+    <a class="door-card" href="hall.html" id="hall-door">
+      <div class="door-image-wrap">
+        <img class="door-image" src="assets/landing/door-hall.jpg" alt="The Royal Portrait Hall" onerror="this.style.display='none'">
+        <div class="door-image-placeholder"><span>The Royal Portrait Hall</span></div>
+        <div class="door-spotlight"></div>
+        <div id="hall-counter-badge" style="display:none;position:absolute;top:12px;right:12px;background:radial-gradient(circle,var(--gold-light),var(--gold));color:var(--purple-deep);font-family:'Cinzel',serif;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;z-index:3;box-shadow:0 2px 12px rgba(201,168,76,0.6)"></div>
+      </div>
+      <div class="door-label">The Royal Portrait Hall</div>
+      <div class="door-description" id="hall-door-desc">Where thy princesses are remembered</div>
     </a>
 
     <a class="door-card" href="https://beutlerde.github.io/" id="kingdom-door">
@@ -381,7 +395,8 @@ const HAS_VISITED_BEFORE = !!ceremony || history.length > 0;
 const PRINCESS_DISPLAY = {
   'elsa':'Elsa','rapunzel':'Rapunzel','belle':'Belle','moana':'Moana',
   'raya':'Raya','aurora':'Aurora','ariel':'Ariel','tiana':'Tiana',
-  'snow-white':'Snow White','mulan':'Mulan','jasmine':'Jasmine','cinderella':'Cinderella'
+  'snow-white':'Snow White','mulan':'Mulan','jasmine':'Jasmine','cinderella':'Cinderella',
+  'anna':'Anna','merida':'Merida','pocahontas':'Pocahontas','meg':'Meg'
 };
 
 // ─── STARFIELD ───
@@ -490,6 +505,26 @@ function setupReturningGreeting(){
   }
   // Otherwise no greeting — clean first visit
 }
+
+// ─── HALL OF FAME COUNTER ───
+(function(){
+  try{
+    var hall = JSON.parse(localStorage.getItem('pq_hall_of_fame') || '[]');
+    if(hall.length > 0){
+      var badge = document.getElementById('hall-counter-badge');
+      var desc = document.getElementById('hall-door-desc');
+      if(badge){
+        badge.textContent = hall.length + ' / 16';
+        badge.style.display = 'block';
+      }
+      if(desc){
+        desc.textContent = hall.length === 16
+          ? 'All sixteen princesses revealed'
+          : hall.length + ' of 16 princesses revealed';
+      }
+    }
+  } catch(e){}
+})();
 
 // Init
 setupWelcome();
